@@ -51,8 +51,8 @@ wciApp.factory(
             // });
             saveData.military = military;
             saveData.research = research;
-            saveData.laws = laws;
-            saveData.lawsUnlocked = lawsUnlocked;
+            // saveData.laws = laws;
+            // saveData.lawsUnlocked = lawsUnlocked;
             saveData.buildings = buildings;
             saveData.baseStats = playerService.baseStats;
             saveData.onWar = onWar;
@@ -77,8 +77,8 @@ wciApp.factory(
             //depreciated, but works :]
             angular.merge(military, savedData.military);
             angular.merge(research, savedData.research);
-            angular.merge(laws, savedData.laws);
-            angular.merge(lawsUnlocked, savedData.lawsUnlocked);
+            // angular.merge(laws, savedData.laws);
+            // angular.merge(lawsUnlocked, savedData.lawsUnlocked);
             angular.merge(buildings, savedData.buildings);
             angular.merge(baseStats, savedData.baseStats);
             angular.merge(onWar, savedData.onWar);

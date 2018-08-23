@@ -78,7 +78,6 @@ wciApp.service('warService', function (
             console.log("PLAYER MILITARY:");
             console.log(playerMilitary);
             console.log("Player Military attack");
-            console.log(playerService.military.getAttack(playerMilitary["Militia"].id, playerMilitary["Militia"].count));
             this.calculateResult(playerMilitary, enemyCountry);
         }
     };
@@ -86,10 +85,10 @@ wciApp.service('warService', function (
     War.prototype.calculateResult = function (playerTroops, enemyCountry) {
         let playerTotalAttack = this.getTotal(playerTroops, "attack");
         let playerTotalDefense = this.getTotal(playerTroops, "defense");
-        let enemyTotalAttack = enemyCountry.military.getTotalAttack();
-        let enemyTotalDefense = enemyCountry.military.getTotalDefense();
-        console.log(enemyTotalAttack, enemyTotalDefense);
-        console.log(playerTotalAttack, playerTotalDefense);
+        // let enemyTotalAttack = enemyCountry.military.getTotalAttack();
+        // let enemyTotalDefense = enemyCountry.military.getTotalDefense();
+        // console.log(enemyTotalAttack, enemyTotalDefense);
+        // console.log(playerTotalAttack, playerTotalDefense);
         console.log(playerTroops, enemyCountry);
     };
 
