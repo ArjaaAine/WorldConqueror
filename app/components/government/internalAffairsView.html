@@ -18,70 +18,8 @@
         </span>
     </h4>
     <hr>
-    <div class="row">
-        <div id="ministers" class="col-sm-12">
-            <div class="panel panel-default col-sm-1 clickable custom-panel">
-                <div class="panel-body">
-                    <i class="glyphicon glyphicon-chevron-left"></i>
-                </div>
-            </div>
-            <div class="panel panel-default col-sm-2">
-                <div class="panel-body">
-                    <i class="glyphicon glyphicon-user"></i>
-                    <span class="font-8pt">Defense</span>
-                    <div class="pull-right" uib-tooltip="influence">
-                        <i class="glyphicon glyphicon-thumbs-up" ></i>
-                        <span class="font-8pt">24</span>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default col-sm-2">
-                <div class="panel-body">
-                    <i class="glyphicon glyphicon-user"></i>
-                    <span class="font-8pt">Agro</span>
-                    <div class="pull-right" uib-tooltip="influence">
-                        <i class="glyphicon glyphicon-thumbs-up"></i>
-                        <span class="font-8pt">24</span>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default col-sm-2">
-                <div class="panel-body">
-                    <i class="glyphicon glyphicon-user"></i>
-                    <span class="font-8pt">Housing</span>
-                    <div class="pull-right" uib-tooltip="influence">
-                        <i class="glyphicon glyphicon-thumbs-up"></i>
-                        <span class="font-8pt">24</span>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default col-sm-2">
-                <div class="panel-body">
-                    <i class="glyphicon glyphicon-user"></i>
-                    <span class="font-8pt">Minister 4</span>
-                    <div class="pull-right" uib-tooltip="influence">
-                        <i class="glyphicon glyphicon-thumbs-up"></i>
-                        <span class="font-8pt">24</span>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default col-sm-2">
-                <div class="panel-body">
-                    <i class="glyphicon glyphicon-user"></i>
-                    <span class="font-8pt">Minister 5</span>
-                    <div class="pull-right" uib-tooltip="influence">
-                        <i class="glyphicon glyphicon-thumbs-up"></i>
-                        <span class="font-8pt">24</span>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default col-sm-1 clickable custom-panel">
-                <div class="panel-body">
-                    <i class="glyphicon glyphicon-chevron-right"></i>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div ng-include="'app/components/ministers/ministersView.html'"></div>
+    <div ng-include="'app/components/ministers/ministersHireModal.html'"></div>
     <div class="row">
         <div class="col-sm-12">
             <div class="col-md-6 col-sm-12">

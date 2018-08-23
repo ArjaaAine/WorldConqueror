@@ -9,9 +9,10 @@ wciApp.factory(
               researchService,
               bonusesService,
               gameDataService,
+              ministerService,
               warService,
               $q) {
-        let sheets = ["Buildings", "Units", "ResearchData", "ResearchBonuses", "Laws", "WorldCountries"];
+        let sheets = ["Buildings", "Units", "ResearchData", "ResearchBonuses", "Laws", "WorldCountries", "Ministers"];
 
         let init = function () {
             console.log("INIT");
@@ -26,6 +27,7 @@ wciApp.factory(
                     buildingInit();
                     militaryInit();
                     researchInit();
+                    ministersInit();
                     lawsInit();
                     bonusesServiceInit();
                     worldCountriesInit();
@@ -52,14 +54,15 @@ wciApp.factory(
             playerService.research = new researchService();
             playerService.research.init();
         };
-
         let lawsInit = function () {
             playerService.laws = new lawsService();
             playerService.laws.init();
         };
-
         let worldCountriesInit = function (countriesArray) {
             worldCountryService.init(countriesArray);
+        };
+        let ministersInit = function () {
+            ministerService.init();
         };
 
         return init;

@@ -13,6 +13,7 @@ wciApp.controller(
         helperModalsService,
         notificationService,
         researchService,
+        ministerService,
         worldCountryService,
         saveService,
         initService,
@@ -30,6 +31,7 @@ wciApp.controller(
             game.worldCountries = worldCountryService;
             game.bonuses = bonusesService;
             game.advisors = advisorsService;
+            game.ministers = ministerService;
             game.helperModals = helperModalsService;
             game.notification = notificationService;
             game.debug = debugService;

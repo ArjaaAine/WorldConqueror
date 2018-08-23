@@ -36,8 +36,8 @@ wciApp.factory(
             let saveData = {};//all data to save.
             let military = playerService.military;
             let research = playerService.research;
-            let laws = playerService.laws.activeLaws;
-            let lawsUnlocked = playerService.laws.unlockedLaws;
+            //let laws = playerService.laws.activeLaws;
+            //let lawsUnlocked = playerService.laws.unlockedLaws;
             let buildings = playerService.buildings;
             let onWar = warService.countriesAtWar;
             let onWarColors = worldCountryService.countriesColorsAtWar;
@@ -66,8 +66,8 @@ wciApp.factory(
             if(!savedData) return;
             let military = playerService.military;
             let research = playerService.research;
-            let laws = playerService.laws.activeLaws;
-            let lawsUnlocked = playerService.laws.unlockedLaws;
+            //let laws = playerService.laws.activeLaws;
+            //let lawsUnlocked = playerService.laws.unlockedLaws;
             let buildings = playerService.buildings;
             let baseStats = playerService.baseStats;
             let onWar = warService.countriesAtWar;
