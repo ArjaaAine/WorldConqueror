@@ -34,7 +34,7 @@ wciApp.factory(
             //TODO: Broken, cyclic object value error.
             //TODO: Redesign save/load to only save necessary data as a string, instead of full objects...Ex. Unit.ID = 10 -> 10 units of this type.
             let saveData = {};//all data to save.
-            let military = playerService.military.units;
+            let military = playerService.military;
             let research = playerService.research;
             let laws = playerService.laws.activeLaws;
             let lawsUnlocked = playerService.laws.unlockedLaws;
@@ -42,21 +42,14 @@ wciApp.factory(
             let onWar = warService.countriesAtWar;
             let onWarColors = worldCountryService.countriesColorsAtWar;
 
-            let unitsToSave = [];//array of objects with basic values...
             //Save only necessary data
-            military.forEach(function (unit) {
-                let obj = {};
-                obj.count = unit.count;
-                obj.unlocked = unit.unlocked;
-                unitsToSave.push(obj);
-            });
             // buildings.forEach(function (structure) {
             //    let obj = {};
             //    obj.count = structure.count;
             //    obj.unlocked = structure.isUnlocked;
             //    structuresToSave.push(obj);
             // });
-            saveData.military = unitsToSave;
+            saveData.military = military;
             saveData.research = research;
             saveData.laws = laws;
             saveData.lawsUnlocked = lawsUnlocked;
@@ -71,7 +64,7 @@ wciApp.factory(
             console.log("LOAD");
             let savedData = angular.fromJson(localStorage['gameData1']);
             if(!savedData) return;
-            let units = playerService.military.units;
+            let military = playerService.military;
             let research = playerService.research;
             let laws = playerService.laws.activeLaws;
             let lawsUnlocked = playerService.laws.unlockedLaws;
@@ -82,7 +75,7 @@ wciApp.factory(
 
 
             //depreciated, but works :]
-            angular.merge(units, savedData.military);
+            angular.merge(military, savedData.military);
             angular.merge(research, savedData.research);
             angular.merge(laws, savedData.laws);
             angular.merge(lawsUnlocked, savedData.lawsUnlocked);

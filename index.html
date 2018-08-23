@@ -28,7 +28,7 @@
 </head>
 <body ng-controller="GameController as game" ng-cloak>
     <div class="main_overlay">
-        <div class="container">
+        <div class="container-fluid">
             <div class="row" ng-show="game.data.init.isFirstTime != true">
                 <nav class="navbar navbar-default" role="navigation">
                     <div class="navbar-header">
@@ -107,17 +107,22 @@
                         </div>
                     </div>
                 </nav>
-                <div class="col-sm-12">
-                    <button ng-click="game.debug.addLand()">Land +100</button>
-                    <button ng-click="game.debug.addUnits()">Units +100</button>
-                    <button ng-click="game.debug.addEachBuilding()">Unlock Structures +10</button>
-                    <button ng-click="game.debug.addResearchPoints()">Add Science +1k</button>
-                    <button ng-click="game.debug.stabilityChange(10)">Stability +10</button>
-                    <button ng-click="game.debug.stabilityChange(-10)">Stability -10</button>
-                    <button ng-click="game.debug.stabilityIndexChange(1)">StabilityIndex +1</button>
-                    <button ng-click="game.debug.stabilityIndexChange(-1)">StabilityIndex -1</button>
+                <div class="col-sm-2">
+                    <button ng-click="hideDebug=true" ng-hide="hideDebug">Hide</button>
+                    <button ng-click="hideDebug=false" ng-show="hideDebug">Show</button>
+                    <div ng-hide="hideDebug">
+                    <button ng-click="game.debug.giveMeAll()">Give All</button><br>
+                    <button ng-click="game.debug.addLand()">Land +100</button><br>
+                    <button ng-click="game.debug.addUnits()">Units +100</button><br>
+                    <button ng-click="game.debug.addEachBuilding()">Structures +10</button><br>
+                    <button ng-click="game.debug.addResearchPoints()">Science +1k</button><br>
+                    <button ng-click="game.debug.stabilityChange(10)">Stability +10</button><br>
+                    <button ng-click="game.debug.stabilityChange(-10)">Stability -10</button><br>
+                    <button ng-click="game.debug.stabilityIndexChange(1)">StabilityIndex +1</button><br>
+                    <button ng-click="game.debug.stabilityIndexChange(-1)">StabilityIndex -1</button><br>
+                    </div>
                 </div>
-                <div id="Game Window" class="col-sm-12">
+                <div id="Game Window" class="col-sm-10">
                     <div ng-include="'app/shared/statHeader/statHeaderView.html'"></div>
                     
                     <div id="views" ng-view>

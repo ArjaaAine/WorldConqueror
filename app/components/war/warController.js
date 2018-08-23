@@ -91,7 +91,7 @@ wciApp.controller('WarController', function (
         });
     };
 
-    $scope.sendTroops = function (index) {
+    $scope.openTroopsModal = function (index) {
         let modalInstance = modalService.open({
             templateUrl: 'warAttackModal.html',
             controller: 'warSendTroopsController',

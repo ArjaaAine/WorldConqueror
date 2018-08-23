@@ -1,5 +1,6 @@
 wciApp.service('AiPlayerService', function(
-    militaryService) {
+    militaryService,
+    gameDataService) {
 
     let AiPlayer = function () {
         //Object for a single country
@@ -32,11 +33,16 @@ wciApp.service('AiPlayerService', function(
             let type = ["Air", "Land", "Naval"];
             let randomType = type[Math.floor(Math.random() * type.length)];
             let randomTier = Math.floor(Math.random() * this[randomType + "UnitTier"]) + 1;
-            this.military.units.filter(function (unit) {
-                if (unit.level === randomTier && unit.type === randomType) {
+            let military = this.military;
+            this.military.unitsAtHome.filter(function (unit) {
+                let unitId = unit.id;
+                let unitData = gameDataService.Units[unitId];
+                let level = unitData.level;
+                let type = unitData.type;
+                if (level === randomTier && type === randomType) {
                     unit.count = unit.count || 0;
                     unit.count += 1;
-                    strength -= unit.getStrength();
+                    strength -= military.getStrength(unitId);
                 }
             });
         }

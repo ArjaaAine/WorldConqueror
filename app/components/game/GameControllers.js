@@ -38,7 +38,7 @@ wciApp.controller(
         let timerfunction = function () {
             //TODO: Put logic here to prompt user of game ending/death due to 0 population.
             game.bonuses.update(game);
-            game.myCountry.military.updateUnitsBuyQueue();
+            game.myCountry.military.updateQueue();
             game.myCountry.getGameTime();
             game.myCountry.getNewConsumption();
             game.myCountry.getNewEconomics();

@@ -35,7 +35,7 @@ wciApp.service('warService', function (
         //TODO: Either fix logic to make it easier with using country name, or create a table with countryCode: countryName...
         let currentTurn = playerService.baseStats.currentTurn;
         let warLogText = "Year " + (1900 + currentTurn) + ": You have declared war against " + countryCode;
-        this.countriesAtWar[this.countriesAtWar.length -1].warLog.push(warLogText);//push to the last element, since it's always going to match latest war declaration.
+        this.countriesAtWar[this.countriesAtWar.length - 1].warLog.push(warLogText);//push to the last element, since it's always going to match latest war declaration.
         console.log(this.countriesAtWar);
     };
 
@@ -43,15 +43,24 @@ wciApp.service('warService', function (
         //TODO: Merge troops, or add some delay before they merge etc.
         //TODO: Remove troops from attacker so he cant have infinite troops...
 
-        for(let i = 0; i < troops.length; i++){
+        for (let i = 0; i < troops.length; i++) {
             let troopId = troops[i].id;
             //TODO: Create a property for playerService to store "inBattle" units for each country it fights. Or even store this data inside each Unit object
             //TODO: We sort/filter through all those units anyway, we just need to check if there are any amount of them currently in battle with a country we are looping through.
             //TODO: Create a method in player service or warService(better) or Entity service(even better, first need to create Entity service tho)
             //TODO: Entity service is a service above player and AI, it contains shared properties between characters.
-            playerService.military.units[troopId].count -= troops[i].count;//remove units from player when sending them to fight.
+            if (!playerService.military.unitsAtWar[countryAttackedIndex]) {
+                playerService.military.unitsAtWar[countryAttackedIndex] = [];
+                for (let j = 0; j < gameDataService.Units.length; j++) {
+                    playerService.military.unitsAtWar[countryAttackedIndex][j] = {};
+                    playerService.military.unitsAtWar[countryAttackedIndex][j] = troops[j];
+                }
+            } else {
+                    playerService.military.unitsAtWar[countryAttackedIndex][troopId].count += troops[i].count;
+            }
+            playerService.military.unitsAtHome[troopId].count -= troops[i].count;
         }
-        this.countriesAtWar[countryAttackedIndex].queue.push(troops);
+        console.log(playerService.military);
     };
 
     War.prototype.doBattle = function () {
@@ -68,11 +77,13 @@ wciApp.service('warService', function (
             console.log(aiMilitary);
             console.log("PLAYER MILITARY:");
             console.log(playerMilitary);
+            console.log("Player Military attack");
+            console.log(playerService.military.getAttack(playerMilitary["Militia"].id, playerMilitary["Militia"].count));
             this.calculateResult(playerMilitary, enemyCountry);
         }
     };
 
-    War.prototype.calculateResult = function(playerTroops, enemyCountry) {
+    War.prototype.calculateResult = function (playerTroops, enemyCountry) {
         let playerTotalAttack = this.getTotal(playerTroops, "attack");
         let playerTotalDefense = this.getTotal(playerTroops, "defense");
         let enemyTotalAttack = enemyCountry.military.getTotalAttack();
@@ -82,15 +93,15 @@ wciApp.service('warService', function (
         console.log(playerTroops, enemyCountry);
     };
 
-    War.prototype.getTotal = function(obj, stat) {
+    War.prototype.getTotal = function (obj, stat) {
         //this is just temporary until I fix the code...
         let total = 0;
-        for(let key in obj) {
-            if(obj.hasOwnProperty(key)) {
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
                 let unit = obj[key];
                 let unitStats = gameDataService.Units[unit.id];
-                if(stat === "attack") total += unit.count * unitStats.attack;
-                if(stat === "defense") total += unit.count * unitStats.defense;
+                if (stat === "attack") total += unit.count * unitStats.attack;
+                if (stat === "defense") total += unit.count * unitStats.defense;
             }
         }
         return total;
@@ -104,9 +115,8 @@ wciApp.service('warService', function (
     //Basically it takes 1 turn for them to move from your base to the enemy country
     War.prototype.updateQueue = function (countryAtWar) {
         for (let i = 0; i < countryAtWar.queue.length; i++) {
-            for(let j = 0; j < countryAtWar.queue[i].length; j++) {
+            for (let j = 0; j < countryAtWar.queue[i].length; j++) {
                 let unit = countryAtWar.queue[i][j];
-                debugger;
                 if (countryAtWar.inBattle[unit.name]) {
                     countryAtWar.inBattle[unit.name].count += unit.count;
                 } else {
