@@ -9,6 +9,7 @@ wciApp.service('AiPlayerService', function(
         this.land = 0;//total Land based on countries controlled
         this.unitGrowth = 0;
         this.strength = 0;
+        this.isDefeated = false;//Remove Ai Player if set to true.
     };
 
     AiPlayer.prototype.init = function (countryData, countryObject) {
@@ -46,6 +47,15 @@ wciApp.service('AiPlayerService', function(
                 }
             });
         }
+
+        //Short debug code
+        console.log("CHANGING UNITS HERE, REMOVE IT IN ORDER TO RANDOMIZE DATA AGAIN");
+        for(let i = 0; i < this.military.unitsAtHome.length; i++){
+            this.military.unitsAtHome[i].count = 0;
+        }
+        this.military.unitsAtHome[1].count = 100;//this sets all counties first index unit to 100, everything else to 0;
+        //END OF DEBUG CODE
+
         //This will calculate actual strength of the country, since we can generate units with 1 strength, that cost 1000. Or just fix above generation to something better.
         this.strength += Math.abs(strength);
     };

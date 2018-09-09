@@ -11,6 +11,16 @@ wciApp.controller('WarController', function (
     $scope.playerService = playerService;
     $scope.warService = warService;
     war.logger = [];
+    $scope.reverse = false;
+    $scope.propertyName = "";//for sorting
+    //Sort countries etc.
+    $scope.sortBy = function(propertyName) {
+        $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
+        $scope.propertyName = propertyName;
+    };
+    $scope.getIndexOfItem = function (item) {
+        return warService.countriesAtWar.indexOf(item);
+    };
     let map = new jvm.Map({
         container: $('#world-map'),
         map: 'world_mill_en',
@@ -36,7 +46,7 @@ wciApp.controller('WarController', function (
         onRegionTipShow: function (e, el, code) {
             let country = $filter('niceNumber')(worldCountryService.getCountryStrength(code));
             el.html(el.html() + ' (Strength - ' + country + ')');
-
+            console.log(worldCountryService);
         },
         onRegionClick: function (e, code) {
             e.preventDefault();
@@ -81,17 +91,24 @@ wciApp.controller('WarController', function (
             }
         });
         modalInstance.result.then(function () {
-            let strength = worldCountryService.getCountryStrength(code);
-            worldCountryService.countriesColorsAtWar[code] = strength;
-            worldCountryService.update();
             //TODO: Set up first battle phase here using warService.init(attacker,defender)
             warService.declareWar(code)
+            worldCountryService.update();
         }, function () {
             $log.info('Modal dismissed at: ' + new Date());
         });
     };
+    $scope.makePeace = function(item) {
+        let index = $scope.getIndexOfItem(item);
+        warService.makePeace(index);
+    };
+    $scope.returnUnits = function(item) {
+        let index = $scope.getIndexOfItem(item);
+        warService.returnUnits(index);
+    };
 
-    $scope.openTroopsModal = function (index) {
+    $scope.openTroopsModal = function (item) {
+        let index = $scope.getIndexOfItem(item);
         let modalInstance = modalService.open({
             templateUrl: 'warAttackModal.html',
             controller: 'warSendTroopsController',

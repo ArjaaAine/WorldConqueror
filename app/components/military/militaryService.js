@@ -186,8 +186,42 @@ wciApp.factory(
         Military.prototype.getAttack = function(unitId) {
             return gameDataService.Units[unitId].attack;
         };
+        Military.prototype.getTotalUnitAttack = function(unitId, count) {
+            return this.getAttack(unitId) * count;
+        };
+        Military.prototype.getAllUnitsTotalAttack = function(isAtHome, countryAtWarIndex){
+            let totalAttack = 0;
+            if(isAtHome) {
+                for(let i = 0; i < this.unitsAtHome.length; i++){
+                    totalAttack += this.getTotalUnitAttack(i, this.unitsAtHome[i].count);
+                }
+            } else{
+                //Units at war
+                for(let i = 0; i < this.unitsAtWar[countryAtWarIndex].length; i++){
+                    totalAttack += this.getTotalUnitAttack(i, this.unitsAtWar[countryAtWarIndex][i].count);
+                }
+            }
+            return totalAttack;
+        };
         Military.prototype.getDefense = function(unitId) {
             return gameDataService.Units[unitId].defense;
+        };
+        Military.prototype.getTotalUnitDefense = function(unitId, count) {
+            return this.getDefense(unitId) * count;
+        };
+        Military.prototype.getAllUnitsTotalDefense = function(isAtHome, countryAtWarIndex) {
+            let totalDefense = 0;
+            if(isAtHome) {
+                for(let i = 0; i < this.unitsAtHome.length; i++){
+                    totalDefense += this.getTotalUnitDefense(i, this.unitsAtHome[i].count);
+                }
+            } else{
+                //Units at war
+                for(let i = 0; i < this.unitsAtWar[countryAtWarIndex].length; i++){
+                    totalDefense += this.getTotalUnitDefense(i, this.unitsAtWar[countryAtWarIndex][i].count);
+                }
+            }
+            return totalDefense;
         };
         Military.prototype.getSiege = function(unitId) {
             return gameDataService.Units[unitId].siege;

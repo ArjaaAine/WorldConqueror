@@ -11,8 +11,8 @@ wciApp.factory('worldCountryService', function (
         //Countries store some basic data such as Land.
         this.AiPlayers = [];//list of all AI players.//This is an array, so we can loop through few countries each turn and save index for next loop on next turn. Using objects would be a pain.
         //Other properties are objects because we need to have an easy access to them via bracket notation like country[code].someData
-        this.allCountriesColors = {};//objects with all countries colors...like this.countryColors.US = 15
-        this.countriesColorsAtWar = {};//objects with all countries we are at war.
+        this.allCountriesColors = {};//objects with all countries colors...like this.countryColors.US = 15---This is the neutral color, blue
+        this.countriesColorsAtWar = {};//objects with all countries we are at war. Red color
     };
 
     World.prototype.init = function () {
@@ -38,7 +38,7 @@ wciApp.factory('worldCountryService', function (
                 country.init(countryData, countryObject);
                 self.AiPlayers.push(country);//AI with all methods/logic and AiPlayer specific data like military...
             } else {
-                playerService.conqueredCountries.push(countryObject);
+                playerService.addCountry(countryObject);
                 self.conqueredCountriesColors[countryCode] = playerService.military.getTotalStrength();
             }
             //AI colors for map
@@ -58,16 +58,32 @@ wciApp.factory('worldCountryService', function (
         }
     };
     World.prototype.getAiByCountryCode = function(code) {
-            for(let i = 0; i < this.AiPlayers.length; i++){
-                for(let j = 0; j < this.AiPlayers[i].countries.length; j++){
-                    let country = this.AiPlayers[i].countries[j];
-                    if(country.countryCode === code) {
-                        return this.AiPlayers[i];
-                    }
+        let index = this.getAiIndexByCountryCode(code);
+        return this.AiPlayers[index];
+    };
+    World.prototype.getAiIndexByCountryCode = function(code) {
+        for(let i = 0; i < this.AiPlayers.length; i++){
+            for(let j = 0; j < this.AiPlayers[i].countries.length; j++){
+                let country = this.AiPlayers[i].countries[j];
+                if(country.countryCode === code) {
+                    return i;
                 }
             }
+        }
+    };
+    World.prototype.removeAi = function(index) {
+        for(let i = 0; i < this.AiPlayers[index].countries.length; i++) {
+            let countryCode = this.AiPlayers[index].countries[i].countryCode;
+            delete this.removeCountryAtWarColor(countryCode);
+            this.conqueredCountriesColors[countryCode] = playerService.military.getTotalStrength();
+        }
+        this.AiPlayers.splice(index,  1);
+        console.log("Removed AI Player, there are " + this.AiPlayers.length + " AI Players left!");
     };
 
+    World.prototype.removeCountryAtWarColor = function(countryCode) {
+      delete this.countriesColorsAtWar[countryCode];
+    };
     World.prototype.update = function () {
         //There goes all logic for countries...Using AiPlayerService methods, we make decisions here.
         //While looping AiPlayer array, we can update map colors based on Strength as well

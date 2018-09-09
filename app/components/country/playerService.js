@@ -75,6 +75,18 @@ wciApp.factory('playerService',
         };
         this.getLookups();
     };
+    Player.prototype.addCountry = function(countryObject) {
+        this.conqueredCountries.push(countryObject);
+        this.updateLand();
+    };
+    Player.prototype.updateLand = function() {
+        let totalLand = 0;
+        this.conqueredCountries.forEach(function (countryData) {
+            totalLand += countryData.land;
+        });
+        this.baseStats.land = totalLand;
+    };
+
     Player.prototype.actualGrowthRate = function () {
         let growthRate;
         let freezeGrowth = bonusesService.lawsBonuses.freezeGrowth;
