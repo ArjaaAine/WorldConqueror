@@ -4,7 +4,7 @@
             <h4 class="modal-title">Send Troops</h4>
         </div>
         <div class="modal-body font-9pt row">
-                <div class="col-xs-4" ng-repeat="unit in military.units">
+                <div class="col-xs-4" ng-repeat="unit in military.unitsAtHome track by $index">
                     <div class="row" ng-show="unit.count > 0">
                         <div class="col-xs-12">
                         {{unit.name + " " + unit.count}}
@@ -14,7 +14,7 @@
                 </div>
             </div>
         <div class="modal-footer align-center">
-            <button class="btn btn-warning" ng-click="sendTroops()">Send Troops</button>
+            <button class="btn btn-warning" ng-click="sendQueuedUnits()">Send Troops</button>
             <button class="btn btn-danger" ng-click="cancel()">Go Back</button>
         </div>
     </script>

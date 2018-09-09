@@ -1,5 +1,6 @@
 wciApp.service('AiPlayerService', function(
-    militaryService) {
+    militaryService,
+    gameDataService) {
 
     let AiPlayer = function () {
         //Object for a single country
@@ -8,6 +9,7 @@ wciApp.service('AiPlayerService', function(
         this.land = 0;//total Land based on countries controlled
         this.unitGrowth = 0;
         this.strength = 0;
+        this.isDefeated = false;//Remove Ai Player if set to true.
     };
 
     AiPlayer.prototype.init = function (countryData, countryObject) {
@@ -32,14 +34,28 @@ wciApp.service('AiPlayerService', function(
             let type = ["Air", "Land", "Naval"];
             let randomType = type[Math.floor(Math.random() * type.length)];
             let randomTier = Math.floor(Math.random() * this[randomType + "UnitTier"]) + 1;
-            this.military.units.filter(function (unit) {
-                if (unit.level === randomTier && unit.type === randomType) {
+            let military = this.military;
+            this.military.unitsAtHome.filter(function (unit) {
+                let unitId = unit.id;
+                let unitData = gameDataService.Units[unitId];
+                let level = unitData.level;
+                let type = unitData.type;
+                if (level === randomTier && type === randomType) {
                     unit.count = unit.count || 0;
                     unit.count += 1;
-                    strength -= unit.getStrength();
+                    strength -= military.getStrength(unitId);
                 }
             });
         }
+
+        //Short debug code
+        console.log("CHANGING UNITS HERE, REMOVE IT IN ORDER TO RANDOMIZE DATA AGAIN");
+        for(let i = 0; i < this.military.unitsAtHome.length; i++){
+            this.military.unitsAtHome[i].count = 0;
+        }
+        this.military.unitsAtHome[1].count = 100;//this sets all counties first index unit to 100, everything else to 0;
+        //END OF DEBUG CODE
+
         //This will calculate actual strength of the country, since we can generate units with 1 strength, that cost 1000. Or just fix above generation to something better.
         this.strength += Math.abs(strength);
     };

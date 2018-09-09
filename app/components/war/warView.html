@@ -6,22 +6,45 @@
                     <div class="panel-heading">
                         <div class="panel-title">
                             <span>
-                                Control Room
+                                <div class="row">
+                                    <div class="col-sm-7 text-center">Control Room</div>
+                                    <div class="col-sm-4 col-sm-offset-1 text-center">War Log</div>
+                                </div>
                             </span>
                         </div>
                     </div>
                     <div class="panel-body custom-panel font-9pt">
-                        <div class="row" ng-repeat="currentBattle in warService.countriesAtWar">
-                            <div class="col-sm-4">
-                                <h4>
-                                    {{currentBattle.countryCode}}
-                                </h4>
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <button class="btn btn-sm btn-default" ng-click="sortBy('countryCode')">Name</button>
+                                        <span class="sortorder" ng-show="propertyName === 'countryCode'" ng-class="{reverse: reverse}"></span>
+                                    </div>
+                                </div>
+                                <div class="row" ng-repeat="currentBattle in warService.countriesAtWar | orderBy:propertyName:reverse track by $index">
+                                    <div class="col-sm-3">
+                                        <h4>
+                                            {{currentBattle.countryCode}}
+                                        </h4>
+                                    </div>
+                                    <div class="col-sm-3"><button type="button" class="btn btn-danger" ng-click="makePeace(currentBattle)">Make Peace
+                                    </button></div>
+                                    <div class="col-sm-3">
+                                        <button type="button" class="btn btn-danger" ng-click="openTroopsModal(currentBattle)">Send Troops</button>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button type="button" class="btn btn-danger" ng-click="returnUnits(currentBattle)">Return Troops</button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-sm-4">
-                                <button type="button" class="btn btn-danger" ng-click="sendTroops($index)">Send Troops</button>
+                            <div class="col-sm-5">
+                                <div class="row" ng-repeat="warLog in warService.warLog track by $index">
+                                    <div class="col-sm-10 col-sm-offset-1">
+                                        <p>{{warLog}}</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-sm-4"><button type="button" class="btn btn-danger pull-right">Surrender
-                            </button></div>
                         </div>
                     </div>
                 </div>

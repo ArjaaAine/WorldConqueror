@@ -21,7 +21,6 @@ wciApp.factory(
                 data.then(function (excelObject) {
                     //we return value which is an object of our sheets, we can access them like value.Buildings.
                     //pass data to gameDataService before initializing any other service
-                    console.log(excelObject);
                     gameDataService.init(excelObject);//This is important, it stores all game data, so other services can use it.
                     warService.init();
                     myCountryInit();
