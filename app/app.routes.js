@@ -36,6 +36,12 @@ wciApp.config(function ($routeProvider) {
                 controller: 'WarController',
                 controllerAs: 'war'
             })
+        .when('/charts',
+            {
+                templateUrl: 'app/shared/charts/chartsView.html',
+                controller: 'ChartsController',
+                controllerAs: 'charts'
+            })
         .otherwise({
             redirectTo: '/'
         });

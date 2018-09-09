@@ -62,13 +62,14 @@
                                         <div class="col-xs-4">
                                             <i class="fa fa-angle-double-up"></i>
                                             {{militaryCtrl.military.getTrainingSpeed(unit.id)}}
-
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <button class="btn btn-block btn-success" ng-click="militaryCtrl.military.buyQueue(1, unit.id)">
                                                 Hire - <i class="fa fa-money"></i> {{militaryCtrl.military.getCost(unit.id)}}
+                                                <i class="fa fa-male"></i>
+                                                {{militaryCtrl.military.getPopulationCost(unit.id)}}
                                             </button>
                                         </div>
                                     </div>
