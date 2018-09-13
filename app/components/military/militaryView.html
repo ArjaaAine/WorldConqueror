@@ -1,96 +1,98 @@
-﻿<div id="Army" class="row">
-    <h3>
-        <span class="glyphicon glyphicon-screenshot"></span> Army
-    </h3>
-    <hr>
-    <div class="col-md-12 col-sm-12">
-        <div class="row">
-            <div id="militaryResources" class="col-xs-12">
-                <div class="panel panel-primary">
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <i class="fa fa-money"></i> -{{militaryCtrl.military.getTotalUpkeep()}}/turn
-                            </div>
-                            <div class="col-xs-3">
-                                <i class="fa fa-male"></i> {{game.myCountry.baseStats.unitCap}}
+﻿<div ng-controller="MilitaryController">
+    <script type="text/ng-template" id="militaryView.html">
+        <div id="Army" class="col-md-12">
+            <h3>
+                <span class="glyphicon glyphicon-screenshot"></span> Army
+            </h3>
+            <hr>
+            <div class="row">
+                <div id="militaryResources" class="col-xs-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-money"></i> -{{military.getTotalUpkeep()}}/turn
+                                </div>
+                                <div class="col-xs-3">
+                                    <i class="fa fa-male"></i> {{game.myCountry.baseStats.unitCap}}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div id="military" class="col-xs-12">
-                <div class="row">
-                    <div class="col-xs-8">
-                        <div class="row">
-                            <div class="col-xs-4"
-                                 ng-repeat="unit in militaryCtrl.military.unitsAtHome"
-                                 ng-class="{'invisible': !unit.isUnlocked}">
-                                <!--TODO: Change class to hidden, instead of invisible, to remove the empty space between unlocked and locked units-->
-                                <div class="row">
-                                    <div class="col-xs-4 col-xs-offset-4">
-                                        <div class="text-center noBottom-border">
-                                            {{unit.count}}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="panel panel-primary panelLocked clickableArea panelUnlocked">
-                                    <div class="row text-center">
-                                            <h4>{{unit.name}}</h4>
-                                    </div>
-                                    <div class="row text-center">
-                                        <div class="col-xs-4">
-                                            <i class="fa fa-fire"></i> {{militaryCtrl.military.getAttack(unit.id)}}
-                                        </div>
-                                        <div class="col-xs-4">
-                                            <i class="fa fa-shield"></i> {{militaryCtrl.military.getDefense(unit.id)}}
-                                        </div>
-                                        <div class="col-xs-4"><i class="glyphicon glyphicon-tower"></i>
-                                            {{militaryCtrl.military.getSiege(unit.id)}}
-                                        </div>
-
-                                        <div class="col-xs-4">
-                                            <i class="fa fa-repeat"></i>
-                                            {{militaryCtrl.military.getUpkeep(unit.id)}}
-                                        </div>
-                                        <div class="col-xs-4">
-                                            <i class="fa fa-male"></i>
-                                            {{militaryCtrl.military.getPopulationCost(unit.id)}}
-                                        </div>
-                                        <div class="col-xs-4">
-                                            <i class="fa fa-angle-double-up"></i>
-                                            {{militaryCtrl.military.getTrainingSpeed(unit.id)}}
-                                        </div>
-                                    </div>
+            <div class="row">
+                <div id="military" class="col-xs-12">
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <div class="row">
+                                <div class="col-xs-4"
+                                     ng-repeat="unit in military.unitsAtHome"
+                                     ng-class="{'invisible': !unit.isUnlocked}">
+                                    <!--TODO: Change class to hidden, instead of invisible, to remove the empty space between unlocked and locked units-->
                                     <div class="row">
-                                        <div class="col-xs-12">
-                                            <button class="btn btn-block btn-success" ng-click="militaryCtrl.military.buyQueue(1, unit.id)">
-                                                Hire - <i class="fa fa-money"></i> {{militaryCtrl.military.getCost(unit.id)}}
-                                                <i class="fa fa-male"></i>
-                                                {{militaryCtrl.military.getPopulationCost(unit.id)}}
-                                            </button>
+                                        <div class="col-xs-4 col-xs-offset-4">
+                                            <div class="text-center noBottom-border">
+                                                {{unit.count}}
+                                            </div>
                                         </div>
                                     </div>
-                                    <!--TODO: Hide stat bonuses in a well and/or tooltip, currently might be too much info displayed at once-->
+                                    <div class="panel panel-primary panelLocked clickableArea panelUnlocked">
+                                        <div class="row text-center">
+                                                <h4>{{unit.name}}</h4>
+                                        </div>
+                                        <div class="row text-center">
+                                            <div class="col-xs-4">
+                                                <i class="fa fa-fire"></i> {{military.getAttack(unit.id)}}
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <i class="fa fa-shield"></i> {{military.getDefense(unit.id)}}
+                                            </div>
+                                            <div class="col-xs-4"><i class="glyphicon glyphicon-tower"></i>
+                                                {{military.getSiege(unit.id)}}
+                                            </div>
+
+                                            <div class="col-xs-4">
+                                                <i class="fa fa-repeat"></i>
+                                                {{military.getUpkeep(unit.id)}}
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <i class="fa fa-male"></i>
+                                                {{military.getPopulationCost(unit.id)}}
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <i class="fa fa-angle-double-up"></i>
+                                                {{military.getTrainingSpeed(unit.id)}}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <button class="btn btn-block btn-success" ng-click="military.buyQueue(1, unit.id)">
+                                                    Hire - <i class="fa fa-money"></i> {{military.getCost(unit.id)}}
+                                                    <i class="fa fa-male"></i>
+                                                    {{military.getPopulationCost(unit.id)}}
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!--TODO: Hide stat bonuses in a well and/or tooltip, currently might be too much info displayed at once-->
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xs-4 unitRecruitment">
-                        <div class="row" ng-repeat="unit in militaryCtrl.military.unitsHiringQueue track by $index" ng-init="outerIndex=$index">
-                            <div class="col-xs-12">
-                                <div class="row text-center" ng-repeat="unitQueue in unit track by $index" ng-init="innerIndex=$index">
-                                    {{unitQueue.name}} x {{unitQueue.count}}
-                                    <uib-progressbar value="(100 - unitQueue.time/unitQueue.trainingSpeed * 100)">
-                                        <span>{{unitQueue.time}} turn/s</span>
-                                        <span>
-                                            <a class="pull-right text-danger" ng-click="militaryCtrl.military.cancelQueue(outerIndex, innerIndex)">
-                                                <i class="fa fa-2x fa-ban"></i>
-                                            </a>
-                                        </span>
-                                    </uib-progressbar>
+                        <div class="col-xs-4 unitRecruitment">
+                            <div class="row" ng-repeat="unit in military.unitsHiringQueue track by $index" ng-init="outerIndex=$index">
+                                <div class="col-xs-12">
+                                    <div class="row text-center" ng-repeat="unitQueue in unit track by $index" ng-init="innerIndex=$index">
+                                        {{unitQueue.name}} x {{unitQueue.count}}
+                                        <uib-progressbar value="(100 - unitQueue.time/unitQueue.trainingSpeed * 100)">
+                                            <span>{{unitQueue.time}} turn/s</span>
+                                            <span>
+                                                <a class="pull-right text-danger" ng-click="military.cancelQueue(outerIndex, innerIndex)">
+                                                    <i class="fa fa-2x fa-ban"></i>
+                                                </a>
+                                            </span>
+                                        </uib-progressbar>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -98,5 +100,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </script>
 </div>

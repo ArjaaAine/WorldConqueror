@@ -19,8 +19,8 @@ wciApp.controller(
             );
 
             $scope.money = $sce.trustAsHtml(
-                "Income: <span class='bold text-success'>" + income + "%</span> <br/>\n" +
-                "Upkeep: <span class='bold text-danger'>" + upkeep + "%</span>"
+                "Income: <span class='bold text-success'>" + income + "</span> <br/>\n" +
+                "Upkeep: <span class='bold text-danger'>" + upkeep + "</span>"
             );
 
             $scope.food = $sce.trustAsHtml(

@@ -1,9 +1,9 @@
 ﻿'use strict';
 
-wciApp.controller('ChangelogController', function ($interval, playerService) {
+wciApp.controller('ChangelogController', function ($scope) {
 
     //#region Default Values
-    this.changeLogs =
+    $scope.changeLogs =
     [
         //Version Level
         {
@@ -55,9 +55,9 @@ wciApp.controller('ChangelogController', function ($interval, playerService) {
 
     //#region User Action Events
 
-    this.changeLogPanelExpand = function (version) {
+    $scope.changeLogPanelExpand = function (version) {
 
-        for (var i = 0; i < this.changeLogs.length; i++)
+        for (let i = 0; i < this.changeLogs.length; i++)
         {
             if(this.changeLogs[i].number === version)
             {
