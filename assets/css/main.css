@@ -177,3 +177,14 @@ a {
 .sortorder.reverse:after {
     content: '\25bc';   // BLACK DOWN-POINTING TRIANGLE
 }
+
+/*Full width modal*/
+.full .modal-dialog{
+    width:auto;
+    margin-left:20px;
+    margin-right:20px;
+}
+.modal-content{
+    /*Seems to be necessary in order to show background when using col-xs/sm/md/lg...It works with md on certain window size tho.*/
+    overflow: auto;
+}

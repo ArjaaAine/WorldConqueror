@@ -1,74 +1,78 @@
-﻿<div id="Internal Affairs">
-    <h4>
-        <span class="glyphicon glyphicon-flag"></span>
-        <span>
-            Welcome
-            <span class="bold font-color-green">{{countryCtrl.myCountry.baseStats.leaderName}}</span>!
-            You are the
-            <span class="bold font-color-orange">
-                {{countryCtrl.myCountry.baseStats.leaderTitle}}
-            </span>
-            of the
-            <i>
-                {{countryCtrl.myCountry.baseStats.sizeName}}
-            </i>
-            <span class="bold font-color-red">
-                {{countryCtrl.myCountry.baseStats.countryName}}!
-            </span>
-        </span>
-    </h4>
-    <hr>
-    <div ng-include="'app/components/ministers/ministersView.html'"></div>
-    <div ng-include="'app/components/ministers/ministersHireModal.html'"></div>
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="col-md-6 col-sm-12">
-                <div id="laws" class="panel panel-primary">
-                    <div class="panel-heading">
-                        <div class="panel-title">
-                            <span>
-                                Laws
-                            </span>
-                            <span class="pull-right">
-                                <i class="fa fa-info-circle clickable" ng-click="openLawsHelp()"></i>
-                            </span>
+﻿<div ng-controller="CountryController as countryCtrl">
+    <script type="text/ng-template" id="internalAffairsView.html">
+        <div id="Internal Affairs">
+            <h4>
+                <span class="glyphicon glyphicon-flag"></span>
+                <span>
+                    Welcome
+                    <span class="bold font-color-green">{{countryCtrl.myCountry.baseStats.leaderName}}</span>!
+                    You are the
+                    <span class="bold font-color-orange">
+                        {{countryCtrl.myCountry.baseStats.leaderTitle}}
+                    </span>
+                    of the
+                    <i>
+                        {{countryCtrl.myCountry.baseStats.sizeName}}
+                    </i>
+                    <span class="bold font-color-red">
+                        {{countryCtrl.myCountry.baseStats.countryName}}!
+                    </span>
+                </span>
+            </h4>
+            <hr>
+            <div ng-include="'app/components/ministers/ministersView.html'"></div>
+            <div ng-include="'app/components/ministers/ministersHireModal.html'"></div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="col-md-6 col-sm-12">
+                        <div id="laws" class="panel panel-primary">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    <span>
+                                        Laws
+                                    </span>
+                                    <span class="pull-right">
+                                        <i class="fa fa-info-circle clickable" ng-click="openLawsHelp()"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div ng-repeat="law in countryCtrl.laws.unlockedLaws">
+                                <div class="panel-body">
+                                    <div class="col-md-8">
+                                        <span class="fa fa-info-circle" tooltip="{{law.description}}"></span>
+                                        <span class="fa" ng-class="law.icon"></span>
+                                        <span class="bold">
+                                            {{law.name}} <br />
+                                            <span class="font-9pt">
+                                                Active for: {{law.duration}} turns
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="pull-right clickableArea">
+                                            <button class="btn" ng-click="countryCtrl.laws.enactLaw($index)" ng-class="!law.isActive ? 'btn-success': 'hidden'" ng-disabled="law.isActive">
+                                                Enact
+                                            </button>
+                                            <button class="btn" ng-click="countryCtrl.laws.repealLaw($index)" ng-class="law.isActive ? 'btn-danger': 'hidden'" ng-disabled="!law.isActive">
+                                                Repeal
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div ng-repeat="law in countryCtrl.laws.unlockedLaws">
-                        <div class="panel-body">
-                            <div class="col-md-8">
-                                <span class="fa fa-info-circle" tooltip="{{law.description}}"></span>
-                                <span class="fa" ng-class="law.icon"></span>
-                                <span class="bold">
-                                    {{law.name}} <br />
-                                    <span class="font-9pt">
-                                        Active for: {{law.duration}} turns
-                                    </span>
-                                </span>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="pull-right clickableArea">
-                                    <button class="btn" ng-click="countryCtrl.laws.enactLaw($index)" ng-class="!law.isActive ? 'btn-success': 'hidden'" ng-disabled="law.isActive">
-                                        Enact
-                                    </button>
-                                    <button class="btn" ng-click="countryCtrl.laws.repealLaw($index)" ng-class="law.isActive ? 'btn-danger': 'hidden'" ng-disabled="!law.isActive">
-                                        Repeal
-                                    </button>
+                    <div class="col-md-6 col-sm-12">
+                        <div id="government" class="panel panel-primary">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    <span>Government</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-sm-12">
-                <div id="government" class="panel panel-primary">
-                    <div class="panel-heading">
-                        <div class="panel-title">
-                            <span>Government</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-    </div>
+    </script>
 </div>

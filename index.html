@@ -18,7 +18,7 @@
     <script src="assets/libs/js/jquery-jvectormap-2.0.3.min.js"></script>
     <script src="assets/libs/js/jquery-jvectormap-world-mill-en.js"></script>
     <!--css-->
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="assets/libs/css/select.min.css">
     <link rel="stylesheet" href="assets/libs/css/jquery-jvectormap-2.0.3.css">
@@ -29,12 +29,16 @@
     -->
 </head>
 <body ng-controller="GameController as game" ng-cloak>
-    <div class="main_overlay">
-        <div class="container-fluid">
-            <div class="row" ng-show="game.data.init.isFirstTime != true">
+<div class="main_overlay">
+    <div class="container-fluid">
+        <div class="row">
+            <div ng-include="'app/shared/statHeader/statHeaderView.html'"></div>
+        </div>
+        <div class="row" ng-show="game.data.init.isFirstTime != true">
+            <div class="well">
                 <nav class="navbar navbar-default" role="navigation">
                     <div class="navbar-header">
-                        <a class="navbar-brand" href="#!/changelog">
+                        <a class="navbar-brand text-center">
                             <span>
                                 W<i class="glyphicon glyphicon-globe font-9pt font-color-lightblue"></i>rld Conqueror
                                 <sub class="text-muted small">v{{game.version}}</sub>
@@ -43,116 +47,86 @@
                     </div>
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav">
-                            <li class="menu-divider"></li>
-                            <li>
-                                <a href="#!/internalAffairs">
-                                    <i class="glyphicon glyphicon-flag"></i>
+                            <li class="menu-divider" ng-repeat-start="item in modalButtons"></li>
+                            <li ng-repeat-end>
+                                <a ng-click="openModal($index)">
+                                    <i ng-class="item.icon"></i>
                                     <span class="hidden-sm hidden-xs">
-                                        Governance
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="menu-divider"></li>
-                            <li>
-                                <a href="#!/structure">
-                                    <i class="fa fa-institution"></i>
-                                    <span class="hidden-sm hidden-xs">
-                                        Construction
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="menu-divider"></li>
-                            <li>
-                                <a href="#!/military">
-                                    <i class="glyphicon glyphicon-screenshot"></i>
-                                    <span class="hidden-sm hidden-xs">
-                                        Military
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="menu-divider"></li>
-                            <li>
-                                <a href="#!/research">
-                                    <i class="fa fa-flask"></i>
-                                    <span class="hidden-sm hidden-xs">
-                                        Research
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="menu-divider"></li>
-                            <li>
-                                <a href="#!/war">
-                                    <i class="fa fa-fire"></i>
-                                    <span class="hidden-sm hidden-xs">
-                                        War
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="menu-divider"></li>
-                            <li>
-                                <a href="#!/charts">
-                                    <i class="fa fa-line-chart"></i>
-                                    <span class="hidden-sm hidden-xs">
-                                        Charts
-                                    </span>
+                                    {{item.name}}
+                                </span>
                                 </a>
                             </li>
                         </ul>
                         <div id="Speed Buttons" class="navbar-form clickableArea">
-                            <span class="margin-left-15">
+                        <span class="margin-left-15">
+                            <p class="navbar-text">
                                 Current turn: {{game.myCountry.baseStats.currentTurn}}
+                            </p>
+                        </span>
+                        <button class="btn margin-left-15 navbar-btn" ng-click="game.nextTurn()">
+                            <i class="fa fa-play"></i>
+                        </button>
+                        <button class="btn btn-primary pull-right navbar-btn" ng-click="game.resetGame()">
+                            <span>
+                                Reset
                             </span>
-                            <button class="btn margin-left-15" ng-click="game.nextTurn()">
-                                <i class="fa fa-play"></i>
-                            </button>
-                            <button class="btn btn-primary" ng-click="game.resetGame()">
-                                <span>
-                                    Reset
-                                </span>
-                            </button>
-                            <button type="button" class="btn btn-primary navbar-right" ng-click="game.openSettings()">
-                                <i class="fa fa-cogs"></i>
-                            </button>
+                        </button>
+                        </div>
+                        <div id="world-map" style="height: 500px">
                         </div>
                     </div>
                 </nav>
-                <div class="col-sm-2">
-                    <button ng-click="hideDebug=true" ng-hide="hideDebug">Hide</button>
-                    <button ng-click="hideDebug=false" ng-show="hideDebug">Show</button>
-                    <div ng-hide="hideDebug">
-                    <button ng-click="game.debug.giveMeAll()">Give All</button><br>
-                    <button ng-click="game.debug.addLand()">Land +100</button><br>
-                    <button ng-click="game.debug.addUnits()">Units +100</button><br>
-                    <button ng-click="game.debug.addEachBuilding()">Structures +10</button><br>
-                    <button ng-click="game.debug.addResearchPoints()">Science +1k</button><br>
-                    <button ng-click="game.debug.stabilityChange(10)">Stability +10</button><br>
-                    <button ng-click="game.debug.stabilityChange(-10)">Stability -10</button><br>
-                    <button ng-click="game.debug.stabilityIndexChange(1)">StabilityIndex +1</button><br>
-                    <button ng-click="game.debug.stabilityIndexChange(-1)">StabilityIndex -1</button><br>
-                    </div>
-                </div>
+                <!--<div class="col-sm-2">-->
+                <!--<button ng-click="hideDebug=true" ng-hide="hideDebug">Hide</button>-->
+                <!--<button ng-click="hideDebug=false" ng-show="hideDebug">Show</button>-->
+                <!--<div ng-hide="hideDebug">-->
+                <!--<button ng-click="game.debug.giveMeAll()">Give All</button><br>-->
+                <!--<button ng-click="game.debug.addLand()">Land +100</button><br>-->
+                <!--<button ng-click="game.debug.addUnits()">Units +100</button><br>-->
+                <!--<button ng-click="game.debug.addEachBuilding()">Structures +10</button><br>-->
+                <!--<button ng-click="game.debug.addResearchPoints()">Science +1k</button><br>-->
+                <!--<button ng-click="game.debug.stabilityChange(10)">Stability +10</button><br>-->
+                <!--<button ng-click="game.debug.stabilityChange(-10)">Stability -10</button><br>-->
+                <!--<button ng-click="game.debug.stabilityIndexChange(1)">StabilityIndex +1</button><br>-->
+                <!--<button ng-click="game.debug.stabilityIndexChange(-1)">StabilityIndex -1</button><br>-->
+                <!--</div>-->
+                <!--</div>-->
                 <div id="Game Window" class="col-sm-10">
-                    <div ng-include="'app/shared/statHeader/statHeaderView.html'"></div>
-                    
+
+
                     <div id="views" ng-view>
                     </div>
                 </div>
             </div>
 
             <div ng-include="'app/components/introScreen/introscreenView.html'"></div>
-
             <div ng-include="'app/shared/notifications/notificationsView.html'"></div>
-            
-        </div>
-    </div>
 
+        </div>
+    <ng-include src="'app/components/war/warConfirmation/war_confirmationView.html'"></ng-include>
+    <ng-include src="'app/components/war/warSendTroopsModal.html'"></ng-include>
+    <ng-include src="'app/components/government/internalAffairsView.html'"></ng-include>
+    <ng-include src="'app/components/changelog/changelogView.html'"></ng-include>
+    <ng-include src="'app/components/structure/structureView.html'"></ng-include>
+    <ng-include src="'app/components/military/militaryView.html'"></ng-include>
+    <ng-include src="'app/components/research/researchView.html'"></ng-include>
+    <ng-include src="'app/components/war/warView.html'"></ng-include>
+    <ng-include src="'app/shared/charts/chartsView.html'"></ng-include>
+
+    </div>
+</div>
     <!--Google Analytics-->
     <script>
         (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
                 (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date(); a = s.createElement(o),
-            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
         })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
         ga('create', 'UA-55219778-1', 'auto');
@@ -212,8 +186,8 @@
         <!-- Functions -->
         <script src="app/shared/excelLoader.js"></script>
 
-        <link rel="stylesheet" href="assets/css/main.css" />
-        <link rel="stylesheet" href="assets/css/common.css" />
+        <link rel="stylesheet" href="assets/css/main.css"/>
+        <link rel="stylesheet" href="assets/css/common.css"/>
 
         <!-- Debug service -->
         <script src="app/shared/debugService.js"></script>

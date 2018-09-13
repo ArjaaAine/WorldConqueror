@@ -4,10 +4,11 @@ wciApp.controller(
         buildingsService,
         advisorsService,
         helperModalsService,
-        playerService) {
+        playerService,
+        $scope) {
 
-        this.buildings = playerService.buildings;
-        this.countryStats = playerService.baseStats;
-        this.advisors = advisorsService;
-        this.helperModals = helperModalsService;
+        $scope.buildings = playerService.buildings;
+        $scope.countryStats = playerService.baseStats;
+        $scope.advisors = advisorsService;
+        $scope.helperModals = helperModalsService;
     });
