@@ -9,6 +9,8 @@ wciApp.controller(
         nextMinisterCost) {
 
         $scope.ministers = [];
+        $scope.allMinisters = allMinisters;
+        $scope.nextMinisterCost = nextMinisterCost;
 
         $scope.hire = function (minister) {
             $uibModalInstance.close(minister);

@@ -1,10 +1,12 @@
 ﻿'use strict';
 
-wciApp.factory('ministerService', function (modalService,gameDataService) {
+wciApp.factory('ministerService', function (
+    modalService,
+    gameDataService,
+    playerService) {
 
     let Ministers = function () {
         this.allMinisters = [];//list of laws from excel/json file
-        this.activeMinisters = [];//list of active laws
         this.nextMinisterCost = 1;
     };
 
@@ -19,7 +21,7 @@ wciApp.factory('ministerService', function (modalService,gameDataService) {
         var count = 0;
 
         //This is a factorial function
-        this.activeMinisters.forEach(function (min) {
+        playerService.activeMinisters.forEach(function (min) {
             count++;
             ministerCost * count;
         });
@@ -45,7 +47,7 @@ wciApp.factory('ministerService', function (modalService,gameDataService) {
 
         modalInstance.result.then(function (ministerType) {
             let minister = this.filterMinister(ministerType);
-            if (minister) this.activeMinisters.push(minister);
+            if (minister) playerService.activeMinisters.push(minister);
 
             //handle bonuses
         });
@@ -59,8 +61,9 @@ wciApp.factory('ministerService', function (modalService,gameDataService) {
     //};
 
     Ministers.prototype.fireMinister = function (ministerType) {
+        //do popup to confirm. 
         let minister = this.filterMinister(ministerType);
-        this.activeMinisters.splice(minister);
+        playerService.activeMinisters.splice(minister);
 
         //handle bonuses
     };

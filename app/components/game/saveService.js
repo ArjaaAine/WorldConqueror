@@ -7,6 +7,7 @@ wciApp.factory(
               lawsService,
               advisorsService,
               researchService,
+              ministerService,
               initService,
               bonusesService,
               warService,
@@ -36,6 +37,7 @@ wciApp.factory(
             let saveData = {};//all data to save.
             let military = playerService.military;
             let research = playerService.research;
+            let ministers = playerService.ministers;
             //let laws = playerService.laws.activeLaws;
             //let lawsUnlocked = playerService.laws.unlockedLaws;
             let buildings = playerService.buildings;
@@ -51,6 +53,10 @@ wciApp.factory(
             // });
             saveData.military = military;
             saveData.research = research;
+<<<<<<< HEAD
+            saveData.ministers = ministers;
+=======
+>>>>>>> be77e6609c302b8e6e0544f0c9d93e5649afc868
             // saveData.laws = laws;
             // saveData.lawsUnlocked = lawsUnlocked;
             saveData.buildings = buildings;
@@ -66,6 +72,7 @@ wciApp.factory(
             if(!savedData) return;
             let military = playerService.military;
             let research = playerService.research;
+            let ministers = playerService.ministers;
             //let laws = playerService.laws.activeLaws;
             //let lawsUnlocked = playerService.laws.unlockedLaws;
             let buildings = playerService.buildings;
@@ -77,6 +84,10 @@ wciApp.factory(
             //depreciated, but works :]
             angular.merge(military, savedData.military);
             angular.merge(research, savedData.research);
+<<<<<<< HEAD
+            angular.merge(ministers, savedData.ministers);
+=======
+>>>>>>> be77e6609c302b8e6e0544f0c9d93e5649afc868
             // angular.merge(laws, savedData.laws);
             // angular.merge(lawsUnlocked, savedData.lawsUnlocked);
             angular.merge(buildings, savedData.buildings);

@@ -15,7 +15,7 @@
                 </div>
             </div>
         </div>
-        <div class="panel panel-default col-sm-2" ng-repeat="minister in game.ministers.activeMinisters">
+        <div class="panel panel-default col-sm-2" ng-repeat="minister in playerService.activeMinisters">
             <div class="panel-body" ng-click="fireMinister(minister.ministerType)">
                 <i class="glyphicon glyphicon-user"></i>
                 <span class="font-8pt">{{minister.ministerType}}</span>
