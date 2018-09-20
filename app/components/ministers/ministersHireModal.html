@@ -4,7 +4,7 @@
             <h4 class="modal-title">Hire Minister</h4>
         </div>
         <div class="modal-body font-9pt row">
-            <div ng-repeat="minister in game.ministers.allMinisters">
+            <div ng-repeat="minister in allMinisters">
                 <div class="panel-body custom-panel">
                     <div class="col-md-2 col-sm-3 avatar">
                         <img class="img-responsive" src="{{minister.Image}}" />
@@ -12,16 +12,17 @@
                     <div class="col-md-6 col-sm-6">
                         <span>{{minister.ministerType}}</span>
                         <br />
-                        <span>{{advisor.influencePT}}</span>
+                        <span>{{minister.influencePT}}</span>
                         <br />
-                        <span>{{advisor.statAffected}}</span>
+                        <span>{{minister.statAffected}}</span>
                         <br />
-                        <span>{{advisor.ministerCost | niceNumber}}</span>
+                        <span>{{nextMinisterCost| niceNumber}}</span>
                     </div>
                     <div class="col-md-3 col-sm-3 pull-right">
                         <button class="btn btn-success pull-right" ng-click="minister.hireMinister(advisor)">Hire</button>
                     </div>
                 </div>
+
             </div>
         </div>
         <div class="modal-footer align-center">
