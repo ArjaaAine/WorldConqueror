@@ -1,18 +1,10 @@
 ﻿<div id="Common Header" ng-controller="TooltipController">
     <div class="row well font-11pt">
-
-        <div class="col-md-12">
-            <span class="fa fa-clock-o"></span>
-            <span class="bold">
-                {{game.myCountry.baseStats.time | niceTime }}
-            </span>
-        </div>
-
-        <div id="Main Stats" class="col-sm-4">
+        <div id="Main Stats" class="col-sm-4 col-sm-offset-1">
             <div class="row">
                 <div class="col-sm-6">
                     <span>
-                        <i class="fa fa-users" tooltip="Population"></i>
+                        <i class="fa fa-users" tooltip-placement="auto bottom-right" uib-tooltip="Population"></i>
                     </span>
                     <span ng-mouseenter="updateTooltip()">
                         {{game.myCountry.baseStats.population | number: 0 | niceNumber }}
@@ -23,10 +15,9 @@
                         </span>)
                     </span>
                 </div>
-
                 <div id="money" class="col-sm-6">
                     <span>
-                        <i class="fa fa-money" tooltip="Money"></i>
+                        <i class="fa fa-money" tooltip-placement="auto bottom-right" uib-tooltip="Money"></i>
                     </span>
                     <span ng-mouseenter="updateTooltip()">
                         {{game.myCountry.baseStats.money | number:0 | niceNumber}}
@@ -34,20 +25,18 @@
                         (<span class="bold"
                                ng-class="game.myCountry.moneyGrowth() > 0 ? 'text-success': 'text-danger'"
                                uib-tooltip-html="money">
-                            {{game.myCountry.moneyGrowth() | number: 0 | niceNumber}}
+                            {{game.myCountry.income() | number: 0 | niceNumber}}
                         </span>)
                     </span>
                 </div>
-
             </div>
-
             <div class="row">
                 <div class="col-sm-6"
                      ng-class="game.myCountry.baseStats.happiness > 75 ? 'text-success' : game.myCountry.baseStats.happiness > 50 ? 'text-warning' : 'text-danger'">
                     <span>
-                        <i class="fa bold"
+                        <i class="fa bold" tooltip-placement="auto bottom-right" uib-tooltip="Happiness"
                            ng-class="game.myCountry.baseStats.happiness > 75 ? 'fa-smile-o' : game.myCountry.baseStats.happiness > 50 ? 'fa-meh-o' : 'fa-frown-o'"
-                           tooltip="Happiness"></i>
+                           ></i>
                     </span>
                     <span class="bold">
                         {{game.myCountry.baseStats.happiness}}
@@ -61,10 +50,10 @@
                 <div id="stability" class="col-sm-6"
                      ng-class="game.myCountry.baseStats.stability > 66 ? 'text-success' : game.myCountry.baseStats.stability > 33 ? 'text-warning' : 'text-danger'">
                     <span>
-                        <i class="fa bold fa-anchor" tooltip="Stability"></i>
+                        <i class="fa bold fa-anchor" tooltip-placement="auto bottom-right" uib-tooltip="Stability"></i>
                     </span>
                     <span class="bold">
-                        {{game.myCountry.baseStats.stability}}(StabilityIndex: {{game.myCountry.getCurrentStabilityIndex()}})
+                        {{game.myCountry.baseStats.stability}}({{game.myCountry.getCurrentStabilityIndex()}})
                     </span>
                 </div>
             </div>
@@ -76,13 +65,12 @@
                 </div>
             </div>-->
         </div>
-
-        <div id="side stats" class="col-sm-8">
+        <div id="side stats" class="col-sm-7">
             <div class="row">
                 <div class="col-sm-4">
                     <div>
                         <span class="font-color-orange">
-                            <i class="glyphicon glyphicon-cutlery"></i> Food:
+                            <i class="glyphicon glyphicon-cutlery" tooltip-placement="auto bottom-right" uib-tooltip="Food"></i>
                         </span>
                         <span ng-mouseenter="updateTooltip()">
                             {{game.myCountry.baseStats.totalFood | number: 0 | niceNumber}}
@@ -95,7 +83,7 @@
                     </div>
                     <div>
                         <span class="font-color-orange">
-                            <i class="fa fa-area-chart"></i> Hunger:
+                            <i class="fa fa-area-chart" tooltip-placement="auto bottom-right" uib-tooltip="Hunger"></i>
                         </span>
                         <span class="bold"
                               ng-class="game.myCountry.baseStats.hunger === 0 ? 'text-success' : 'text-danger'">
@@ -106,7 +94,7 @@
                 <div class="col-sm-4">
                     <div>
                         <span class="font-color-blue">
-                            <i class="fa fa-briefcase"></i> Jobs:
+                            <i class="fa fa-briefcase" tooltip-placement="auto bottom-right" uib-tooltip="Jobs"></i>
                         </span>
                         <span>
                             {{game.myCountry.baseStats.totalJobs | niceNumber}}
@@ -114,7 +102,7 @@
                     </div>
                     <div>
                         <span class="font-color-blue">
-                            <i class="fa fa-area-chart"></i> Unemployment:
+                            <i class="fa fa-area-chart" tooltip-placement="auto bottom-right" uib-tooltip="Unemployment"></i>
                         </span>
                         <span class="bold"
                               ng-class="game.myCountry.unemployment() === 0 ? 'text-success' : 'text-danger'">
@@ -125,7 +113,7 @@
                 <div class="col-sm-4">
                     <div>
                         <span class="font-color-blue">
-                            <i class="fa fa-home"></i> Housing:
+                            <i class="fa fa-home" tooltip-placement="auto bottom-right" uib-tooltip="Housing"></i>
                         </span>
                         <span>
                             {{game.myCountry.baseStats.housingCapacity | niceNumber}}
@@ -133,7 +121,7 @@
                     </div>
                     <div>
                         <span class="font-color-blue">
-                            <i class="fa fa-area-chart"></i> Homeless:
+                            <i class="fa fa-area-chart" tooltip-placement="auto bottom-right" uib-tooltip="Homeless"></i>
                         </span>
                         <span class="bold"
                               ng-class="game.myCountry.homelessness() === 0 ? 'text-success' : 'text-danger'">

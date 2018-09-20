@@ -5,32 +5,42 @@ wciApp.controller(
         $uibModalInstance,
         playerService,
         warService,
-        countryAttackedIndex) {
+        countryAttackedIndex,
+        gameDataService) {
 
         $scope.military = playerService.military;
         $scope.queue = [];
+
+        //initializing queue with units
+        $scope.init = function () {
+            for(let i = 0; i < gameDataService.Units.length; i++) {
+                $scope.queue[i] = {};
+                let unitObject = {count: 0, name: gameDataService.Units[i].name, id: gameDataService.Units[i].id};
+                $scope.queue[i] = unitObject;
+            }
+        };
+        $scope.init();
         $scope.updateQueue = function(unit, val) {
             console.log("Updating Queue: " + unit.name + " = " + val);
-            let filterQueue = $scope.queue.map(function(e) { return e.name}).indexOf(unit.name);//check if unit is already in queue and return its index
-            if(filterQueue === -1) {
-                $scope.queue.push({count: 0, name: unit.name, id: unit.id});
-                $scope.queue[$scope.queue.length - 1].count = val;//last element since it didnt exist, we pushed it so it's last...
-            }else {
-                $scope.queue[filterQueue].count = val;//filtered index, can be 0 or higher
-            }
+            $scope.queue[unit.id].count = val;//filtered index, can be 0 or higher
+            // let filterQueue = $scope.queue.map(function(e) { return e.name}).indexOf(unit.name);//check if unit is already in queue and return its index
+            // if(filterQueue === -1) {
+            //     $scope.queue.push({count: val, name: unit.name, id: unit.id});
+            // }else {
+            //     $scope.queue[filterQueue].count = val;//filtered index, can be 0 or higher
+            // }
             console.log($scope.queue);
         };
-        //add logic to queue troops we want to send, so we can choose how many to send by putting a number or using an arrow up/down buttons...
-        $scope.sendTroops = function () {
+        $scope.sendQueuedUnits = function () {
             if($scope.queue.length) {
                 //TODO: Increase upkeep cost etc...We should create some system for it tho, so it knows that we sent units
                 warService.sendTroops($scope.queue, countryAttackedIndex);
-                $scope.queue = [];//reset queue
+                $scope.init();//reset queue
             }
             $uibModalInstance.close('ok');//this calls sendTroops.result.then function in warController.js
         };
         $scope.cancel = function () {
-            $scope.queue = [];//reset queue
+            $scope.init();//reset queue
             $uibModalInstance.dismiss('cancel');
         };
     });

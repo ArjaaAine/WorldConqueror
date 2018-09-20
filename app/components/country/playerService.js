@@ -56,7 +56,7 @@ wciApp.factory('playerService',
             baseFoodGrowth: 100,
             hunger: 0,
             //Economics
-            money: 100000, //Earned from Taxes and economic factors.
+            money: 1000, //Earned from Taxes and economic factors.
             upkeep: 0, //Upkeep of structure, advisors and soldiers.
             totalJobs: 16,
             jobGdpMultiplier: 100, //This is how jobs effect the gdp.
@@ -75,6 +75,18 @@ wciApp.factory('playerService',
         };
         this.getLookups();
     };
+    Player.prototype.addCountry = function(countryObject) {
+        this.conqueredCountries.push(countryObject);
+        this.updateLand();
+    };
+    Player.prototype.updateLand = function() {
+        let totalLand = 0;
+        this.conqueredCountries.forEach(function (countryData) {
+            totalLand += countryData.land;
+        });
+        this.baseStats.land = totalLand;
+    };
+
     Player.prototype.actualGrowthRate = function () {
         let growthRate;
         let freezeGrowth = bonusesService.lawsBonuses.freezeGrowth;
@@ -112,7 +124,7 @@ wciApp.factory('playerService',
 
     Player.prototype.income = function () {
         //TODO: 12/22/2014: This might need to be reduced.
-        return this.gdp() * 0.1;  //You get 4% of the gdp every turn. (Which is one month)
+        return Math.round(this.gdp() * 0.1);  //You get 4% of the gdp every turn. (Which is one month)
     };
 
     Player.prototype.moneyGrowth = function () {
