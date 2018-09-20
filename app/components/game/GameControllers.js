@@ -237,7 +237,7 @@ wciApp.controller(
             let modalInstance = modalService.open({
                 templateUrl: templateUrl,
                 controller: controller,
-                windowClass: "full row",
+                windowClass: "full",
             });
 
             //this will close a modal on right click and also prevent context menu from appearing.

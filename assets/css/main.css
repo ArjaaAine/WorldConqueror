@@ -188,3 +188,31 @@ a {
     /*Seems to be necessary in order to show background when using col-xs/sm/md/lg...It works with md on certain window size tho.*/
     overflow: auto;
 }
+
+.money {
+    color: #d8d313;
+}
+.money::before{
+    content: "+";
+}
+
+.dark-background{
+    background-color: #333333;
+    color: #e6e6e6;
+}
+
+#world-map{
+    position: relative;
+}
+
+.map-overlay-buttons{
+    position: absolute;
+    z-index: 1;
+    left: 10%;
+}
+.map-overlay-next-turn{
+    position:absolute;
+    z-index: 1;
+    left: 50%;
+    bottom: 0;
+}

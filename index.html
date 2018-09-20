@@ -31,11 +31,8 @@
 <body ng-controller="GameController as game" ng-cloak>
 <div class="main_overlay">
     <div class="container-fluid">
-        <div class="row">
-            <div ng-include="'app/shared/statHeader/statHeaderView.html'"></div>
-        </div>
         <div class="row" ng-show="game.data.init.isFirstTime != true">
-            <div class="well">
+
                 <nav class="navbar navbar-default" role="navigation">
                     <div class="navbar-header">
                         <a class="navbar-brand text-center">
@@ -63,16 +60,11 @@
                                 Current turn: {{game.myCountry.baseStats.currentTurn}}
                             </p>
                         </span>
-                        <button class="btn margin-left-15 navbar-btn" ng-click="game.nextTurn()">
-                            <i class="fa fa-play"></i>
-                        </button>
                         <button class="btn btn-primary pull-right navbar-btn" ng-click="game.resetGame()">
                             <span>
                                 Reset
                             </span>
                         </button>
-                        </div>
-                        <div id="world-map" style="height: 500px">
                         </div>
                     </div>
                 </nav>
@@ -92,12 +84,26 @@
                 <!--</div>-->
                 <!--</div>-->
                 <div id="Game Window" class="col-sm-10">
-
-
                     <div id="views" ng-view>
                     </div>
                 </div>
-            </div>
+                <div ng-include="'app/shared/statHeader/statHeaderView.html'"></div>
+                <div id="world-map" style="height: 500px">
+
+                    <div class="map-overlay-buttons">
+                    <div ng-repeat="item in modalButtons">
+                        <a ng-click="openModal($index)">
+                            <i ng-class="item.icon"></i>
+                            <span class="hidden-sm hidden-xs">
+                                    {{item.name}}
+                                </span>
+                        </a>
+                    </div>
+                    </div>
+                    <div class="map-overlay-next-turn">
+                        <button class="btn btn-success btn-lg" ng-click="game.nextTurn()">Next Turn</button>
+                    </div>
+                </div>
 
             <div ng-include="'app/components/introScreen/introscreenView.html'"></div>
             <div ng-include="'app/shared/notifications/notificationsView.html'"></div>
