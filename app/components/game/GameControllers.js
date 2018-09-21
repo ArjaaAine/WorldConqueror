@@ -1,4 +1,4 @@
-﻿'use strict';
+﻿﻿'use strict';
 
 wciApp.controller(
     'GameController',
@@ -218,7 +218,7 @@ wciApp.controller(
             let modalInstance = modalService.open({
                 templateUrl: 'warConfirmationModal.html',
                 controller: 'warConfirmationModalController',
-                size: 'lg',
+                size: 'sm',
                 resolve: {
                     countryAttacked: function () {
                         return code;
