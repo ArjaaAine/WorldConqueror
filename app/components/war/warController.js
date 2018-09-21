@@ -34,7 +34,7 @@ wciApp.controller('WarController', function (
         let modalInstance = modalService.open({
             templateUrl: 'warAttackModal.html',
             controller: 'warSendTroopsController',
-            size: 'md',
+            size: 'lg',
             resolve: {
                 countryAttackedIndex: function() {
                     return index;

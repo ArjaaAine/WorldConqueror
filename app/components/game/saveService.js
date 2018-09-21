@@ -53,7 +53,7 @@ wciApp.factory(
             // });
             saveData.military = military;
             saveData.research = research;
-            saveData.ministers = ministers;
+            // saveData.ministers = ministers;
             // saveData.laws = laws;
             // saveData.lawsUnlocked = lawsUnlocked;
             saveData.buildings = buildings;
@@ -81,7 +81,7 @@ wciApp.factory(
             //depreciated, but works :]
             angular.merge(military, savedData.military);
             angular.merge(research, savedData.research);
-            angular.merge(ministers, savedData.ministers);
+            // angular.merge(ministers, savedData.ministers);
             // angular.merge(laws, savedData.laws);
             // angular.merge(lawsUnlocked, savedData.lawsUnlocked);
             angular.merge(buildings, savedData.buildings);
