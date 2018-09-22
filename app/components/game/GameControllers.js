@@ -63,6 +63,7 @@ wciApp.controller(
             game.myCountry.buildings.getTotalUpkeep();
             game.myCountry.research.update();
             game.myCountry.laws.update();
+            game.myCountry.ministers.update();
             game.worldCountries.update();
             warService.doBattle();
             //game.advisors.functions.advisorTimedEffects();

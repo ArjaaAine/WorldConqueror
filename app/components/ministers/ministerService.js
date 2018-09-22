@@ -13,7 +13,6 @@ wciApp.factory('ministerService', function (
     Ministers.prototype.init = function () {
         this.allMinisters = gameDataService.Ministers;
         this.activeMinisters = [];
-        let self = this;
     };
 
     Ministers.prototype.openMinisterHire = function () {
@@ -53,13 +52,6 @@ wciApp.factory('ministerService', function (
         });
     };
 
-    //Ministers.prototype.hireMinister = function (ministerType) {
-    //    let minister = this.filterMinister(ministerType);
-    //    if (minister) this.activeMinisters.push(minister);
-
-    //    //handle bonuses
-    //};
-
     Ministers.prototype.fireMinister = function (ministerType) {
         //do popup to confirm. 
         let minister = this.filterMinister(ministerType);
@@ -74,6 +66,11 @@ wciApp.factory('ministerService', function (
         })[0];
     };
 
-    return new Ministers();
+    Ministers.prototype.update = function () {
+
+        //Write logic to update Influence Points
+    };
+
+    return Ministers;
 
 });
