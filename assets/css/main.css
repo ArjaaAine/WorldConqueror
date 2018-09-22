@@ -205,10 +205,17 @@ a {
     position: relative;
 }
 
+.map-overlay-stats{
+    position:absolute;
+    z-index: 1;
+    width:100%;
+}
+
 .map-overlay-buttons{
     position: absolute;
     z-index: 1;
-    left: 10%;
+    left: 1%;
+    bottom: 20%;
 }
 .map-overlay-next-turn{
     position:absolute;

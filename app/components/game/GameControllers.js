@@ -1,4 +1,4 @@
-﻿'use strict';
+﻿﻿'use strict';
 
 wciApp.controller(
     'GameController',
@@ -154,6 +154,13 @@ wciApp.controller(
             container: $('#world-map'),
             map: 'world_mill_en',
             regionsSelectable: true,
+            zoomButtons : false,
+            zoomMin: 0.9,
+            focusOn: {
+                x: 0.5,
+                y: 0.5,
+                scale: 0.9
+            },
             series: {
                 regions: [
                     {
@@ -212,7 +219,7 @@ wciApp.controller(
             let modalInstance = modalService.open({
                 templateUrl: 'warConfirmationModal.html',
                 controller: 'warConfirmationModalController',
-                size: 'lg',
+                size: 'sm',
                 resolve: {
                     countryAttacked: function () {
                         return code;
@@ -238,7 +245,8 @@ wciApp.controller(
             let modalInstance = modalService.open({
                 templateUrl: templateUrl,
                 controller: controller,
-                windowClass: "full",
+                size: "lg",
+                windowClass: "",
             });
 
             //this will close a modal on right click and also prevent context menu from appearing.
