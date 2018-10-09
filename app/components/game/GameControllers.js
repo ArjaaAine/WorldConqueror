@@ -33,7 +33,7 @@ wciApp.controller(
             {name: "Research", icon: "fa fa-flask", templateUrl: 'researchView.html', controller: 'ResearchController',},
             {name: "War", icon: "fa fa-fire", templateUrl: 'warView.html', controller: 'WarController',},
             {name: "Charts", icon: "fa fa-line-chart", templateUrl: 'chartsView.html', controller: 'ChartsController',}
-            ];
+        ];
         let game = this;
         let initGame = function() {
             game.data = {};
@@ -50,6 +50,7 @@ wciApp.controller(
             game.notification = notificationService;
             game.debug = debugService;
         };
+
         //#region Private Methods
         let timerfunction = function () {
             //TODO: Put logic here to prompt user of game ending/death due to 0 population.

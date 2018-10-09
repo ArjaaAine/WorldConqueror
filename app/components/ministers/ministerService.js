@@ -6,7 +6,7 @@ wciApp.factory('ministerService', function (
     playerService) {
 
     let Ministers = function () {
-        this.allMinisters = [];//list of laws from excel/json file
+        this.allMinisters = [];
         this.nextMinisterCost = 1;
     };
 
@@ -18,9 +18,9 @@ wciApp.factory('ministerService', function (
     Ministers.prototype.openMinisterHire = function () {
         var ministerCost = 1;
         var count = 0;
-
+        console.log("test");
         //This is a factorial function
-        playerService.activeMinisters.forEach(function (min) {
+        playerService.ministers.activeMinisters.forEach(function (min) {
             count++;
             ministerCost * count;
         });
@@ -43,25 +43,26 @@ wciApp.factory('ministerService', function (
                 }
             }
         });
-
         modalInstance.result.then(function (ministerType) {
-            let minister = this.filterMinister(ministerType);
-            if (minister) playerService.activeMinisters.push(minister);
 
+            let minister = this.allMinisters.filter(function (ministerObject) {
+                return ministerObject.ministerType.includes(ministerType);
+            })[0];
+            if (minister) playerService.ministers.activeMinisters.push(minister);
             //handle bonuses
         });
     };
 
     Ministers.prototype.fireMinister = function (ministerType) {
         //do popup to confirm. 
-        let minister = this.filterMinister(ministerType);
-        playerService.activeMinisters.splice(minister);
+        let minister = filterMinister(ministerType);
+        playerService.ministers.activeMinisters.splice(minister);
 
         //handle bonuses
     };
 
-    Ministers.prototype.filterMinister = function (ministerType) {
-        return this.ministers.filter(function (ministerObject) {
+    var filterMinister = function (ministerType) {
+        return Ministers().allMinisters.filter(function (ministerObject) {
             return ministerObject.ministerType.includes(ministerType);
         })[0];
     };
@@ -74,3 +75,9 @@ wciApp.factory('ministerService', function (
     return Ministers;
 
 });
+
+function filterArray(array, name) {
+    return array.filter(function (str) {
+        return str.ID.includes(name);
+    })[0];
+}

@@ -1,7 +1,7 @@
 ﻿<div ng-controller="CountryController as countryCtrl">
     <script type="text/ng-template" id="internalAffairsView.html">
-        <div id="Internal Affairs">
-            <h4>
+        <div class="modal-header" id="Internal Affairs">
+            <h4 class="modal-title">
                 <span class="glyphicon glyphicon-flag"></span>
                 <span>
                     Welcome
@@ -19,7 +19,8 @@
                     </span>
                 </span>
             </h4>
-            <hr>
+            </div>
+        <div class="modal-body">
             <div ng-include="'app/components/ministers/ministersView.html'"></div>
             <div ng-include="'app/components/ministers/ministersHireModal.html'"></div>
             <div class="row">

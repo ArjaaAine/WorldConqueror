@@ -13,7 +13,8 @@ wciApp.controller(
         $scope.nextMinisterCost = nextMinisterCost;
 
         $scope.hire = function (minister) {
-            $uibModalInstance.close(minister);
+            console.log("hire");
+            $uibModalInstance.close(minister.ministerType);
         };
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
