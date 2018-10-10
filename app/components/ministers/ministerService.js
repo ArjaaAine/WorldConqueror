@@ -16,13 +16,13 @@ wciApp.factory('ministerService', function (
     };
 
     Ministers.prototype.openMinisterHire = function () {
-        var ministerCost = 1;
-        var count = 0;
+        let ministerCost = 1;
+        let count = 0;
         console.log("test");
         //This is a factorial function
         playerService.ministers.activeMinisters.forEach(function (min) {
             count++;
-            ministerCost * count;
+            ministerCost *= count;
         });
         let self = this;
 
@@ -30,7 +30,7 @@ wciApp.factory('ministerService', function (
 
         //open modal
 
-        var modalInstance = modalService.open({
+        let modalInstance = modalService.open({
             templateUrl: 'ministersHireModal.html',
             controller: 'ministersHiringModalController',
             size: 'md',
@@ -43,11 +43,10 @@ wciApp.factory('ministerService', function (
                 }
             }
         });
+
         modalInstance.result.then(function (ministerType) {
 
-            let minister = this.allMinisters.filter(function (ministerObject) {
-                return ministerObject.ministerType.includes(ministerType);
-            })[0];
+            let minister = self.filterMinister(ministerType);
             if (minister) playerService.ministers.activeMinisters.push(minister);
             //handle bonuses
         });
@@ -61,8 +60,8 @@ wciApp.factory('ministerService', function (
         //handle bonuses
     };
 
-    var filterMinister = function (ministerType) {
-        return Ministers().allMinisters.filter(function (ministerObject) {
+    Ministers.prototype.filterMinister = function (ministerType) {
+        return this.allMinisters.filter(function (ministerObject) {
             return ministerObject.ministerType.includes(ministerType);
         })[0];
     };
