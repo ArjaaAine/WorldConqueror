@@ -5,7 +5,7 @@ wciApp.controller(
         $uibModalInstance,
         playerService,
         warService,
-        countryAttackedIndex,
+        aiAttackedIndex,
         gameDataService) {
 
         $scope.military = playerService.military;
@@ -34,7 +34,7 @@ wciApp.controller(
         $scope.sendQueuedUnits = function () {
             if($scope.queue.length) {
                 //TODO: Increase upkeep cost etc...We should create some system for it tho, so it knows that we sent units
-                warService.sendTroops($scope.queue, countryAttackedIndex);
+                warService.sendTroops($scope.queue, aiAttackedIndex);
                 $scope.init();//reset queue
             }
             $uibModalInstance.close('ok');//this calls sendTroops.result.then function in warController.js

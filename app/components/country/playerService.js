@@ -188,7 +188,6 @@ wciApp.factory('playerService',
     };
 
     Player.prototype.getNewDemographics = function () {
-
         this.baseStats.population += this.populationGrowth();
 
         this.setHappiness();

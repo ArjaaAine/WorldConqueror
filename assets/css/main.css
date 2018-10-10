@@ -126,6 +126,14 @@ a {
     color: #fff;
 }
 
+.glyphicon-black{
+    color: #000000;
+}
+.font-size-25{
+    font-size: 30px;
+    text-align: center;
+    padding-bottom: 2px;
+}
 .removePadding-hireBtn {
     padding-top: 0;
     padding-bottom: 0;
@@ -208,7 +216,7 @@ a {
 .map-overlay-stats{
     position:absolute;
     z-index: 1;
-    width:100%;
+    height: 5%;
 }
 
 .map-overlay-buttons{
@@ -222,4 +230,31 @@ a {
     z-index: 1;
     left: 50%;
     bottom: 0;
+}
+.debug-buttons{
+    position:absolute;
+    z-index: 2;
+    left: 1%;
+    top: 10%;
+}
+
+.leader-icon{
+    position:absolute;
+    z-index: 1;
+    top: 5%;
+}
+
+.visible{
+    visibility: visible;
+}
+
+.displayElement{
+    display: block;
+}
+.hideElement{
+    display: none;
+}
+
+.margin-bottom-5{
+    margin-bottom: 5px;
 }

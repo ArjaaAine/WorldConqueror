@@ -27,83 +27,127 @@
                 <div class="row">
                     <div id="build" class="col-xs-12 col-sm-12">
                         <div class="row">
-                            <div class="panel panel-primary panelLocked col-xs-12 col-sm-4 col-md-4 clickableArea panelUnlocked"
-                                 ng-repeat="structure in buildings.structures"
-                                 ng-class="{'invisible': !structure.isVisible()}">
-                                <div class="panel-body">
-                                    <div class="row">
+                            <div ng-repeat="structure in buildings.structures">
+
+                                <!-- SHOW ICON FOR LOCKED BUILDING -->
+                                <div ng-show="!structure.isVisible()">
+                                    <a class="panel-body"><i class="center-block remove glyphicon glyphicon-lock glyphicon-black font-size-25"></i></a>
+                                </div>
+
+                                <div ng-show="structure.isVisible()">
+                                <!-- HIDE ON XS/SMALL RESOLUTION -->
+                                    <div class="hidden-xs hidden-sm">
                                         <div class="col-md-12">
-                                            <span class="tag label label-default center-block">
-                                                <span>{{structure.getName()}} ({{structure.getCount()}})</span>
-                                                <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white"></i></a>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="row margin-top-5 form-inline">
-                                        <div class="col-sm-2 col-md-2">
-                                            <img class="img-responsive" ng-src="assets/img/{{structure.getImage()}}.png" />
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 text-center">
-                                            <!--TODO: Add tooltips on hover-->
-                                            <i class="fa fa-angle-double-up"></i>
-                                            <span class="font-8pt">
-                                                {{structure.getCountMultiplier()}}
-                                            </span>
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 text-center">
-                                            <i class="fa fa-percent"></i>
-                                            <span class="font-8pt">
-                                                {{structure.getStatMultiplier()}}
-                                            </span>
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 text-center">
-                                            <i class="fa fa-cog"></i>
-                                            <span class="font-8pt">
-                                                {{structure.getStatAdder()}}/t
-                                            </span>
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 text-center">
-                                            <i class="fa fa-money"></i>
-                                            <span class="font-8pt">
-                                                -{{structure.getUpkeep()}}/t
-                                            </span>
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 text-center">
-                                            <i class="fa fa-briefcase"></i>
-                                            <span class="font-8pt">
-                                                {{structure.getJobsIncreased()}}
-                                            </span>
+
                                         </div>
                                     </div>
 
-                                    <!--TODO: Hide stat bonuses in a well and/or tooltip, currently might be too much info displayed at once-->
-                                    <div class="row">
-                                        <div class="row">
-                                            <!-- TODO: Hide stats with a value of 0 -->
-                                            <span class="col-md-4">
-                                            </span>
-                                            </span>
-                                            <span class="col-md-4">
-                                            </span>
-                                            <span class="col-md-4">
-                                            </span>
+                                    <!-- HIDE ON MEDIUM/LARGE RESOLUTION, This is where we write html for mobile/tablet/low resolution -->
+                                    <div class="hidden-md hidden-lg">
+                                        <div class="col-xs-12">
+                                            <div class="row clickableArea"
+                                                 ng-if="(countryStats.money < structure.getCost()) || countryStats.land < structure.getLandCost() ? 'panelLocked' : 'panelUnlocked'">
+                                                    <div class="panel-body">
+                                                        <span class="tag label label-default">
+                                                            <span>{{structure.getName()}} ({{structure.getCount()}})</span>
+                                                            <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white"></i></a>
+                                                        </span>
+
+                                                        <i class="fa fa-angle-double-up"></i>
+                                                        <span class="font-8pt">
+                                                        {{structure.getCountMultiplier()}}
+                                                        </span>
+
+                                                        <i class="fa fa-percent"></i>
+                                                        <span class="font-8pt">
+                                                        {{structure.getStatMultiplier()}}
+                                                        </span>
+
+                                                        <i class="fa fa-cog"></i>
+                                                        <span class="font-8pt">
+                                                        {{structure.getStatAdder()}}/t
+                                                        </span>
+
+                                                        <i class="fa fa-money"></i>
+                                                        <span class="font-8pt">
+                                                         -{{structure.getUpkeep()}}/t
+                                                        </span>
+
+                                                        <i class="fa fa-briefcase"></i>
+                                                        <span class="font-8pt">
+                                                        {{structure.getJobsIncreased()}}
+                                                        </span>
+
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="row form-horizontal">
-                                        <div>
-                                            <div class="col-sm-4">
-                                                <input class="form-control" type="number" min="1" ng-init="count=1" ng-model="count" />
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <button class="btn btn-success" ng-class="structure.isVisible() ? '' : 'disabled'" ng-click="structure.build(count)">
-                                                    <span class="col-sm-4">Buy:</span>
-                                                    <i class="fa fa-money" ng-class="countryStats.money < structure.getCost() ? 'text-danger' : ''"></i> {{structure.getCost()}}
-                                                    <i class="fa fa-flag" ng-class="countryStats.land < structure.getLandCost() ? 'text-danger' : ''"></i> {{structure.getLandCost()}}
-                                                </button>
-                                            </div>
-                                            </div>
-                                    </div>
                                 </div>
+
+                            </div>
+                                <!--<div class="panel panel-primary panelLocked col-xs-12 col-sm-4 col-md-4 clickableArea panelUnlocked">-->
+                                    <!--<div class="panel-body">-->
+                                        <!--<div class="row">-->
+                                            <!--<div class="col-md-12">-->
+                                                <!--<span class="tag label label-default center-block">-->
+                                                    <!--<span>{{structure.getName()}} ({{structure.getCount()}})</span>-->
+                                                    <!--<a><i class="remove glyphicon glyphicon-info-sign glyphicon-white"></i></a>-->
+                                                <!--</span>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                        <!--<div class="row margin-top-5 form-inline">-->
+                                            <!--<div class="col-sm-2 col-md-2">-->
+                                                <!--<img class="img-responsive" ng-src="assets/img/{{structure.getImage()}}.png" />-->
+                                            <!--</div>-->
+                                            <!--<div class="col-sm-2 col-md-2 text-center">-->
+                                                <!--&lt;!&ndash;TODO: Add tooltips on hover&ndash;&gt;-->
+                                                <!--<i class="fa fa-angle-double-up"></i>-->
+                                                <!--<span class="font-8pt">-->
+                                                    <!--{{structure.getCountMultiplier()}}-->
+                                                <!--</span>-->
+                                            <!--</div>-->
+                                            <!--<div class="col-sm-2 col-md-2 text-center">-->
+                                                <!--<i class="fa fa-percent"></i>-->
+                                                <!--<span class="font-8pt">-->
+                                                    <!--{{structure.getStatMultiplier()}}-->
+                                                <!--</span>-->
+                                            <!--</div>-->
+                                            <!--<div class="col-sm-2 col-md-2 text-center">-->
+                                                <!--<i class="fa fa-cog"></i>-->
+                                                <!--<span class="font-8pt">-->
+                                                    <!--{{structure.getStatAdder()}}/t-->
+                                                <!--</span>-->
+                                            <!--</div>-->
+                                            <!--<div class="col-sm-2 col-md-2 text-center">-->
+                                                <!--<i class="fa fa-money"></i>-->
+                                                <!--<span class="font-8pt">-->
+                                                    <!-- -{{structure.getUpkeep()}}/t-->
+                                                <!--</span>-->
+                                            <!--</div>-->
+                                            <!--<div class="col-sm-2 col-md-2 text-center">-->
+                                                <!--<i class="fa fa-briefcase"></i>-->
+                                                <!--<span class="font-8pt">-->
+                                                    <!--{{structure.getJobsIncreased()}}-->
+                                                <!--</span>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                        <!--<div class="row form-horizontal">-->
+                                            <!--<div>-->
+                                                <!--<div class="col-sm-4">-->
+                                                    <!--<input class="form-control" type="number" min="1" ng-init="count=1" ng-model="count" />-->
+                                                <!--</div>-->
+                                                <!--<div class="col-sm-8">-->
+                                                    <!--<button class="btn btn-success" ng-class="structure.isVisible() ? '' : 'disabled'" ng-click="structure.build(count)">-->
+                                                        <!--<span class="col-sm-4">Buy:</span>-->
+                                                        <!--<i class="fa fa-money" ng-class="countryStats.money < structure.getCost() ? 'text-danger' : ''"></i> {{structure.getCost()}}-->
+                                                        <!--<i class="fa fa-flag" ng-class="countryStats.land < structure.getLandCost() ? 'text-danger' : ''"></i> {{structure.getLandCost()}}-->
+                                                    <!--</button>-->
+                                                <!--</div>-->
+                                                <!--</div>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+
                             </div>
                         </div>
                     </div>

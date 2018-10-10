@@ -1,4 +1,4 @@
-﻿﻿'use strict';
+﻿'use strict';
 
 wciApp.controller(
     'GameController',
@@ -22,6 +22,7 @@ wciApp.controller(
         warService,
         $filter,
         modalService,
+        chartsService,
         $log
         ) {
 
@@ -39,6 +40,7 @@ wciApp.controller(
             game.data = {};
             initService().then(function(){
                 saveService.load();
+                $scope.createMap();
                 game.worldCountries.update();//Necessary to load the map colors.
             });
             game.myCountry = playerService;
@@ -66,6 +68,7 @@ wciApp.controller(
             game.myCountry.ministers.update();
             game.worldCountries.update();
             warService.doBattle();
+            chartsService.update();
             //game.advisors.functions.advisorTimedEffects();
             //game.saveGame();
         };
@@ -81,11 +84,9 @@ wciApp.controller(
                 paused: false,
                 speed: 1000
             };
-            //TODO: The extend functions don't attach themselves on reset. Fix
-            game.myCountry.init();
-            saveService.reset();
-            game.advisors.functions.resetData();
             localStorage.clear();
+            initGame();
+            console.log(worldCountryService);
         };
         //#endregion
 
@@ -150,70 +151,79 @@ wciApp.controller(
             game.myCountry.baseStats.currentTurn += 1;
         };
 
-        let map = new jvm.Map({
-            container: $('#world-map'),
-            map: 'world_mill_en',
-            regionsSelectable: true,
-            zoomButtons : false,
-            zoomMin: 0.9,
-            focusOn: {
-                x: 0.5,
-                y: 0.5,
-                scale: 0.9
-            },
-            series: {
-                regions: [
-                    {
-                        values: worldCountryService.allCountriesColors,
-                        scale: ["#C8EEFF", "#0071A4"],
-                        normalizeFunction: 'polynomial'
-                    },
-                    {
-                        values: worldCountryService.conqueredCountriesColors,
-                        scale: ["#008000"],
-                        normalizeFunction: 'linear'
-                    },
-                    {
-                        values: worldCountryService.countriesColorsAtWar,
-                        scale: ["#FF0000", "#990000"],
-                        normalizeFunction: 'polynomial'
-                    }]
-            },
-            onRegionTipShow: function (e, el, code) {
-                let country = $filter('niceNumber')(worldCountryService.getCountryStrength(code));
-                el.html(el.html() + ' (Strength - ' + country + ')');
-                console.log(worldCountryService);
-            },
-            onRegionClick: function (e, code) {
-                e.preventDefault();
-                //check if an array of objects contains a property with a value of the code we passed in.
-                let controlledCountry = playerService.conqueredCountries.map(function(e) {
-                    return e.countryCode;
-                }).indexOf(code);
-                let countryOnWar = warService.isCountryAtWar(code);
+        $scope.createMap = function() {
+            $('.jvectormap-container').remove();//remove previous map, used when resetting the game so we don't have to refresh.
+            //TODO: Might want to add some loading screen/hide map and show leader creation page etc.
+            let map = new jvm.Map({
+                container: $('#world-map'),
+                map: 'world_mill_en',
+                backgroundColor: '#a5bfdd',
+                borderColor: '#818181',
+                borderOpacity: 0.25,
+                borderWidth: 1,
+                color: '#f4f3f0',
+                regionsSelectable: true,
+                zoomButtons : false,
+                zoomMin: 0.9,
+                focusOn: {
+                    x: 0.5,
+                    y: 0.5,
+                    scale: 0.9
+                },
+                series: {
+                    regions: [
+                        {
+                            values: worldCountryService.allCountriesColors,
+                            scale: ["#C8EEFF", "#0071A4"],
+                            normalizeFunction: 'polynomial'
+                        },
+                        {
+                            values: worldCountryService.conqueredCountriesColors,
+                            scale: ["#008000"],
+                            normalizeFunction: 'linear'
+                        },
+                        {
+                            values: worldCountryService.countriesColorsAtWar,
+                            scale: ["#FF0000", "#990000"],
+                            normalizeFunction: 'polynomial'
+                        }]
+                },
+                onRegionTipShow: function (e, el, code) {
+                    let country = $filter('niceNumber')(worldCountryService.getCountryStrength(code));
+                    el.html(el.html() + ' (Strength - ' + country + ')');
+                },
+                onRegionClick: function (e, code) {
+                    e.preventDefault();
+                    //check if an array of objects contains a property with a value of the code we passed in.
+                    let controlledCountry = playerService.conqueredCountries.map(function(e) {
+                        return e.countryCode;
+                    }).indexOf(code);
+                    let countryOnWar = warService.isCountryAtWar(code);
 
-                //Might open modal with options to attack if we are already at war.
-                if (controlledCountry !== -1 || countryOnWar !== -1) {
-                    console.log("You are already at war or you control that country");
-                    return;//if we currently control that country or are already at war, do nothing
+                    //Might open modal with options to attack if we are already at war.
+                    if (controlledCountry !== -1 || countryOnWar !== -1) {
+                        console.log("You are already at war or you control that country");
+                        return;//if we currently control that country or are already at war, do nothing
+                    }
+                    /*TODO: In the future we might want to open different modal, giving us some information of our own country etc.*/
+                    openAttackConfirmation(code);
                 }
-                /*TODO: In the future we might want to open different modal, giving us some information of our own country etc.*/
-                openAttackConfirmation(code);
-            }
-        });
-        worldCountryService.update = function () {
-            //The order matters as it overwrites the others in case they are in 2 categories
-            //TODO: Add if statement to check the state of what we want to display, for example if state === "troops" then we update a map based on troops strength.
-            map.series.regions[0].params.min = undefined;
-            map.series.regions[0].params.max = undefined;
-            map.series.regions[0].setValues(worldCountryService.allCountriesColors);
-            map.series.regions[1].params.min = undefined;
-            map.series.regions[1].params.max = undefined;
-            map.series.regions[1].setValues(worldCountryService.conqueredCountriesColors);
-            map.series.regions[2].params.min = undefined;
-            map.series.regions[2].params.max = undefined;
-            map.series.regions[2].setValues(worldCountryService.countriesColorsAtWar);
+            });
+            worldCountryService.update = function () {
+                //The order matters as it overwrites the others in case they are in 2 categories
+                //TODO: Add if statement to check the state of what we want to display, for example if state === "troops" then we update a map based on troops strength.
+                map.series.regions[0].params.min = undefined;
+                map.series.regions[0].params.max = undefined;
+                map.series.regions[0].setValues(worldCountryService.allCountriesColors);
+                map.series.regions[1].params.min = undefined;
+                map.series.regions[1].params.max = undefined;
+                map.series.regions[1].setValues(worldCountryService.conqueredCountriesColors);
+                map.series.regions[2].params.min = undefined;
+                map.series.regions[2].params.max = undefined;
+                map.series.regions[2].setValues(worldCountryService.countriesColorsAtWar);
+            };
         };
+
         let openAttackConfirmation = function (code) {
 
             let modalInstance = modalService.open({
@@ -237,7 +247,6 @@ wciApp.controller(
 
         initGame();
         let saveTimer = $interval(saveGame, 1000);
-
 
         $scope.openModal = function (modalIndex) {
             let templateUrl = $scope.modalButtons[modalIndex].templateUrl;

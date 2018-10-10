@@ -55,7 +55,7 @@ wciApp.factory(
             this.unitsAtHome = [];//Units defending base
             this.unitsAtWar = [];//Units currently in battle
             this.unitsHiringQueue = [];//Units in hiring queue
-            this.unitsSendModal = [];//Units choosen by a player before sending to War
+            this.unitsSendModal = [];//Units chosen by a player before sending to War
             for (let i = 0; i < unitsArray.length; i++) {
                 let unitObject = unitsArray[i];
                 this.unitsAtHome[i] = {};

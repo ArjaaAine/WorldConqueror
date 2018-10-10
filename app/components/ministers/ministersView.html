@@ -15,7 +15,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default col-sm-2" ng-repeat="minister in countryCtrl.myCountry.activeMinisters">
+                <div class="panel panel-default col-sm-2" ng-repeat="minister in myCountry.activeMinisters">
                     <div class="panel-body" ng-click="fireMinister(minister.ministerType)">
                         <i class="glyphicon glyphicon-user"></i>
                         <span class="font-8pt">{{minister.ministerType}}</span>
@@ -25,9 +25,9 @@
                         </div>
                     </div>
                 </div>
-                {{countryCtrl.myCountry.activeMinisters.length}}
-                {{countryCtrl.myCountry.activeMinisters}}
-                <div ng-if="countryCtrl.myCountry.activeMinisters.length < 5" class="panel panel-default col-sm-1 clickable custom-panel">
+                {{myCountry.activeMinisters.length}}
+                {{myCountry.activeMinisters}}
+                <div ng-if="myCountry.activeMinisters.length < 5" class="panel panel-default col-sm-1 clickable custom-panel">
                     <div class="panel-body" ng-click="game.ministers.openMinisterHire()">
                         <i class="glyphicon glyphicon-plus"></i>
                     </div>

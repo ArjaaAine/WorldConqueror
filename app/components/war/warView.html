@@ -18,25 +18,29 @@
                             <div class="panel-body custom-panel font-9pt">
                                 <div class="row">
                                     <div class="col-sm-7">
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <button class="btn btn-sm btn-default" ng-click="sortBy('countryCode')">Name</button>
-                                                <span class="sortorder" ng-show="propertyName === 'countryCode'" ng-class="{reverse: reverse}"></span>
-                                            </div>
-                                        </div>
-                                        <div class="row" ng-repeat="currentBattle in warService.countriesAtWar | orderBy:propertyName:reverse track by $index">
-                                            <div class="col-sm-3">
-                                                <h4>
-                                                    {{currentBattle.countryCode}}
-                                                </h4>
-                                            </div>
-                                            <div class="col-sm-3"><button type="button" class="btn btn-danger" ng-click="makePeace(currentBattle)">Make Peace
-                                            </button></div>
-                                            <div class="col-sm-3">
-                                                <button type="button" class="btn btn-danger" ng-click="openTroopsModal(currentBattle)">Send Troops</button>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <button type="button" class="btn btn-danger" ng-click="returnUnits(currentBattle)">Return Troops</button>
+                                        <div class="row" ng-repeat="aiIndex in warService.currentlyAtWar">
+                                            <div class="col-sm-10 col-sm-offset-2">
+                                                <div class="row" ng-repeat="aiCountry in worldCountryService.AiPlayers[aiIndex].countries track by $index">
+                                                    {{"AI PLAYER NAME: " + worldCountryService.AiPlayers[aiIndex].name}}
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-3">
+                                                                <h4>
+                                                                    {{aiCountry.countryCode}}
+                                                                </h4>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <button type="button" class="btn btn-danger" ng-click="makePeace($index)">Make Peace</button>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <button type="button" class="btn btn-danger" ng-click="openTroopsModal($index)">Send Troops</button>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <button type="button" class="btn btn-danger" ng-click="returnUnits($index)">Return Troops</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

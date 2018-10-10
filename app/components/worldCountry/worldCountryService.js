@@ -47,44 +47,59 @@ wciApp.factory('worldCountryService', function (
         });
     };
     
-    World.prototype.getCountryStrength = function(code) {
+    World.prototype.getCountryStrength = function(countryCode) {
+        let aiIndex = this.getAiIndexByCountryCode(countryCode);
         let filterCounqueredCountries = playerService.conqueredCountries.filter(function (country) {
-            return country.countryCode === code;
+            return country.countryCode === countryCode;
         })[0];
         if (filterCounqueredCountries !== undefined) {
             return playerService.military.getTotalStrength();
         } else {
-            return this.getAiByCountryCode(code).getTotalStrength();
+            return this.AiPlayers[aiIndex].getTotalStrength();
         }
     };
-    World.prototype.getAiByCountryCode = function(code) {
-        let index = this.getAiIndexByCountryCode(code);
-        return this.AiPlayers[index];
-    };
-    World.prototype.getAiIndexByCountryCode = function(code) {
+    World.prototype.getAiIndexByCountryCode = function(countryCode) {
         for(let i = 0; i < this.AiPlayers.length; i++){
             for(let j = 0; j < this.AiPlayers[i].countries.length; j++){
                 let country = this.AiPlayers[i].countries[j];
-                if(country.countryCode === code) {
+                if(country.countryCode === countryCode) {
                     return i;
                 }
             }
         }
     };
-    World.prototype.removeAi = function(index) {
-        for(let i = 0; i < this.AiPlayers[index].countries.length; i++) {
-            let countryCode = this.AiPlayers[index].countries[i].countryCode;
-            delete this.removeCountryAtWarColor(countryCode);
+    World.prototype.removeAi = function(aiIndex) {
+        for(let i = 0; i < this.AiPlayers[aiIndex].countries.length; i++) {
+            let countryCode = this.AiPlayers[aiIndex].countries[i].countryCode;
+            this.removeCountryAtWarColor(countryCode);
             this.conqueredCountriesColors[countryCode] = playerService.military.getTotalStrength();
         }
-        this.AiPlayers.splice(index,  1);
+        this.AiPlayers.splice(aiIndex,  1);
         console.log("Removed AI Player, there are " + this.AiPlayers.length + " AI Players left!");
+    };
+
+    World.prototype.removeAiCountriesColor = function(aiIndex) {
+        let self = this;
+        this.AiPlayers[aiIndex].countries.forEach(function (country) {
+           let countryCode = country.countryCode;
+           self.removeCountryAtWarColor(countryCode);
+        });
     };
 
     World.prototype.removeCountryAtWarColor = function(countryCode) {
       delete this.countriesColorsAtWar[countryCode];
     };
-    World.prototype.update = function () {
+
+    World.prototype.updateColors = function(aiPlayerIndex) {
+        let aiPlayer = this.AiPlayers[aiPlayerIndex];
+        let self = this;
+        aiPlayer.countries.forEach(function(country){
+            let countryCode = country.countryCode;
+            self.countriesColorsAtWar[countryCode] = self.getCountryStrength(countryCode);
+        })
+    };
+
+    World.prototype.updateLogic = function () {
         //There goes all logic for countries...Using AiPlayerService methods, we make decisions here.
         //While looping AiPlayer array, we can update map colors based on Strength as well
         // this.allCountriesColors[code] = country.getTotalStrength();//This can be called for each country to overwrite the map colors...

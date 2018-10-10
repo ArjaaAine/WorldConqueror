@@ -24,6 +24,7 @@ wciApp.service('AiPlayerService', function(
         this.military = new militaryService();
         this.military.init();
         this.generateUnits();
+        this.name = "Random Leader Name_" + (Math.floor(Math.random() * 1000));
     };
 
     AiPlayer.prototype.generateUnits = function () {
