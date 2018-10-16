@@ -7,18 +7,20 @@ wciApp.factory('ministerService', function (
 
     let Ministers = function () {
         this.allMinisters = [];
+        this.remainingMinisters = [];
         this.nextMinisterCost = 1;
     };
 
     Ministers.prototype.init = function () {
         this.allMinisters = gameDataService.Ministers;
+        this.remainingMinisters = gameDataService.Ministers;
         this.activeMinisters = [];
     };
 
     Ministers.prototype.openMinisterHire = function () {
         let ministerCost = 1;
         let count = 0;
-        console.log("test");
+
         //This is a factorial function
         playerService.ministers.activeMinisters.forEach(function (min) {
             count++;
@@ -35,8 +37,8 @@ wciApp.factory('ministerService', function (
             controller: 'ministersHiringModalController',
             size: 'md',
             resolve: {
-                allMinisters: function () {
-                    return self.allMinisters
+                remainingMinisters: function () {
+                    return self.remainingMinisters
                 },
                 nextMinisterCost: function () {
                     return self.nextMinisterCost
@@ -47,15 +49,24 @@ wciApp.factory('ministerService', function (
         modalInstance.result.then(function (ministerType) {
 
             let minister = self.filterMinister(ministerType);
-            if (minister) playerService.ministers.activeMinisters.push(minister);
+            if (minister) {
+                playerService.ministers.activeMinisters.push(minister);
+                var index = playerService.ministers.remainingMinisters.indexOf(minister);
+                playerService.ministers.remainingMinisters.splice(index, 1);
+            }
             //handle bonuses
         });
     };
 
     Ministers.prototype.fireMinister = function (ministerType) {
         //do popup to confirm. 
+
         let minister = filterMinister(ministerType);
-        playerService.ministers.activeMinisters.splice(minister);
+        var index = playerService.ministers.activeMinisters.indexOf(minister);
+        playerService.ministers.activeMinisters.splice(index, 1);
+
+        //Adding it back to the hire list.
+        playerService.ministers.remainingMinisters.push(minister);
 
         //handle bonuses
     };
@@ -74,9 +85,3 @@ wciApp.factory('ministerService', function (
     return Ministers;
 
 });
-
-function filterArray(array, name) {
-    return array.filter(function (str) {
-        return str.ID.includes(name);
-    })[0];
-}
