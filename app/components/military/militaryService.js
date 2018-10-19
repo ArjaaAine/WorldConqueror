@@ -123,10 +123,10 @@ wciApp.factory(
                         hiringQueueUnit[hiringQueueUnit.length - 1].count += count;
                     } else {
                         //TODO: Fix logic, we are repeating Array.push
-                        hiringQueueUnit.push({count: count, time: trainingSpeed, id: unitId, name: name});
+                        hiringQueueUnit.push({count: count, time: trainingSpeed, id: unitId, name: name, trainingSpeed: trainingSpeed});
                     }
                 } else {
-                    hiringQueueUnit.push({count: count, time: trainingSpeed, id: unitId, name: name});
+                    hiringQueueUnit.push({count: count, time: trainingSpeed, id: unitId, name: name, trainingSpeed: trainingSpeed});
                 }
             }
         };

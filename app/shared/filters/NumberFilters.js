@@ -22,7 +22,7 @@ wciApp.filter('niceNumber', ['$filter', function ($filter) {
         number = number.toString().replace(new RegExp(',','g'), '');
         var absVal = Math.abs(number);
 
-        var suffixes = ["K", "M", "B", "T", "Q"];
+        var suffixes = ["K", "M", "B", "T", "Qd", "Qt", "Sx", "Sp", "Oc", "No", "Dc", "Un", "Du", "Tr", "Qud", "Qun", "Sed", "Sep", "Oct", "Nov", "Vig", "Cen"];
 
         for (var i = suffixes.length - 1; i >= 0; i--) {
             if (absVal >= Math.pow(1000, i + 1)) {

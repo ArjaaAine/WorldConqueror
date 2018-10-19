@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en" ng-app="WCI">
+<html lang="en" ng-app="WCI" ng-cloak>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,8 +21,8 @@
     <script src="assets/libs/js/jquery-jvectormap-2.0.3.min.js"></script>
     <script src="assets/libs/js/jquery-jvectormap-world-mill-en.js"></script>
     <!--css-->
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/libs/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/libs/css/font-awesome/all.css">
     <link rel="stylesheet" href="assets/libs/css/select.min.css">
     <link rel="stylesheet" href="assets/libs/css/jquery-jvectormap-2.0.3.css">
     <!--<link rel="stylesheet" href="libs/css/metro-bootstrap.css">
@@ -31,7 +31,7 @@
     <link rel="stylesheet" href="libs/fonts/metroSysIcons.woff">
     -->
 </head>
-<body ng-controller="GameController as game" ng-cloak>
+<body ng-controller="GameController as game">
 <div class="main_overlay">
     <div class="container-fluid">
         <div class="row" ng-show="game.data.init.isFirstTime != true">
@@ -45,7 +45,7 @@
                             <button ng-click="game.debug.addLand()">Land +100</button><br>
                             <button ng-click="game.debug.addUnits()">Units +100</button><br>
                             <button ng-click="game.debug.addEachBuilding()">Structures +10</button><br>
-                            <button ng-click="game.debug.addRresetesearchPoints()">Science +1k</button><br>
+                            <button ng-click="game.debug.addResearchPoints()">Science +1k</button><br>
                             <button ng-click="game.debug.stabilityChange(10)">Stability +10</button><br>
                             <button ng-click="game.debug.stabilityChange(-10)">Stability -10</button><br>
                             <button ng-click="game.debug.stabilityIndexChange(1)">StabilityIndex +1</button><br>

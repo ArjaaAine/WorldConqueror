@@ -38,13 +38,19 @@ wciApp.factory(
                 unit.count += value;
             })
         };
+        Debug.prototype.addPopulation = function(val) {
+            let value = val || 100;
+            playerService.baseStats.population += value;
+        };
 
         Debug.prototype.giveMeAll = function() {
             playerService.baseStats.money += 100000000;
+            if(playerService.baseStats.money > 100000000) playerService.baseStats.money = 100000000;
             this.addLand(10000000);
             this.addEachBuilding(100);
             this.addResearchPoints(10000);
             this.addUnits(1000);
+            this.addPopulation(1000);
         };
         return new Debug();
     });

@@ -6,7 +6,7 @@
                         Advisors
                     </span>
                 <span class="pull-right">
-                        <i class="fa fa-info-circle clickable" ng-click="structureCtrl.helperModals.openAdvisorHelp()"></i>
+                        <i class="fas fa-info-circle clickable" ng-click="structureCtrl.helperModals.openAdvisorHelp()"></i>
                     </span>
             </div>
         </div>
@@ -30,21 +30,21 @@
                 <div class="col-md-5 col-sm-4 pull-right">
                     <div ng-show="advisor.Name">
                         <div class="row">
-                            <button class="btn btn-danger fa fa-remove pull-right" tooltip="Remove Advisor" ng-click="structureCtrl.advisors.functions.removeAdvisor(advisor)"></button>
-                            <button class="btn btn-warning fa fa-recycle pull-right" tooltip="Replace Advisor" ng-click="structureCtrl.advisors.functions.hireNewAdvisor(advisor)"></button>
-                            <!--<button class="btn btn-success fa fa-arrow-up pull-right" tooltip="Upgrade Advisor" ng-click="structureCtrl.advisors.functions.upgradeAdvisor(advisors)"></button>-->
+                            <button class="btn btn-danger fas fa-remove pull-right" tooltip="Remove Advisor" ng-click="structureCtrl.advisors.functions.removeAdvisor(advisor)"></button>
+                            <button class="btn btn-warning fas fa-recycle pull-right" tooltip="Replace Advisor" ng-click="structureCtrl.advisors.functions.hireNewAdvisor(advisor)"></button>
+                            <!--<button class="btn btn-success fas fa-arrow-up pull-right" tooltip="Upgrade Advisor" ng-click="structureCtrl.advisors.functions.upgradeAdvisor(advisors)"></button>-->
                             <!--TODO: Decide, what is the point of an upgrade.-->
                         </div>
                         <div class="row margin-top-5">
-                            <button class="btn fa fa-refresh pull-right font-color-blue" tooltip="Enable Autobuy"
+                            <button class="btn fas fa-refresh pull-right font-color-blue" tooltip="Enable Autobuy"
                                     ng-show="advisor.EducationLevel > 0 && !advisor.IsAutobuyActive" ng-click="structureCtrl.advisors.functions.enableAutoBuy(advisor)"></button>
-                            <button class="btn fa fa-refresh pull-right font-color-blue btn-info" tooltip="Disable Autobuy"
+                            <button class="btn fas fa-refresh pull-right font-color-blue btn-info" tooltip="Disable Autobuy"
                                     ng-show="advisor.EducationLevel > 0 && advisor.IsAutobuyActive" ng-click="structureCtrl.advisors.functions.enableAutoBuy(advisor)"></button>
                             <!--Todo change this to educationLevel > 2 when testing is done-->
                         </div>
                     </div>
                     <div ng-show="!advisor.Name">
-                        <button class="btn btn-primary fa fa-plus pull-right" tooltip="Hire New Advisor" ng-click="structureCtrl.advisors.functions.hireNewAdvisor(advisor)"></button>
+                        <button class="btn btn-primary fas fa-plus pull-right" tooltip="Hire New Advisor" ng-click="structureCtrl.advisors.functions.hireNewAdvisor(advisor)"></button>
                     </div>
                 </div>
             </div>

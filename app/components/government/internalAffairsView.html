@@ -33,14 +33,14 @@
                                         Laws
                                     </span>
                                     <span class="pull-right">
-                                        <i class="fa fa-info-circle clickable" ng-click="openLawsHelp()"></i>
+                                        <i class="fas fa-info-circle clickable" ng-click="openLawsHelp()"></i>
                                     </span>
                                 </div>
                             </div>
                             <div ng-repeat="law in laws.unlockedLaws">
                                 <div class="panel-body">
                                     <div class="col-md-8">
-                                        <span class="fa fa-info-circle" tooltip="{{law.description}}"></span>
+                                        <span class="fas fa-info-circle" tooltip="{{law.description}}"></span>
                                         <span class="fa" ng-class="law.icon"></span>
                                         <span class="bold">
                                             {{law.name}} <br />

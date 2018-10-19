@@ -27,13 +27,13 @@ wciApp.controller(
         ) {
 
         $scope.modalButtons = [
-            {name: "Changelog", icon: "glyphicon glyphicon-globe font-9pt font-color-lightblue", templateUrl: 'changelogView.html', controller: 'ChangelogController'},
-            {name: "Governance", icon: "glyphicon glyphicon-flag", templateUrl: 'internalAffairsView.html', controller: 'CountryController'},
-            {name: "Structures", icon: "fa fa-institution", templateUrl: 'structureView.html', controller: 'StructureController'},
-            {name: "Military", icon: "glyphicon glyphicon-screenshot", templateUrl: 'militaryView.html', controller: 'MilitaryController',},
-            {name: "Research", icon: "fa fa-flask", templateUrl: 'researchView.html', controller: 'ResearchController',},
-            {name: "War", icon: "fa fa-fire", templateUrl: 'warView.html', controller: 'WarController',},
-            {name: "Charts", icon: "fa fa-line-chart", templateUrl: 'chartsView.html', controller: 'ChartsController',}
+            {name: "Changelog", icon: "glyphicon glyphicon-globe font-9pt font-color-lightblue", templateUrl: 'changelogView.html', controller: 'ChangelogController', windowClass:''},
+            {name: "Governance", icon: "glyphicon glyphicon-flag", templateUrl: 'internalAffairsView.html', controller: 'CountryController', windowClass:''},
+            {name: "Structures", icon: "fas fa-university", templateUrl: 'structureView.html', controller: 'StructureController', windowClass:''},
+            {name: "Military", icon: "glyphicon glyphicon-screenshot", templateUrl: 'militaryView.html', controller: 'MilitaryController', windowClass:'full'},
+            {name: "Research", icon: "fas fa-flask", templateUrl: 'researchView.html', controller: 'ResearchController', windowClass: ''},
+            {name: "War", icon: "fas fa-fire", templateUrl: 'warView.html', controller: 'WarController', windowClass:''},
+            {name: "Charts", icon: "fas fa-chart-line", templateUrl: 'chartsView.html', controller: 'ChartsController', windowClass:''}
         ];
         let game = this;
         let initGame = function() {
@@ -256,7 +256,7 @@ wciApp.controller(
                 templateUrl: templateUrl,
                 controller: controller,
                 size: "lg",
-                windowClass: "",
+                windowClass: $scope.modalButtons[modalIndex].windowClass,
             });
 
             //this will close a modal on right click and also prevent context menu from appearing.

@@ -9,6 +9,7 @@ wciApp.controller('ChartsController', function (
     /* IMPORTANT:  THIS CONTROLLER ACTS AS A ONE BIG CHART, USE OBJECTS TO STORE EACH CHART */
     //TODO: Use playerService to display "current values of food/money etc." Because those values are updated as player makes decission
     //TODO: Or just ignore it if we dont want to display this data on charts...
+    Chart.defaults.global.colors = ['#3f73fd', '#18b119', '#c6a625'];
     $scope.charts = {};//object so we can access chart by name;
     $scope.series = chartsService.series;
     $scope.labels = chartsService.history.timeLine;//This can be used with all charts so it doesn't need to be inside an object.
