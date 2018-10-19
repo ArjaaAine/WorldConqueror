@@ -3,16 +3,19 @@ wciApp.factory('bonusesService', function () {
     function Bonuses() {
         this.researchBonuses = {};
         this.lawsBonuses = {};
+        this.ministersBonuses = {};
     }
 
     Bonuses.prototype.update = function (gameObj) {
         this.updateResearch(gameObj.myCountry.research);
         this.updateLaws(gameObj.myCountry.laws);
+        this.updateMinisters(gameObj.myCountry.activeMinisters);
     };
 
     Bonuses.prototype.init = function () {
       this.researchBonuses = {};
       this.lawsBonuses = {};
+      this.ministersBonuses = {};
     };
 
     Bonuses.prototype.updateResearch = function (researchService) {
@@ -46,6 +49,17 @@ wciApp.factory('bonusesService', function () {
         });
         this.lawsBonuses = totalBonus;
       //unlock or lock laws.
+    };
+
+    Bonuses.prototype.updateMinisters = function (ministersService) {
+        let totalBonus = {};
+
+        //Commented out because activeMinisters need to be initialized somewhere so we dont ge an error here. 22-09-2018
+        // ministersService.activeMinisters.forEach(function (minister) {
+        //     totalBonus[minister.statAffected] = minister.statAdder;
+        // });
+        this.ministersBonuses = totalBonus;
+
     };
 
     return new Bonuses();

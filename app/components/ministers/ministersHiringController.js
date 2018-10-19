@@ -5,13 +5,16 @@ wciApp.controller(
     function (
         $scope,
         $uibModalInstance,
-        allMinisters,
+        remainingMinisters,
         nextMinisterCost) {
 
         $scope.ministers = [];
+        $scope.remainingMinisters = remainingMinisters;
+        $scope.nextMinisterCost = nextMinisterCost;
 
         $scope.hire = function (minister) {
-            $uibModalInstance.close(minister);
+            console.log("hire");
+            $uibModalInstance.close(minister.ministerType);
         };
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');

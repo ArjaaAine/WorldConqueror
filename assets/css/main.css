@@ -126,6 +126,9 @@ a {
     color: #fff;
 }
 
+.glyphicon-black{
+    color: #000000;
+}
 .removePadding-hireBtn {
     padding-top: 0;
     padding-bottom: 0;
@@ -187,4 +190,96 @@ a {
 .modal-content{
     /*Seems to be necessary in order to show background when using col-xs/sm/md/lg...It works with md on certain window size tho.*/
     overflow: auto;
+}
+
+.money {
+    color: #d8d313;
+}
+.money::before{
+    content: "+";
+}
+
+.dark-background{
+    background-color: #333333;
+    color: #e6e6e6;
+}
+
+#world-map{
+    position: relative;
+}
+
+.map-overlay-stats{
+    position:absolute;
+    z-index: 1;
+    height: 5%;
+}
+
+.map-overlay-buttons{
+    position: absolute;
+    z-index: 1;
+    left: 1%;
+    bottom: 20%;
+}
+.map-overlay-next-turn{
+    position:absolute;
+    z-index: 1;
+    left: 50%;
+    bottom: 0;
+}
+.debug-buttons{
+    position:absolute;
+    z-index: 2;
+    left: 1%;
+    top: 20%;
+}
+
+.leader-icon{
+    position:absolute;
+    z-index: 1;
+    top: 5%;
+}
+
+.visible{
+    visibility: visible;
+}
+
+.displayElement{
+    display: block;
+}
+.hideElement{
+    display: none;
+}
+
+.margin-bottom-5{
+    margin-bottom: 5px;
+}
+
+.structureNotVisible {
+    opacity: 0.2;
+}
+
+.structureLockPosition{
+    position: absolute;
+    top: 20%;
+    left: 40%;
+    opacity: 1;
+    /*reset opacity with z-index*/
+    z-index: 1;
+}
+.lock-icon-font-size{
+    font-size: 70px;
+    text-align: center;
+    padding-bottom: 2px;
+}
+
+.modalOverflow-600{
+    overflow-y: auto;
+    max-height: 600px;
+}
+
+.game-time{
+    position:absolute;
+    right: 0;
+    top: 5%;
+    z-index: 1;
 }

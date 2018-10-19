@@ -9,35 +9,23 @@ wciApp.controller('WarController', function (
     $scope) {
     $scope.playerService = playerService;
     $scope.warService = warService;
-    $scope.reverse = false;
-    $scope.propertyName = "";//for sorting
-    //Sort countries etc.
-    $scope.sortBy = function(propertyName) {
-        $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
-        $scope.propertyName = propertyName;
+    $scope.worldCountryService = worldCountryService;
+
+    $scope.makePeace = function(aiPlayerIndex) {
+        warService.makePeace(aiPlayerIndex);
+    };
+    $scope.returnUnits = function(aiPlayerIndex) {
+        warService.returnUnits(aiPlayerIndex);
     };
 
-    $scope.makePeace = function(item) {
-        let index = $scope.getIndexOfItem(item);
-        warService.makePeace(index);
-    };
-    $scope.returnUnits = function(item) {
-        let index = $scope.getIndexOfItem(item);
-        warService.returnUnits(index);
-    };
-    $scope.getIndexOfItem = function (item) {
-        return warService.countriesAtWar.indexOf(item);
-    };
-
-    $scope.openTroopsModal = function (item) {
-        let index = $scope.getIndexOfItem(item);
+    $scope.openTroopsModal = function (aiPlayerIndex) {
         let modalInstance = modalService.open({
             templateUrl: 'warAttackModal.html',
             controller: 'warSendTroopsController',
-            size: 'md',
+            size: 'lg',
             resolve: {
-                countryAttackedIndex: function() {
-                    return index;
+                aiAttackedIndex: function() {
+                    return aiPlayerIndex;
                 }
             }
         });

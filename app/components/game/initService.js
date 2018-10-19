@@ -1,3 +1,5 @@
+'use strict';
+
 wciApp.factory(
     'initService',
     function (playerService,
@@ -7,9 +9,9 @@ wciApp.factory(
               lawsService,
               advisorsService,
               researchService,
+              ministerService,
               bonusesService,
               gameDataService,
-              ministerService,
               warService,
               $q) {
         let sheets = ["Buildings", "Units", "ResearchData", "ResearchBonuses", "Laws", "WorldCountries", "Ministers"];
@@ -27,8 +29,8 @@ wciApp.factory(
                     buildingInit();
                     militaryInit();
                     researchInit();
-                    ministersInit();
                     lawsInit();
+                    ministersInit();
                     bonusesServiceInit();
                     worldCountriesInit();
                     resolve(excelObject);
@@ -62,7 +64,8 @@ wciApp.factory(
             worldCountryService.init(countriesArray);
         };
         let ministersInit = function () {
-            ministerService.init();
+            playerService.ministers = new ministerService();
+            playerService.ministers.init();
         };
 
         return init;

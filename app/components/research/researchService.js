@@ -17,8 +17,8 @@ wciApp.factory('researchService', function (playerService, gameDataService) {
     Research.prototype.init = function (){
         let research = gameDataService.ResearchData;
         let researchBonuses = gameDataService.ResearchBonuses;
-        let temporaryTypes = {};//Used inside a loop, so we don't push too many objects at once. Like War/Economy(we only need 1 of each)
-        let currentIndex = -1;//start at -1 because we are adding +1 for each new type, and we want to start at 0...
+        let temporaryTypes = {}; //Used inside a loop, so we don't push too many objects at once. Like War/Economy(we only need 1 of each)
+        let currentIndex = -1; //start at -1 because we are adding +1 for each new type, and we want to start at 0...
         //empty the object
         this.types = [];
         this.currentResearchTypeIndex = 0;

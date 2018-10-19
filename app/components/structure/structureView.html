@@ -1,114 +1,190 @@
 ﻿<div ng-controller="StructureController">
     <script type="text/ng-template" id="structureView.html">
-        <div id="Buildings">
+        <div id="Buildings" ng-scrollbar rebuild-on="rebuild:me">
             <h3>
                 <span class="glyphicon glyphicon-home"></span> Buildings
             </h3>
-            <div class="col-md-12 col-sm-12">
-                <div class="row panel panel-primary">
-                    <div class="panel-body">
-                        <div class="col-xs-3">
-                            Land: <i class="fa fa-flag"></i> {{countryStats.land}}
-                        </div>
-                        <div class="col-xs-3">
-                            Multiplier: {{buildings.getTotalMultiplier()}}
-                        </div>
-                        <div class="col-xs-3">
-                            Upkeep: <i class="fa fa-money"></i> {{buildings.getTotalUpkeep()}}/turn
-                        </div>
-                        <div class="col-xs-3">
-                            Jobs: 10
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr>
-            <div class="col-md-12 col-sm-12">
-                <div class="row">
-                    <div id="build" class="col-xs-12 col-sm-12">
-                        <div class="row">
-                            <div class="panel panel-primary panelLocked col-xs-12 col-sm-4 col-md-4 clickableArea panelUnlocked"
-                                 ng-repeat="structure in buildings.structures"
-                                 ng-class="{'invisible': !structure.isVisible()}">
-                                <div class="panel-body">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <span class="tag label label-default center-block">
-                                                <span>{{structure.getName()}} ({{structure.getCount()}})</span>
-                                                <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white"></i></a>
-                                            </span>
-                                        </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="row panel panel-primary">
+                        <div class="panel-body">
+                            <div class="col-xs-3">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <i class="fa fa-flag"></i> {{countryStats.land}}
                                     </div>
-                                    <div class="row margin-top-5 form-inline">
-                                        <div class="col-sm-2 col-md-2">
-                                            <img class="img-responsive" ng-src="assets/img/{{structure.getImage()}}.png" />
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 text-center">
-                                            <!--TODO: Add tooltips on hover-->
-                                            <i class="fa fa-angle-double-up"></i>
-                                            <span class="font-8pt">
-                                                {{structure.getCountMultiplier()}}
-                                            </span>
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 text-center">
-                                            <i class="fa fa-percent"></i>
-                                            <span class="font-8pt">
-                                                {{structure.getStatMultiplier()}}
-                                            </span>
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 text-center">
-                                            <i class="fa fa-cog"></i>
-                                            <span class="font-8pt">
-                                                {{structure.getStatAdder()}}/t
-                                            </span>
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 text-center">
-                                            <i class="fa fa-money"></i>
-                                            <span class="font-8pt">
-                                                -{{structure.getUpkeep()}}/t
-                                            </span>
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 text-center">
-                                            <i class="fa fa-briefcase"></i>
-                                            <span class="font-8pt">
-                                                {{structure.getJobsIncreased()}}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <!--TODO: Hide stat bonuses in a well and/or tooltip, currently might be too much info displayed at once-->
-                                    <div class="row">
-                                        <div class="row">
-                                            <!-- TODO: Hide stats with a value of 0 -->
-                                            <span class="col-md-4">
-                                            </span>
-                                            </span>
-                                            <span class="col-md-4">
-                                            </span>
-                                            <span class="col-md-4">
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="row form-horizontal">
-                                        <div>
-                                            <div class="col-sm-4">
-                                                <input class="form-control" type="number" min="1" ng-init="count=1" ng-model="count" />
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <button class="btn btn-success" ng-class="structure.isVisible() ? '' : 'disabled'" ng-click="structure.build(count)">
-                                                    <span class="col-sm-4">Buy:</span>
-                                                    <i class="fa fa-money" ng-class="countryStats.money < structure.getCost() ? 'text-danger' : ''"></i> {{structure.getCost()}}
-                                                    <i class="fa fa-flag" ng-class="countryStats.land < structure.getLandCost() ? 'text-danger' : ''"></i> {{structure.getLandCost()}}
-                                                </button>
-                                            </div>
-                                            </div>
+                                    <div class="col-xs-12">
+                                        <i class="fa fa-money"></i> {{countryStats.money}}
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <i class="fa fa-percent"></i>: {{buildings.getTotalMultiplier()}}
+                                Upkeep: {{buildings.getTotalUpkeep()}}
+                            </div>
+                            <div class="col-xs-2">
+                                <i class="fa fa-briefcase"></i> {{countryStats.totalJobs}}
+                            </div>
+                            <div class="col-xs-4">
+                                <button class="btn btn-sm btn-primary" ng-click="buildings.countToBuy = 1">1x</button>
+                                <button class="btn btn-sm btn-primary" ng-click="buildings.countToBuy = 5">5x</button>
+                                <button class="btn btn-sm btn-primary" ng-click="buildings.countToBuy = 25">25x</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!--<ng-include src="'app/components/advisors/advisorsView.html'"></ng-include>-->
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="row">
+                        <div id="build" class="col-xs-12 col-sm-12">
+                            <div class="row modalOverflow-600">
+                                <div class=""
+                                     ng-repeat="structure in buildings.structures track by $index">
+
+                                    <!-- HIDE ON XS/SMALL RESOLUTION, this is for laptops/PC monitors-->
+                                    <div class="col-md-4 hidden-xs hidden-sm">
+                                        <div class="row">
+                                            <i ng-hide="structure.isVisible()" class="structureLockPosition center-block glyphicon glyphicon-lock glyphicon-black lock-icon-font-size"></i>
+                                            <div class="col-md-12" ng-class="structure.isVisible() ? '' : 'structureNotVisible'">
+                                                <div class="panel panel-primary clickableArea">
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                            <span class="tag label label-default center-block">
+                                                                <span>{{structure.name}} ({{structure.count}})</span>
+                                                                <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white"></i></a>
+                                                            </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row margin-top-5 form-inline">
+                                                            <div class="col-md-2">
+                                                                <img class="img-responsive"
+                                                                     ng-src="assets/img/{{structure.image}}.png"/>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <!--TODO: Add tooltips on hover-->
+                                                                <i class="fa fa-angle-double-up"></i>
+                                                                <span class="font-8pt">
+                                                                {{structure.countMultiplier}}
+                                                            </span>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <i class="fa fa-percent"></i>
+                                                                <span class="font-8pt">
+                                                                {{structure.statMultiplier}}
+                                                            </span>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <i class="fa fa-cog"></i>
+                                                                <span class="font-8pt">
+                                                                {{structure.statAdder}}/t
+                                                            </span>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <i class="fa fa-money"></i>
+                                                                <span class="font-8pt">
+                                                                -{{structure.upkeep}}/t
+                                                            </span>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <i class="fa fa-briefcase"></i>
+                                                                <span class="font-8pt">
+                                                                {{structure.jobsIncreased}}
+                                                            </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row form-horizontal">
+                                                            <div>
+                                                                <div class="col-md-12">
+                                                                    <button class="btn-block btn-success"
+                                                                            ng-disabled="!structure.isVisible() || structure.cantAfford(buildings.countToBuy)"
+                                                                            ng-class="{'btn-danger': structure.cantAfford(buildings.countToBuy)}"
+                                                                            ng-click="structure.build(buildings.countToBuy)">
+                                                                        <span class="text-center">Buy x{{buildings.countToBuy}}</span>
+                                                                        <br/>
+                                                                        <i class="fa fa-money"></i>
+                                                                        {{structure.cost * buildings.countToBuy}}
+                                                                        <i class="fa fa-flag"></i>
+                                                                        {{structure.landCost * buildings.countToBuy}}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Fix for columns with different height sizes, we want them all to ignore height and make proper columns.
+                                    ONLY FOR MULTI COLUMNS! <MD/LG IN OUR CASE> SINCE XS/SM ARE 1 COLUMN PER ROW-->
+                                    <div ng-class="($index + 1)%3 === 0 && $index !== 0 ? 'clearfix' : ''"></div>
+
+                                    <!-- HIDE ON MEDIUM/LARGE RESOLUTION, This is where we write html for mobile/tablet/low resolution -->
+                                    <div class="hidden-md hidden-lg">
+                                        <div class="col-xs-12">
+                                            <div class="row clickableArea bottom-border margin-bottom-5">
+                                                <div class="col-xs-8">
+                                                    <div class="row">
+                                                        <div class="col-xs-12">
+                                                        <span class="tag label label-default text-center center-block">
+                                                            {{structure.name}} ({{structure.count}})
+                                                            <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white"></i></a>
+                                                        </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-xs-12 text-center">
+                                                            <i class="fa fa-angle-double-up"></i>
+                                                            <span class="font-8pt">
+                                                                    {{structure.countMultiplier}}
+                                                                    </span>
+
+                                                            <i class="fa fa-percent"></i>
+                                                            <span class="font-8pt">
+                                                                    {{structure.statMultiplier}}
+                                                                    </span>
+                                                            <i class="fa fa-cog"></i>
+                                                            <span class="font-8pt">
+                                                                    {{structure.statAdder}}/t
+                                                                    </span>
+
+                                                            <i class="fa fa-money"></i>
+                                                            <span class="font-8pt">
+                                                                     -{{structure.upkeep}}/t
+                                                                    </span>
+
+                                                            <i class="fa fa-briefcase"></i>
+                                                            <span class="font-8pt">
+                                                                    {{structure.jobsIncreased}}
+                                                                    </span>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-4">
+                                                    <button class="btn btn-block btn-sm btn-success"
+                                                            ng-disabled="!structure.isVisible() || structure.cantAfford(buildings.countToBuy)"
+                                                            ng-class="{'btn-danger': structure.cantAfford(buildings.countToBuy)}"
+                                                            ng-click="structure.build(buildings.countToBuy)">
+                                                        <span class="text-center">Buy x{{buildings.countToBuy}}</span>
+                                                        <br/>
+                                                        <i class="fa fa-money"></i>
+                                                        {{structure.cost * buildings.countToBuy}}
+                                                        <i class="fa fa-flag"></i>
+                                                        {{structure.landCost * buildings.countToBuy}}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!--<ng-include src="'app/components/advisors/advisorsView.html'"></ng-include>-->
+                    </div>
+                </div>
             </div>
         </div>
     </script>

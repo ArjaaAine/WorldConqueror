@@ -1,39 +1,29 @@
-﻿<div class="row">
-    <div id="ministers" class="col-sm-12">
-        <div class="panel panel-default col-sm-1 clickable custom-panel">
-            <div class="panel-body">
-                <i class="glyphicon glyphicon-chevron-left"></i>
-            </div>
-        </div>
-        <div class="panel panel-default col-sm-2">
-            <div class="panel-body">
-                <i class="glyphicon glyphicon-user"></i>
-                <span class="font-8pt">Defense</span>
-                <div class="pull-right" uib-tooltip="influence">
-                    <i class="glyphicon glyphicon-thumbs-up"></i>
-                    <span class="font-8pt">24</span>
+﻿        <div class="row">
+            <div id="ministers" class="col-sm-12">
+                <div class="panel panel-default col-sm-1 clickable custom-panel">
+                    <div class="panel-body">
+                        <i class="glyphicon glyphicon-chevron-left"></i>
+                    </div>
+                </div>
+                <div class="panel panel-default col-sm-2" ng-repeat="minister in myCountry.ministers.activeMinisters track by $index">
+                    <div class="panel-body row" ng-click="fireMinister(minister.ministerType)">
+                        <i class="glyphicon glyphicon-user"></i>
+                        <span class="font-8pt">{{minister.ministerType}}</span>
+                        <div class="pull-right" uib-tooltip="influence">
+                            <i class="glyphicon glyphicon-thumbs-up"></i>
+                            <span class="font-8pt">{{minister.influencePT}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="myCountry.ministers.activeMinisters.length < 5" class="panel panel-default col-sm-1 clickable custom-panel">
+                    <div class="panel-body" ng-click="myCountry.ministers.openMinisterHire()">
+                        <i class="glyphicon glyphicon-plus"></i>
+                    </div>
+                </div>
+                <div class="panel panel-default col-sm-1 clickable custom-panel">
+                    <div class="panel-body">
+                        <i class="glyphicon glyphicon-chevron-right"></i>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="panel panel-default col-sm-2" ng-repeat="minister in game.ministers.activeMinisters">
-            <div class="panel-body" ng-click="fireMinister(minister.ministerType)">
-                <i class="glyphicon glyphicon-user"></i>
-                <span class="font-8pt">{{minister.ministerType}}</span>
-                <div class="pull-right" uib-tooltip="influence">
-                    <i class="glyphicon glyphicon-thumbs-up"></i>
-                    <span class="font-8pt">{{minister.influencePT}}</span>
-                </div>
-            </div>
-        </div>
-        <div ng-if="game.ministers.activeMinisters.length < 5" class="panel panel-default col-sm-1 clickable custom-panel">
-            <div class="panel-body" ng-click="game.ministers.openMinisterHire()">
-                <i class="glyphicon glyphicon-plus"></i>
-            </div>
-        </div>
-        <div class="panel panel-default col-sm-1 clickable custom-panel">
-            <div class="panel-body">
-                <i class="glyphicon glyphicon-chevron-right"></i>
-            </div>
-        </div>
-    </div>
-</div>

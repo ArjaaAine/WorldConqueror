@@ -1,27 +1,30 @@
 ﻿'use strict';
 
-wciApp.factory('ministerService', function (modalService,gameDataService) {
+wciApp.factory('ministerService', function (
+    modalService,
+    gameDataService,
+    playerService) {
 
     let Ministers = function () {
-        this.allMinisters = [];//list of laws from excel/json file
-        this.activeMinisters = [];//list of active laws
+        this.allMinisters = [];
+        this.remainingMinisters = [];
         this.nextMinisterCost = 1;
     };
 
     Ministers.prototype.init = function () {
         this.allMinisters = gameDataService.Ministers;
+        this.remainingMinisters = gameDataService.Ministers;
         this.activeMinisters = [];
-        let self = this;
     };
 
     Ministers.prototype.openMinisterHire = function () {
-        var ministerCost = 1;
-        var count = 0;
+        let ministerCost = 1;
+        let count = 0;
 
         //This is a factorial function
-        this.activeMinisters.forEach(function (min) {
+        playerService.ministers.activeMinisters.forEach(function (min) {
             count++;
-            ministerCost * count;
+            ministerCost *= count;
         });
         let self = this;
 
@@ -29,13 +32,13 @@ wciApp.factory('ministerService', function (modalService,gameDataService) {
 
         //open modal
 
-        var modalInstance = modalService.open({
+        let modalInstance = modalService.open({
             templateUrl: 'ministersHireModal.html',
             controller: 'ministersHiringModalController',
             size: 'md',
             resolve: {
-                allMinisters: function () {
-                    return self.allMinisters
+                remainingMinisters: function () {
+                    return self.remainingMinisters
                 },
                 nextMinisterCost: function () {
                     return self.nextMinisterCost
@@ -44,33 +47,41 @@ wciApp.factory('ministerService', function (modalService,gameDataService) {
         });
 
         modalInstance.result.then(function (ministerType) {
-            let minister = this.filterMinister(ministerType);
-            if (minister) this.activeMinisters.push(minister);
 
+            let minister = self.filterMinister(ministerType);
+            if (minister) {
+                playerService.ministers.activeMinisters.push(minister);
+                var index = playerService.ministers.remainingMinisters.indexOf(minister);
+                playerService.ministers.remainingMinisters.splice(index, 1);
+            }
             //handle bonuses
         });
     };
 
-    //Ministers.prototype.hireMinister = function (ministerType) {
-    //    let minister = this.filterMinister(ministerType);
-    //    if (minister) this.activeMinisters.push(minister);
-
-    //    //handle bonuses
-    //};
-
     Ministers.prototype.fireMinister = function (ministerType) {
-        let minister = this.filterMinister(ministerType);
-        this.activeMinisters.splice(minister);
+        //do popup to confirm. 
+
+        let minister = filterMinister(ministerType);
+        var index = playerService.ministers.activeMinisters.indexOf(minister);
+        playerService.ministers.activeMinisters.splice(index, 1);
+
+        //Adding it back to the hire list.
+        playerService.ministers.remainingMinisters.push(minister);
 
         //handle bonuses
     };
 
     Ministers.prototype.filterMinister = function (ministerType) {
-        return this.ministers.filter(function (ministerObject) {
+        return this.allMinisters.filter(function (ministerObject) {
             return ministerObject.ministerType.includes(ministerType);
         })[0];
     };
 
-    return new Ministers();
+    Ministers.prototype.update = function () {
+
+        //Write logic to update Influence Points
+    };
+
+    return Ministers;
 
 });

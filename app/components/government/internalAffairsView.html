@@ -1,25 +1,26 @@
 ﻿<div ng-controller="CountryController as countryCtrl">
     <script type="text/ng-template" id="internalAffairsView.html">
-        <div id="Internal Affairs">
-            <h4>
+        <div class="modal-header" id="Internal Affairs">
+            <h4 class="modal-title">
                 <span class="glyphicon glyphicon-flag"></span>
                 <span>
                     Welcome
-                    <span class="bold font-color-green">{{countryCtrl.myCountry.baseStats.leaderName}}</span>!
+                    <span class="bold font-color-green">{{myCountry.baseStats.leaderName}}</span>!
                     You are the
                     <span class="bold font-color-orange">
-                        {{countryCtrl.myCountry.baseStats.leaderTitle}}
+                        {{myCountry.baseStats.leaderTitle}}
                     </span>
                     of the
                     <i>
-                        {{countryCtrl.myCountry.baseStats.sizeName}}
+                        {{myCountry.baseStats.sizeName}}
                     </i>
                     <span class="bold font-color-red">
-                        {{countryCtrl.myCountry.baseStats.countryName}}!
+                        {{myCountry.baseStats.countryName}}!
                     </span>
                 </span>
             </h4>
-            <hr>
+            </div>
+        <div class="modal-body">
             <div ng-include="'app/components/ministers/ministersView.html'"></div>
             <div ng-include="'app/components/ministers/ministersHireModal.html'"></div>
             <div class="row">
@@ -36,7 +37,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div ng-repeat="law in countryCtrl.laws.unlockedLaws">
+                            <div ng-repeat="law in laws.unlockedLaws">
                                 <div class="panel-body">
                                     <div class="col-md-8">
                                         <span class="fa fa-info-circle" tooltip="{{law.description}}"></span>
@@ -50,10 +51,10 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="pull-right clickableArea">
-                                            <button class="btn" ng-click="countryCtrl.laws.enactLaw($index)" ng-class="!law.isActive ? 'btn-success': 'hidden'" ng-disabled="law.isActive">
+                                            <button class="btn" ng-click="laws.enactLaw($index)" ng-class="!law.isActive ? 'btn-success': 'hidden'" ng-disabled="law.isActive">
                                                 Enact
                                             </button>
-                                            <button class="btn" ng-click="countryCtrl.laws.repealLaw($index)" ng-class="law.isActive ? 'btn-danger': 'hidden'" ng-disabled="!law.isActive">
+                                            <button class="btn" ng-click="laws.repealLaw($index)" ng-class="law.isActive ? 'btn-danger': 'hidden'" ng-disabled="!law.isActive">
                                                 Repeal
                                             </button>
                                         </div>

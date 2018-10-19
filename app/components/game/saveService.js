@@ -7,28 +7,13 @@ wciApp.factory(
               lawsService,
               advisorsService,
               researchService,
+              ministerService,
               initService,
               bonusesService,
               warService,
               $location) {
 
         let data = {};
-        //list of services we want to save/load
-        /*TODO: Save only myCountry as it stores all data including research...*/
-        let servicesToSave = {
-            playerService: playerService,
-            // bonusesService: bonusesService,
-            // buildingsService: buildingsService,
-            // militaryService: militaryService,
-            // worldCountryService: worldCountryService,
-            // lawsService: lawsService,
-            // advisorsService: advisorsService,
-            // researchService: researchService
-        };
-        data.newGame = function () {
-            //initialize all data
-            initService();//This is a promise, we might want to stop auto save before running it.
-        };
         data.save = function () {
             console.log("SAVE");
             //TODO: Broken, cyclic object value error.
@@ -36,10 +21,11 @@ wciApp.factory(
             let saveData = {};//all data to save.
             let military = playerService.military;
             let research = playerService.research;
+            let ministers = playerService.ministers;
             //let laws = playerService.laws.activeLaws;
             //let lawsUnlocked = playerService.laws.unlockedLaws;
             let buildings = playerService.buildings;
-            let onWar = warService.countriesAtWar;
+            let onWar = warService.currentlyAtWar;
             let onWarColors = worldCountryService.countriesColorsAtWar;
 
             //Save only necessary data
@@ -51,6 +37,7 @@ wciApp.factory(
             // });
             saveData.military = military;
             saveData.research = research;
+            // saveData.ministers = ministers;
             // saveData.laws = laws;
             // saveData.lawsUnlocked = lawsUnlocked;
             saveData.buildings = buildings;
@@ -66,17 +53,19 @@ wciApp.factory(
             if(!savedData) return;
             let military = playerService.military;
             let research = playerService.research;
+            let ministers = playerService.ministers;
             //let laws = playerService.laws.activeLaws;
             //let lawsUnlocked = playerService.laws.unlockedLaws;
             let buildings = playerService.buildings;
             let baseStats = playerService.baseStats;
-            let onWar = warService.countriesAtWar;
+            let onWar = warService.currentlyAtWar;
             let onWarColors = worldCountryService.countriesColorsAtWar;
 
 
             //depreciated, but works :]
             angular.merge(military, savedData.military);
             angular.merge(research, savedData.research);
+            // angular.merge(ministers, savedData.ministers);
             // angular.merge(laws, savedData.laws);
             // angular.merge(lawsUnlocked, savedData.lawsUnlocked);
             angular.merge(buildings, savedData.buildings);
@@ -89,12 +78,17 @@ wciApp.factory(
         };
         //Separated from "newGame" in order to give us an ability to do other stuff which applies only when resetting
         data.reset = function () {
-            //When player resets a game, it will change current view to the base one
-            //TODO: Main reason for that is to fix a bug with active tab on buildings
-            //TODO: When resetting a game, for some reason active tab is not set until you change route(?)
-            //TODO: So your building list is not displayed.
-            $location.path("/");
-            data.newGame();
+
+            /*
+                When player resets a game, it will change current view to the main one("/")
+                Main reason for that is to fix a bug with active tab on buildings
+                When resetting a game, for some reason active tab is not set until you change route(?)
+                So your building list is not displayed.
+                Basically we force first screen to appear when using routing/nav bar.
+                Currently not needed <-- 2018-30-August --> Mariusz
+            */
+            // $location.path("/");
+
         };
         return data;
     }

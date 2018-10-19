@@ -4,11 +4,8 @@ wciApp.factory('playerService',
     function
         (
             bonusesService
-
         ) {
-
     //TODO: put the stats in a sub object
-
     let Player = function () {
         this.baseStats = {};
         this.events = {};
@@ -19,11 +16,11 @@ wciApp.factory('playerService',
             hunger: "Hunger is the percentage of the population without sufficient food because of shortage. This reduces the happiness.",
             unemployment: "Unemployment is the percentage of the population without a job. <br /> This reduces the happiness.",
             jobGdp: "This is how much each job affects the gdp"
-
         };
         this.conqueredCountries = [];//a list of countries we control
         this.startingCountries = [];//list of strings with starting countries for a player...
     };
+
     Player.prototype.init = function () {
         this.conqueredCountries = [];
         this.startingCountries = ["US"];//We can have more than 1...
@@ -75,10 +72,12 @@ wciApp.factory('playerService',
         };
         this.getLookups();
     };
+
     Player.prototype.addCountry = function(countryObject) {
         this.conqueredCountries.push(countryObject);
         this.updateLand();
     };
+
     Player.prototype.updateLand = function() {
         let totalLand = 0;
         this.conqueredCountries.forEach(function (countryData) {
@@ -130,6 +129,7 @@ wciApp.factory('playerService',
     Player.prototype.moneyGrowth = function () {
         return this.income() - this.baseStats.upkeep;
     };
+
     Player.prototype.gdp = function () {
         return Math.round(((this.filledJobs() * this.baseStats.jobGdpMultiplier)) * (this.baseStats.happiness / 100));
     };
@@ -159,6 +159,7 @@ wciApp.factory('playerService',
         if(typeof indexBonus !== "number") indexBonus = 0;
         return this.baseStats.currentStabilityIndex + indexBonus;
     };
+
     //Timer Methods
     Player.prototype.getGameTime = function () {
 
@@ -188,7 +189,6 @@ wciApp.factory('playerService',
     };
 
     Player.prototype.getNewDemographics = function () {
-
         this.baseStats.population += this.populationGrowth();
 
         this.setHappiness();
@@ -204,6 +204,7 @@ wciApp.factory('playerService',
         }
 
     };
+
     Player.prototype.getNewConsumption = function () {
 
         this.baseStats.totalFood += this.foodFlow();
@@ -218,6 +219,7 @@ wciApp.factory('playerService',
         }
 
     };
+
     Player.prototype.getNewEconomics = function () {
 
         this.baseStats.money += this.moneyGrowth();
@@ -265,6 +267,7 @@ wciApp.factory('playerService',
             }
         ];
     };
+
     Player.prototype.setCountrySize = function () {
 
         if (this.gdp() <= 100000) { //100k
@@ -298,6 +301,7 @@ wciApp.factory('playerService',
             this.baseStats.size = 7;
         }
     };
+
     Player.prototype.setHappiness = function () {
 
         let unemployment = this.unemployment();
@@ -314,6 +318,7 @@ wciApp.factory('playerService',
     Player.prototype.sizeIncreaseEvents = function () {
 
     };
+
     return new Player();
 });
 
