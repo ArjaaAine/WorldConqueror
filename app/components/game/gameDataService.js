@@ -42,7 +42,7 @@ wciApp.factory(
                 buildingArray[index].statMultiplier = element.statMultiplier;
                 buildingArray[index].statAdder = element.statAdder;
                 buildingArray[index].countMultiplier = element.countMultiplier;
-                buildingArray[index].jobsIncrease = element.jobsIncrease;
+                buildingArray[index].jobsIncreased = element.jobsIncreased;
                 buildingArray[index].image = element.image;
                 buildingArray[index].landCost = element.landCost;
                 buildingArray[index].isUnlocked = element.isUnlocked;

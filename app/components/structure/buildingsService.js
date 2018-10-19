@@ -10,38 +10,25 @@ wciApp.factory(
         ) {
 
         let Structure = function (structure) {
-            //This is a structure constructor for a separate structure like Market/Garden etc.
-            this.count = structure.count || 0;
-            this.isUnlocked = structure.isUnlocked || false;
-            this.ID = structure.ID;//We need ID to access gameDataService values for a specific structure using array.filter
+            $.extend(this, structure);
+            this.ID = structure.name;
         };
 
         //TODO: The reason we don't assign this data to the object is to prevent from saving it, we might use a private variable inside this service tho...
         //TODO: This service will be created for each country, so maybe it's good to use this method, so we dont copy this data for each country...
-        Structure.prototype.getStructureData = function () {
-            //filter gameDataService based on this.ID and return an object with the data we want to use.
-            let self = this;//cant use this keyword inside callback function here, so we store it as an variable.
-            return gameDataService.Buildings.filter(function (structure) {
-                return structure.name === self.ID
-            })[0];//we return only first element that matches the condition(There should be only 1 element anyway, in case there is more, something is probably wrong.
-                  //Might consider some error checking to count how many times filter returned something, if its more than 1, it's an error/we have duplicate in excel/json
-        };
 
         Structure.prototype.getUpkeep = function () {
             let upkeepBonus = bonusesService.researchBonuses.buildUpkeepMultiplier || 1;
-            let structure = this.getStructureData();
-            return structure.upkeep * upkeepBonus;
+            return this.upkeep * upkeepBonus;
         };
         Structure.prototype.build = function (count) {
-            console.log(count);
-            let structure = this.getStructureData();
-            let cost = structure.cost * count;
+            let cost = this.cost * count;
             let landCost = this.getLandCost() * count;
-            if ((playerService.baseStats.money > cost) && this.isUnlocked &&
+            if ((playerService.baseStats.money >= cost) && this.isUnlocked &&
                 playerService.baseStats.land >= landCost) {
-                playerService.baseStats[structure.statAffected] *= Math.pow((structure.statMultiplier * structure.countMultiplier), count);
-                playerService.baseStats[structure.statAffected] += (structure.statAdder * count);
-                playerService.baseStats.totalJobs += (structure.jobsIncreased * count);
+                playerService.baseStats[this.statAffected] *= Math.pow((this.statMultiplier * this.countMultiplier), count);
+                playerService.baseStats[this.statAffected] += (this.statAdder * count);
+                playerService.baseStats.totalJobs += (this.jobsIncreased * count);
                 playerService.baseStats.money -= cost;
                 playerService.baseStats.land -= landCost;
                 this.count = this.count * 1 + count; //*1 to force math add and not string add.
@@ -49,10 +36,9 @@ wciApp.factory(
         };
 
         Structure.prototype.getLandCost = function () {
-            let structure = this.getStructureData();
             //TODO: Also update currently built structures landCost. This might be a bit tricky tho...
             let bonusCost = bonusesService.researchBonuses.landCostAdder || 0;
-            let cost = structure.landCost - bonusCost;
+            let cost = this.landCost - bonusCost;
             if (cost <= 1) return 1;
             return cost;
         };
@@ -63,45 +49,39 @@ wciApp.factory(
         //TODO: Consider actually using a private variable to store structureData instead of calling a function everywhere.
         //TODO: Private, so it's not stored/shared outside of this scope, so we dont accidentally save this data to the player.
         //TODO: This will keep save files small and we can go even further and make them even smaller by saving only necessary info.
-        Structure.prototype.getName = function () {
-            let structure = this.getStructureData();
-            return structure.name;
-        };
-        Structure.prototype.getImage = function () {
-            let structure = this.getStructureData();
-            return structure.image;
-        };
+
         //TODO: Might seem pointless at first, but it helps keep things organized and allows to add formulas and include bonuses before returning those values.
         Structure.prototype.getMultiplier = function () {
-            let structure = this.getStructureData();
-            return structure.statMultiplier;
+            return this.statMultiplier;
         };
         Structure.prototype.getCountMultiplier = function () {
-            let structure = this.getStructureData();
-            return structure.countMultiplier;
+            return this.countMultiplier;
         };
         Structure.prototype.getStatMultiplier = function () {
-            let structure = this.getStructureData();
-            return structure.statMultiplier;
+            return this.statMultiplier;
         };
         Structure.prototype.getStatAdder = function () {
-            let structure = this.getStructureData();
-            return structure.statAdder;
+            return this.statAdder;
         };
         Structure.prototype.getJobsIncreased = function () {
-            let structure = this.getStructureData();
-            return structure.jobsIncreased;
+            return this.jobsIncreased;
         };
         Structure.prototype.getCost = function () {
-            let structure = this.getStructureData();
-            return structure.cost;
+            return this.cost;
         };
         Structure.prototype.getCount = function () {
             return this.count;
         };
+        Structure.prototype.cantAfford = function (count) {
+            if (playerService.baseStats.money >= this.cost * count && playerService.baseStats.land >= this.getLandCost() * count) {
+                return false;
+            }
+            return true;
+        };
         //TODO: Create get/set methods for all properties that might change, such as this.getCost, so we don't repeat same code everywhere, accessing gameDataService.Buildings[index] everytime
         //store all buildings by type/tab
         let Buildings = function () {
+            this.countToBuy = 1;
             this.structures = [];
         };
 
@@ -114,6 +94,16 @@ wciApp.factory(
                 structureObj.count = buildingsArray[j].count || 0;
                 structureObj.isUnlocked = buildingsArray[j].isUnlocked || false;
                 structureObj.ID = buildingsArray[j].name;
+                structureObj.name = buildingsArray[j].name;
+                structureObj.upkeep = buildingsArray[j].upkeep;
+                structureObj.cost = buildingsArray[j].cost;
+                structureObj.statAffected = buildingsArray[j].statAffected;
+                structureObj.statMultiplier = buildingsArray[j].statMultiplier;
+                structureObj.statAdder = buildingsArray[j].statAdder;
+                structureObj.countMultiplier = buildingsArray[j].countMultiplier;
+                structureObj.jobsIncreased = buildingsArray[j].jobsIncreased;
+                structureObj.image = buildingsArray[j].image;
+                structureObj.landCost = buildingsArray[j].landCost;
                 this.structures.push(new Structure(structureObj));//we create a new object, and we pass some basic values which we need to save/load.
             }
         };

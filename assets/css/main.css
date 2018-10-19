@@ -129,11 +129,6 @@ a {
 .glyphicon-black{
     color: #000000;
 }
-.font-size-25{
-    font-size: 30px;
-    text-align: center;
-    padding-bottom: 2px;
-}
 .removePadding-hireBtn {
     padding-top: 0;
     padding-bottom: 0;
@@ -235,7 +230,7 @@ a {
     position:absolute;
     z-index: 2;
     left: 1%;
-    top: 10%;
+    top: 20%;
 }
 
 .leader-icon{
@@ -257,4 +252,34 @@ a {
 
 .margin-bottom-5{
     margin-bottom: 5px;
+}
+
+.structureNotVisible {
+    opacity: 0.2;
+}
+
+.structureLockPosition{
+    position: absolute;
+    top: 20%;
+    left: 40%;
+    opacity: 1;
+    /*reset opacity with z-index*/
+    z-index: 1;
+}
+.lock-icon-font-size{
+    font-size: 70px;
+    text-align: center;
+    padding-bottom: 2px;
+}
+
+.modalOverflow-600{
+    overflow-y: auto;
+    max-height: 600px;
+}
+
+.game-time{
+    position:absolute;
+    right: 0;
+    top: 5%;
+    z-index: 1;
 }
