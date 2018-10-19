@@ -5,11 +5,11 @@ wciApp.controller(
     function (
         $scope,
         $uibModalInstance,
-        allMinisters,
+        remainingMinisters,
         nextMinisterCost) {
 
         $scope.ministers = [];
-        $scope.allMinisters = allMinisters;
+        $scope.remainingMinisters = remainingMinisters;
         $scope.nextMinisterCost = nextMinisterCost;
 
         $scope.hire = function (minister) {
