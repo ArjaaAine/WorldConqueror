@@ -40,6 +40,7 @@ wciApp.factory(
         //TODO: Consider using this object as a "group", and calculate total upkeep in worldCountry(playerService) service.
         //TODO: This way we can make multiple copies of this object, without having to use "this.unitsOnMission" array.
         let Military = function () {
+            this.unitsToHire = 1;//how many units we want to hire at once(with a single button press), needed to update the price on screen.
             this.unitsAtHome = [];
             this.unitsAtWar = [];
             this.unitsHiringQueue = [];
@@ -66,17 +67,15 @@ wciApp.factory(
                 this.unitsSendModal[i].count = 0;
                 this.unitsAtHome[i].isUnlocked = unitObject.unlocked;//TODO: Currently all of them are unlocked from the start, later need to unlock manually with research etc.
                 this.unitsAtHome[i].name = unitObject.name;
-
-                //hiring queue
-                this.unitsHiringQueue[i] = [];//Each unit has an array of queue
             }
         };
 
-        Military.prototype.cancelQueue = function (unitIndex, queueIndex) {
+        Military.prototype.cancelQueue = function (queueIndex) {
             //TODO: Prompt user when canceling a unitsHiringQueue
             //TODO: Tell the player about the possible lose of money, change formula to give less money, the longer player waits.
             //Cancel unitsHiringQueue gives back ~50% money or so
-            let count = this.unitsHiringQueue[unitIndex][queueIndex].count;
+            let count = this.unitsHiringQueue[queueIndex].count;
+            let unitIndex = this.unitsHiringQueue[queueIndex].id;
             let unitData = gameDataService.Units[unitIndex];
             let cost = unitData.cost;//TODO: Use methods to calculate the cost, possible way to cheat by hiring/canceling units after unit cost changes due to some bonuses
             let popCost = unitData.popCost;
@@ -85,10 +84,11 @@ wciApp.factory(
             playerService.baseStats.population += count * popCost;//give back population
             playerService.baseStats.unitCap += count * unitCapCost;//give back unit cap...
             //remove units from unitsHiringQueue
-            this.unitsHiringQueue[unitIndex].splice(queueIndex, 1);
+            this.unitsHiringQueue.splice(queueIndex, 1);
         };
         //adding units to unitsHiringQueue when buying, it might take 1 or more turns
-        Military.prototype.buyQueue = function (count, unitIndex) {
+        Military.prototype.buyQueue = function (unitIndex) {
+            let count = this.unitsToHire;
             //TODO: Consider merging same unit unitsHiringQueue if done on same turn.
             //TODO: For example, militia 10x, instead of storing 10x objects, we can combine them into 1...
             //TODO: Since time for training them will be the same(because they are unitsHiringQueued on same turn)
@@ -100,7 +100,6 @@ wciApp.factory(
             let trainingSpeed = unitData.trainingSpeed;
             let unitId = unitData.id;
             let name = unitData.name;
-            let hiringQueueUnit = this.unitsHiringQueue[unitIndex];
             if (playerService.baseStats.money >= count * cost &&
                 playerService.baseStats.unitCap >= count * unitCapCost &&
                 playerService.baseStats.population >= count * popCost) {
@@ -116,34 +115,44 @@ wciApp.factory(
 
                 //This stacks up units queue if their training time is the same(it does not take into account reduced time of training if you make a research during the training of the unit...)
 
-
-                if (hiringQueueUnit.length) {
-                    let lastQueueTime = hiringQueueUnit[hiringQueueUnit.length - 1].time || 1;
-                    if (lastQueueTime === trainingSpeed) {
-                        hiringQueueUnit[hiringQueueUnit.length - 1].count += count;
-                    } else {
-                        //TODO: Fix logic, we are repeating Array.push
-                        hiringQueueUnit.push({count: count, time: trainingSpeed, id: unitId, name: name, trainingSpeed: trainingSpeed});
-                    }
-                } else {
-                    hiringQueueUnit.push({count: count, time: trainingSpeed, id: unitId, name: name, trainingSpeed: trainingSpeed});
+                let unitToHire = {
+                    count: count,
+                    time: trainingSpeed,
+                    id: unitId,
+                    name: name,
+                    trainingSpeed: trainingSpeed
+                };
+                //Array.find = finds an element and stops iterating
+                //Array.findIndex = finds an index and stops iterating
+                //Array.filter = filter WHOLE array
+                let existingUnitIndex = this.unitsHiringQueue.findIndex(function (unit) {
+                   return unit.time === trainingSpeed && unit.id === unitId;
+                });
+                //if we found an element
+                if(existingUnitIndex >= 0) {
+                    this.unitsHiringQueue[existingUnitIndex].count += count;
+                }else {
+                    this.unitsHiringQueue.push(unitToHire);
                 }
             }
+
+            //TODO: Not very efficient to sort array every time we hire units, need fix
+            this.unitsHiringQueue.sort((a, b)=>{
+                return a.time - b.time;
+            })
         };
         //call every game turn
         Military.prototype.updateQueue = function () {
-            for (let j = 0; j < this.unitsHiringQueue.length; j++) {
-                for (let i = this.unitsHiringQueue[j].length - 1; i >= 0; i--) {
-                    let unitQueue = this.unitsHiringQueue[j];
-                    unitQueue[i].time--;//reduce value by 1(1 turn)
-                    //TODO: add more logic which takes research and other bonuses that improve speed.
-                    if (unitQueue[i].time <= 0) {
-                        let id = unitQueue[i].id;
-                        //add units to our military.
-                        this.unitsAtHome[id].count += unitQueue[i].count;
-                        //remove from unitsHiringQueue
-                        unitQueue.splice(i, 1);
-                    }
+            for (let i = this.unitsHiringQueue.length - 1; i >= 0; i--) {
+                let unitQueue = this.unitsHiringQueue[i];
+                unitQueue.time--;//reduce value by 1(1 turn)
+                //TODO: add more logic which takes research and other bonuses that improve speed.
+                if (unitQueue.time <= 0) {
+                    let id = unitQueue.id;
+                    //add units to our military.
+                    this.unitsAtHome[id].count += unitQueue.count;
+                    //remove from unitsHiringQueue
+                    this.unitsHiringQueue.splice(i, 1);
                 }
             }
         };

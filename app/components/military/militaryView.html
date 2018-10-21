@@ -18,6 +18,13 @@
                                         <div class="col-xs-3">
                                             <i class="fas fa-male"></i> {{countryData.unitCap}}
                                         </div>
+                                        <div class="col-xs-6">
+                                            <button class="btn btn-sm btn-primary" ng-click="military.unitsToHire = 1">1x</button>
+                                            <button class="btn btn-sm btn-primary" ng-click="military.unitsToHire = 5">5x</button>
+                                            <button class="btn btn-sm btn-primary" ng-click="military.unitsToHire = 25">25x</button>
+                                            <button class="btn btn-sm btn-primary" ng-click="military.unitsToHire = 100">100x</button>
+                                            <button class="btn btn-sm btn-primary" ng-click="military.unitsToHire = 1000">1000x</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -26,8 +33,8 @@
                     <div class="row">
                         <div id="military" class="col-xs-12">
                             <div class="row">
-                                <div class="col-xs-9 font-9pt">
-                                    <div class="row modalOverflow-600">
+                                <div class="col-xs-12 col-sm-6 col-md-8 font-9pt">
+                                    <div class="row modalOverflow">
                                         <div ng-repeat="unit in military.unitsAtHome track by $index">
                                         <!-- Hide on xs/sm -->
                                             <div class="hidden-xs hidden-sm">
@@ -41,7 +48,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="panel panel-primary panelLocked clickableArea panelUnlocked">
+                                                    <div class="panel panel-primary font-8pt">
                                                         <div class="row text-center">
                                                             <h4>{{unit.name}}</h4>
                                                         </div>
@@ -70,11 +77,11 @@
                                                         <div class="row">
                                                             <div class="col-xs-12">
                                                                 <button class="btn btn-block btn-success"
-                                                                        ng-click="military.buyQueue(1, unit.id)">
-                                                                    Hire - <i class="fas fa-money-bill-alt"></i>
-                                                                    {{military.getCost(unit.id)}}
+                                                                        ng-click="military.buyQueue(unit.id)">
+                                                                    x {{military.unitsToHire}} <i class="fas fa-money-bill-alt"></i>
+                                                                    {{military.getCost(unit.id) * military.unitsToHire | niceNumber}}
                                                                     <i class="fas fa-male"></i>
-                                                                    {{military.getPopulationCost(unit.id)}}
+                                                                    {{military.getPopulationCost(unit.id) * military.unitsToHire | niceNumber}}
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -88,7 +95,7 @@
                                             <div class="hidden-md hidden-lg">
                                                 <div class="col-xs-12">
                                                     <div class="row bottom-border margin-bottom-5">
-                                                        <div class="col-xs-6 col-sm-8">
+                                                        <div class="col-xs-6 col-sm-7">
                                                             <div class="row">
                                                                 <div class="col-xs-12">
                                                                     <div class="row">
@@ -96,7 +103,7 @@
                                                                             <span class="tag label label-default center-block">{{unit.name}}({{unit.count}})</span>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="row">
+                                                                    <div class="row font-8pt">
                                                                         <div class="col-xs-6 col-sm-4">
                                                                             <i class="fas fa-fire"></i> {{military.getAttack(unit.id)}}
                                                                         </div>
@@ -119,13 +126,13 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-xs-6 col-sm-4">
+                                                        <div class="col-xs-6 col-sm-5">
                                                             <button class="btn btn-block btn-success"
-                                                                    ng-click="military.buyQueue(1, unit.id)">
-                                                                 <i class="fas fa-money-bill-alt"></i>
-                                                                {{military.getCost(unit.id) | niceNumber}}
+                                                                    ng-click="military.buyQueue(unit.id)">
+                                                                x {{military.unitsToHire}} <i class="fas fa-money-bill-alt"></i>
+                                                                {{military.getCost(unit.id) * military.unitsToHire | niceNumber}}
                                                                 <i class="fas fa-male"></i>
-                                                                {{military.getPopulationCost(unit.id) | niceNumber}}
+                                                                {{military.getPopulationCost(unit.id) * military.unitsToHire | niceNumber}}
                                                             </button>
                                                         </div>
                                                     </div>
@@ -134,24 +141,35 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xs-3 unitRecruitment">
+                                <div class="col-xs-12 col-sm-6 col-md-4 modalOverflow hiringQueue">
                                     <h3 class="text-center">Hiring Queue</h3>
-                                    <div class="row" ng-repeat="unit in military.unitsHiringQueue track by $index"
-                                         ng-init="outerIndex=$index">
-                                        <div class="col-xs-12">
-                                            <div class="row text-center" ng-repeat="unitQueue in unit track by $index"
-                                                 ng-init="innerIndex=$index">
-                                                {{unitQueue.name}} x {{unitQueue.count}}
-                                                <uib-progressbar
-                                                        value="(100 - unitQueue.time/unitQueue.trainingSpeed * 100)">
-                                                    <span>{{unitQueue.time}} turn/s</span>
-                                                    <span>
-                                                <a class="pull-right text-danger"
-                                                   ng-click="military.cancelQueue(outerIndex, innerIndex)">
-                                                    <i class="fas fa-2x fa-ban"></i>
-                                                </a>
-                                            </span>
-                                                </uib-progressbar>
+                                    <div class="row">
+                                        <div class="col-xs-4 col-md-6 col-lg-4" ng-repeat="unit in military.unitsHiringQueue track by $index">
+                                            <div class="thumbnail text-center">
+                                                <div>
+                                                    <span class="text-center font-8pt">
+                                                        {{unit.name}}
+                                                        <a class="text-danger"
+                                                        ng-click="military.cancelQueue($index)">
+                                                            <i class="fas fa-times"></i>
+                                                        </a>
+                                                    </span>
+                                                </div>
+                                                <img src="./assets/img/avatar_blank.jpeg">
+                                                <div>
+                                                    <uib-progressbar class="hiringQueue-progressBar"
+                                                                     value="(100 - unit.time/unit.trainingSpeed * 100)">
+                                                        <!--<span>-->
+                                                            <!--<a class="text-danger"-->
+                                                               <!--ng-click="military.cancelQueue($index)">-->
+                                                                <!--<i class="fas fa-times"></i>-->
+                                                            <!--</a>-->
+                                                        <!--</span>-->
+                                                    </uib-progressbar>
+                                                    <span class="text-center font-8pt">
+                                                        {{unit.count | niceNumber}} - {{unit.time}}/turns
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

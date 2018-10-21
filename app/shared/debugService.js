@@ -50,7 +50,7 @@ wciApp.factory(
             this.addEachBuilding(100);
             this.addResearchPoints(10000);
             this.addUnits(1000);
-            this.addPopulation(1000);
+            this.addPopulation(10000000);
         };
         return new Debug();
     });

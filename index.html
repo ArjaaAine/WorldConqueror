@@ -80,6 +80,40 @@
                                     </span>
                         </button>
                     </div>
+
+
+                    <div class="worldMap-hiringQueue">
+                        <div class="panel panel-default hidden-xs modalOverflow">
+                            <h4 class="text-center"><small>Queue:</small></h4>
+                            <div class="worldMap-hiringQueueWidth">
+                            <!--Units Queue -->
+                            <!-- TODO: Create a directive or something so we don't repeat this here and in militaryView... -->
+                                <div class="" ng-repeat="unit in game.myCountry.military.unitsHiringQueue track by $index">
+                                    <div class="">
+                                        <div class="thumbnail worldMap-hiringQueueMargin text-center">
+                                            <span class="text-center font-8pt">
+                                                {{unit.name}}
+                                                <a class="text-danger"
+                                                   ng-click="military.cancelQueue($index)">
+                                                    <i class="fas fa-times"></i>
+                                                </a>
+                                            </span>
+                                            <img src="./assets/img/avatar_blank.jpeg">
+                                            <uib-progressbar class="hiringQueue-progressBar"
+                                                             value="(100 - unit.time/unit.trainingSpeed * 100)">
+                                            </uib-progressbar>
+                                            <span class="text-center font-8pt">
+                                                    {{unit.count | niceNumber}} - {{unit.time}}/t
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
                     <div class="map-overlay-next-turn">
                         <button class="btn btn-success btn-lg" ng-click="game.nextTurn()">Next Turn</button>
                     </div>

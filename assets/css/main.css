@@ -271,12 +271,49 @@ a {
     text-align: center;
     padding-bottom: 2px;
 }
-
-.modalOverflow-600{
+.worldMap-hiringQueue{
+    position:absolute;
+    top: 10%;
+    right: 0;
+    z-index: 1;
+}
+.modalOverflow-600 {
     overflow-y: auto;
     max-height: 600px;
 }
 
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    .modalOverflow {
+        overflow-y: auto;
+        max-height: 300px;
+    }
+    .hiringQueue{
+        border-top: 1px solid;
+    }
+}
+@media only screen and (min-width: 768px) {
+    /* For PC: */
+    .modalOverflow {
+        overflow-y: auto;
+        max-height: 600px;
+    }
+    .worldMap-hiringQueueWidth{
+        width: 70px;
+    }
+    .container-scroll > .row {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    .container-scroll > .row > [class*="col-"] {
+        display: inline-block;
+        float: none;
+    }
+}
+
+.modalOverflow-x {
+    overflow-x: auto;
+}
 .game-time{
     position:absolute;
     right: 0;
@@ -284,6 +321,16 @@ a {
     z-index: 1;
 }
 
+.hiringQueue-progressBar{
+    height: 5px;
+    margin-top:0;
+}
+.worldMap-hiringQueueMargin{
+    margin-bottom:5px;
+}
+.progress{
+    background-color: #90CAF9;
+}
 /*
   Allow angular.js to be loaded in body, hiding cloaked elements until
   templates compile.  The !important is important given that there may be
