@@ -64,7 +64,9 @@ wciApp.factory('playerService',
             unitCap: 0,
             baseResearchPoints: 0,
             currentTurn: 0,
-            land: 100
+            land: 100,
+            //Laws
+            influence: 0
         };
         this.events = {
             oneChildPolicy: false, //Law

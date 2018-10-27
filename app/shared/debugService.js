@@ -19,6 +19,11 @@ wciApp.factory(
             playerService.baseStats.land += value;
         };
 
+        Debug.prototype.addInfluence = function (val) {
+            let value = val || 100000;
+            playerService.baseStats.influence += value;
+        };
+
         Debug.prototype.addResearchPoints = function (val) {
             let value = val || 1000;
             playerService.baseStats.baseResearchPoints = value;

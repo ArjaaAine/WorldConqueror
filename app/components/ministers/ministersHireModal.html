@@ -7,19 +7,17 @@
             <div ng-repeat="minister in remainingMinisters">
                 <div class="panel-body custom-panel">
                     <div class="col-md-2 col-sm-3 avatar">
-                        <img class="img-responsive" src="{{minister.Image}}" />
+                        <img class="img-responsive" src="{{minister.image}}" />
                     </div>
                     <div class="col-md-6 col-sm-6">
                         <span>{{minister.ministerType}}</span>
                         <br />
-                        <span>{{minister.influencePT}}</span>
+                        <span>influence{{minister.influencePT}}/turn</span>
                         <br />
-                        <span>{{minister.statAffected}}</span>
-                        <br />
-                        <span>{{nextMinisterCost| niceNumber}}</span>
+                        <span>{{minister.description}}</span>
                     </div>
                     <div class="col-md-3 col-sm-3 pull-right">
-                        <button class="btn btn-success pull-right" ng-click="hire(minister)">Hire</button>
+                        <button class="btn btn-success pull-right" ng-click="hire(minister)">Hire ({{nextMinisterCost| niceNumber}} influence)</button>
                     </div>
                 </div>
 
