@@ -70,6 +70,17 @@ wciApp.factory(
             }
         };
 
+        Military.prototype.unlockUnits = function(units){
+            for(const name of units){
+                for(const unit of this.unitsAtHome){
+                    if(unit.name === name){
+                        unit.isUnlocked = true;
+                        break;
+                    }
+                }
+            }
+        };
+
         Military.prototype.cancelQueue = function (queueIndex) {
             //TODO: Prompt user when canceling a unitsHiringQueue
             //TODO: Tell the player about the possible lose of money, change formula to give less money, the longer player waits.

@@ -45,8 +45,8 @@
                                     <!-- HIDE ON XS/SMALL RESOLUTION, this is for laptops/PC monitors-->
                                     <div class="col-md-4 hidden-xs hidden-sm">
                                         <div class="row">
-                                            <i ng-hide="structure.isVisible()" class="structureLockPosition center-block glyphicon glyphicon-lock glyphicon-black lock-icon-font-size"></i>
-                                            <div class="col-md-12" ng-class="structure.isVisible() ? '' : 'structureNotVisible'">
+                                            <i ng-hide="structure.isUnlocked" class="structureLockPosition center-block glyphicon glyphicon-lock glyphicon-black lock-icon-font-size"></i>
+                                            <div class="col-md-12" ng-class="structure.isUnlocked ? '' : 'structureNotVisible'">
                                                 <div class="panel panel-primary clickableArea">
                                                     <div class="panel-body">
                                                         <div class="row">
@@ -98,7 +98,7 @@
                                                             <div>
                                                                 <div class="col-md-12">
                                                                     <button class="btn-block btn-success"
-                                                                            ng-disabled="!structure.isVisible() || structure.cantAfford(buildings.countToBuy)"
+                                                                            ng-disabled="!structure.isUnlocked || structure.cantAfford(buildings.countToBuy)"
                                                                             ng-class="{'btn-danger': structure.cantAfford(buildings.countToBuy)}"
                                                                             ng-click="structure.build(buildings.countToBuy)">
                                                                         <span class="text-center">Buy x{{buildings.countToBuy}}</span>
@@ -164,7 +164,7 @@
                                                 </div>
                                                 <div class="col-xs-4">
                                                     <button class="btn btn-block btn-sm btn-success"
-                                                            ng-disabled="!structure.isVisible() || structure.cantAfford(buildings.countToBuy)"
+                                                            ng-disabled="!structure.isUnlocked || structure.cantAfford(buildings.countToBuy)"
                                                             ng-class="{'btn-danger': structure.cantAfford(buildings.countToBuy)}"
                                                             ng-click="structure.build(buildings.countToBuy)">
                                                         <span class="text-center">Buy x{{buildings.countToBuy}}</span>

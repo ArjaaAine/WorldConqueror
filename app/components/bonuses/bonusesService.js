@@ -7,9 +7,10 @@ wciApp.factory('bonusesService', function () {
     }
 
     Bonuses.prototype.update = function (gameObj) {
+        //We pass gameObj because it is initialized later on, so we can't pass Services.
+        this.updateMinisters(gameObj.myCountry.ministers);
         this.updateResearch(gameObj.myCountry.research);
         this.updateLaws(gameObj.myCountry.laws);
-        this.updateMinisters(gameObj.myCountry.activeMinisters);
     };
 
     Bonuses.prototype.init = function () {
@@ -20,17 +21,18 @@ wciApp.factory('bonusesService', function () {
 
     Bonuses.prototype.updateResearch = function (researchService) {
         let allBonuses = {};
-        for (let i = 0; i < researchService.bonuses.length; i++) {
-            for (let bonusProp in researchService.bonuses[i]) {
-                if (researchService.bonuses[i].hasOwnProperty(bonusProp)) {
-                    if (researchService.bonuses[i][bonusProp] >= 0) {
+        for (let i = 0; i < researchService.researchBonuses.length; i++) {
+            for (let bonusProp in researchService.researchBonuses[i]) {
+                if (researchService.researchBonuses[i].hasOwnProperty(bonusProp)) {
+                    if (researchService.researchBonuses[i][bonusProp] >= 0) {
                         if (!allBonuses[bonusProp]) allBonuses[bonusProp] = 0;
-                        allBonuses[bonusProp] += researchService.bonuses[i][bonusProp];
+                        allBonuses[bonusProp] += researchService.researchBonuses[i][bonusProp];
                     }
                 }
             }
         }
         this.researchBonuses = allBonuses;
+        console.log(this);
     };
 
     Bonuses.prototype.updateLaws = function (lawsService) {
@@ -54,10 +56,11 @@ wciApp.factory('bonusesService', function () {
     Bonuses.prototype.updateMinisters = function (ministersService) {
         let totalBonus = {};
 
-        //Commented out because activeMinisters need to be initialized somewhere so we dont ge an error here. 22-09-2018
-        // ministersService.activeMinisters.forEach(function (minister) {
-        //     totalBonus[minister.statAffected] = minister.statAdder;
-        // });
+        // Commented out because activeMinisters need to be initialized somewhere so we dont ge an error here. 22-09-2018
+        ministersService.activeMinisters.forEach(function (minister) {
+            totalBonus[minister.statAffected] = totalBonus[minister.statAffected] || 0;
+            totalBonus[minister.statAffected] += minister.statAdder;
+        });
         this.ministersBonuses = totalBonus;
 
     };

@@ -3,6 +3,8 @@ wciApp.factory(
     function (
 
     ) {
+        let convertToObject = ["ResearchDescription"];
+        let removeUndefined = ["ResearchBonuses"];
         /* Contains all game data for units/research/law/buildings etc. It contains base values only.
         *  In order to get actual unit attack/defense, we will be using a method like "unit.getAttack();
         *  Which will add other bonuses to the formula, like research or terrain type(if we ever implement that)*/
@@ -15,12 +17,41 @@ wciApp.factory(
             for(let key in excelObject) {
                 if(excelObject.hasOwnProperty(key)){
                     this[key] = excelObject[key];
+                    for(const value of convertToObject){
+                        if(value === key){
+                           this[key] = this.convertToObject(excelObject[key])
+                        }
+                    }
+                    for(const value of removeUndefined) {
+                        if (value === key) {
+                            this[key] = this.removeUndefined(excelObject[key]);
+                        }
+                    }
                 }
             }
             this.addIntellisense(excelObject);
             console.log("Game Data Object for debug reference: ");
             console.dir(this);
         };
+        data.removeUndefined = function(excelObject){
+            for(const [index, array] of excelObject.entries()){
+                for(const [key, property] of Object.entries(array)){
+                    if(property === undefined){
+                        delete excelObject[index][key];
+                    }
+                }
+            }
+            return excelObject;
+        };
+
+        data.convertToObject = function(excelObject) {
+            let object = {};
+            for(const value of excelObject){
+                object[value.id] = value.name;
+            }
+            return object;
+        };
+
         data.getCountryName = function(countryCode) {
           let name = "";
           this.WorldCountries.forEach(function (element) {

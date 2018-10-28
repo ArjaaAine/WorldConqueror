@@ -46,6 +46,7 @@ wciApp.factory(
         Debug.prototype.giveMeAll = function() {
             playerService.baseStats.money += 100000000;
             if(playerService.baseStats.money > 100000000) playerService.baseStats.money = 100000000;
+            playerService.research.sciencePoints += 1000000;
             this.addLand(10000000);
             this.addEachBuilding(100);
             this.addResearchPoints(10000);

@@ -14,7 +14,8 @@ wciApp.factory(
               gameDataService,
               warService,
               $q) {
-        let sheets = ["Buildings", "Units", "ResearchData", "ResearchBonuses", "Laws", "WorldCountries", "Ministers"];
+        //TODO: We might want to store this in an excel too to allow modding, so we don't have to edit the code in order to add new excel sheet
+        let sheets = ["Buildings", "Units", "ResearchData", "ResearchBonuses", "ConstructionResearch", "WarResearch", "EconomyResearch", "Laws", "WorldCountries", "Ministers", "ResearchDescription"];
 
         let init = function () {
             console.log("INIT");

@@ -108,6 +108,17 @@ wciApp.factory(
             }
         };
 
+        Buildings.prototype.unlockBuilding = function(buildingsToUnlock){
+            for(const value of buildingsToUnlock){
+                for(const building of this.structures.values()){
+                    if(value === building.name){
+                        building.isUnlocked = true;
+                        break;
+                    }
+                }
+            }
+        };
+
         Buildings.prototype.getTotalUpkeep = function () {
             let upkeep = 0;
             //TODO: Might want to return 0 if structureCount is 0, so we avoid unnecessary calculations

@@ -1,111 +1,126 @@
 ﻿'use strict';
 
-wciApp.factory('researchService', function (playerService, gameDataService) {
+wciApp.factory('researchService', function (gameDataService, bonusesService, playerService) {
 
-    //constructor store all researches, each time we complete a research we add index + 1 to current research type...
-    let Research = function () {
-        this.types = [];//array of research types: "Economy", "War", etc. Each has an array of total researches...
-        this.currentResearchTypeIndex = 0;//type as "War/Economy/Construction" -> index of a type which we currently research
-        this.researchProgress = [
-            {level: 0, points: 0},
-            {level: 0, points: 0},
-            {level: 0, points: 0}
-        ];
-        this.bonuses = [];
-    };
-
-    Research.prototype.init = function (){
-        let research = gameDataService.ResearchData;
-        let researchBonuses = gameDataService.ResearchBonuses;
-        let temporaryTypes = {}; //Used inside a loop, so we don't push too many objects at once. Like War/Economy(we only need 1 of each)
-        let currentIndex = -1; //start at -1 because we are adding +1 for each new type, and we want to start at 0...
-        //empty the object
-        this.types = [];
-        this.currentResearchTypeIndex = 0;
-        this.researchProgress = [];
-        this.bonuses = [];
-
-        //Initialize object with data from excel
-        for (let i = 0; i < research.length; i++) {
-            //loop through all researches
-            let researchData = research[i];
-            researchData.bonuses = researchData.bonuses || [];
-            researchData.currentBonus = null;
-            researchData.bonuses.push(filterArrayResearch(researchBonuses, researchData.bonus_1));
-            researchData.bonuses.push(filterArrayResearch(researchBonuses, researchData.bonus_2));
-            //Delete 2 properties that we no longer need
-            delete researchData.bonus_1;
-            delete researchData.bonus_2;
-            let type = researchData.researchType;
-            if (!temporaryTypes[type]) {
-                temporaryTypes[type] = type;
-                this.researchProgress.push({
-                    level: 0, points: 0
-                });
-                currentIndex++;//increase current index, so we can create an array for each type
-                this.types[currentIndex] = {};
-                this.types[currentIndex].name = type;
-            }//If type does not exist, we add it to temporary variable, so we don't repeat it. Type is research type like "War, Economy"
-            if (!this.types[currentIndex].researchList) this.types[currentIndex].researchList = [];
-            this.types[currentIndex].researchList.push(researchData);
+    class Research {
+        constructor() {
+            this.scientists = 1;//total scientists we have unlocked/bought
+            this.maxScientists = 5;//max scientists we can hire, scientist can't go higher than maxScientists.
+            this.scientistPrice = 100;
+            this.baseScienceGain = 1;//this is how much science points is gained per turn for each research type
+            this.sciencePoints = 0;//Store leftover science points after research is finished.(like in civ)
+            this.researchType = {};//object to store various research types such as War/Economy
+            this.isUnlocked = {};//object key == research name/id, each store a boolean which we save only.
+            this.descriptions = {};
+            this.researchBonuses = {};
         }
+        init() {
+            const researchBonuses = gameDataService.ResearchBonuses;
+            this.descriptions = gameDataService.ResearchDescription;
+            for (const { type } of gameDataService.ResearchData) {
+                this.researchType[type] = gameDataService[type + "Research"];
+                this._initBonusProps(type, researchBonuses);
+            }
+            console.log(this);
+            // for testing
+            this.update();
+        };
+        _initBonusProps(type, researchBonuses) {
+            const arr = this.researchType[type];
+            const len = arr.length;
+            for (let i = 0; i < len; ++i) {
+                const { name, bonus: researchBonus } = arr[i];
+                const obj = this.researchType[type][i];
+                const bonus = obj.bonus = researchBonuses.filter(this._bonusFilter, researchBonus);
+                this.isUnlocked[name] = false;
+                if (bonus.length < 1) {
+                    console.log("Bonus not working! Probably does not exist in the excel file: %s", name);
+                    continue;
+                }
+                const first = bonus[0];
+                delete first.ID;
+            }
+        };
 
-        //TODO: Once we use vertical progress bar, we might need to reverse an array in order to display lvl 1 research at the bottom.
-        // for(var researchType in this.types){
-        //     this.types[researchType].researchList.reverse();
-        // }
-    };
+        _bonusFilter(bonus) {
+            return this === bonus.ID;
+        };
+        getDescription(property){
+            return this.descriptions[property];
+        };
+        canAffordScientist() {
+            return playerService.baseStats.money >= this.scientistPrice && this.scientists + 1 <= this.maxScientists;
+        };
+        hireScientist(){
+            console.log(this);
+            //TODO: Add different scientists with skill and level them up(might want to use a service for scientist exp/lvl/bonuses or at least a constructor here)
+            if(this.canAffordScientist()){
+                this.scientists++;
+                playerService.baseStats.money -= this.scientistPrice;
+                this.scientistPrice = Math.floor(this.scientistPrice * 2.5);
+            }else{
+                console.log("Can't hire more scientists! No money or max scientists reached");
+            }
+        };
 
-    Research.prototype.chooseResearch = function (researchTypeIndex) {
-        //Choose research type we want to research and set index to it, so we know which one to update after new turn
-        this.currentResearchTypeIndex = researchTypeIndex;
-        console.log(this.types[this.currentResearchTypeIndex]);
-    };
+        unlockResearch(type, index){
+            const research = this.researchType[type][index];
+            const price = research.cost;
+            if(this.sciencePoints >= price){
+                const military = playerService.military;
+                const buildings = playerService.buildings;
+                const laws = playerService.laws;
+                const name = research.name;
+                let buildingsToUnlock = research.unlockBuilding;
+                let unitToUnlock = research.unlockUnit;
+                let lawToUnlock = research.unlockLaw;
 
-    Research.prototype.chooseBonus = function (bonusTypeIndex, researchIndex, researchTypeIndex) {
-        let currentResearch = this.types[researchTypeIndex].researchList[researchIndex];
-        if (currentResearch.isUnlocked && !currentResearch.bonusGiven) {
-            currentResearch.bonusGiven = true;
-            currentResearch.bonusGivenIndex = bonusTypeIndex;
-            this.bonuses.push(currentResearch.bonuses[bonusTypeIndex]);
-        }
-    };
+                this.sciencePoints -= price;
+                this.isUnlocked[name] = true;
 
-    Research.prototype.update = function () {
-        let currentResearchProgress = this.getCurrentResearchProgress();
-        let currentResearchList = this.getCurrentResearchList();//List of researches based on current type being researched(War/Economy...)
-        let currentResearch = currentResearchList[currentResearchProgress.level];
+                //unlock bonuses
+                for(const bonusData of research.bonus){
+                    this.unlockBonus(bonusData, research.name);
+                }
 
-        currentResearchProgress.points += playerService.baseStats.baseResearchPoints;
-        if(!currentResearch) return;//return if we reach the end of an array
-        if(currentResearchProgress.points >= currentResearch.cost){
-            //TODO: Important to unlock laws before adding a level to the research
-            let lawUnlock = currentResearch.lawUnlock;
-            playerService.laws.unlockLaw(lawUnlock);
-            currentResearchProgress.level++;
-            currentResearch.isUnlocked = true;
-            //TODO: Need to check if we reached max research level, to prevent further progress and errors :|
-            console.log("Research Unlocked");
-        }
-    };
+                //unlock units
+                if(unitToUnlock) {
+                    unitToUnlock = unitToUnlock.split(", ");
+                    military.unlockUnits(unitToUnlock);
+                }
 
-    //Helper methods
-    Research.prototype.getCurrentResearchProgress = function() {
-        return this.researchProgress[this.currentResearchTypeIndex];
-    };
-    Research.prototype.getCurrentResearchList = function (){
-        return this.types[this.currentResearchTypeIndex].researchList;//List of researches based on current type being researched(War/Economy...)
-    };
+                //unlock buildings
+                if(buildingsToUnlock) {
+                    buildingsToUnlock = buildingsToUnlock.split(", ");
+                    buildings.unlockBuilding(buildingsToUnlock);
+                }
+
+                //unlock law
+                if(lawToUnlock) {
+                    lawToUnlock = lawToUnlock.split(", ");
+                    laws.unlockLaw(lawToUnlock)
+                }
+            }
+        };
+        unlockBonus(bonusData, name){
+            this.isUnlocked[name] = true;
+            for(const [key, bonus] of Object.entries(bonusData)){
+                this.researchBonuses[key] = this.researchBonuses[key] || 0;
+                this.researchBonuses[key] += bonus;
+            }
+            console.log(bonusData);
+        };
+        scienceGain() {
+            return this.baseScienceGain + (this.scientists * 3);//In the future each scientist will have it's own stats, for now it's simple
+        };
+        update(){
+            this.sciencePoints += this.scienceGain();
+
+        };
+    }
 
     return Research;
-
 });
-
-function filterArrayResearch(array, name) {
-    return array.filter(function (str) {
-        return str.ID.includes(name);
-    })[0];
-}
 
 //Internet - improves research
 //Globalization - improves economy
