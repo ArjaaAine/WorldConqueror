@@ -14,6 +14,7 @@ wciApp.controller(
 
         $scope.hire = function (minister) {
             console.log("hire");
+
             $uibModalInstance.close(minister.ministerType);
         };
         $scope.cancel = function () {

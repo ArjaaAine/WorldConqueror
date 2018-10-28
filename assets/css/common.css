@@ -15,11 +15,16 @@
   margin-left: 15px;
 }
 
+.padding-10 {
+    padding: 10px 10px 10px 10px;
+}
+
 
 /*Custom Controls*/
 .clickable {
     cursor: pointer;
 }
+
 
 /*Alignment*/
 .align-left {

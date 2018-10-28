@@ -1,4 +1,8 @@
 ﻿        <div class="row">
+            <p id="errors" class="col-md-12 bg-danger padding-10 bold" ng-show="myCountry.ministers.error">
+                <i class="fa fa-info-circle"></i>
+                {{myCountry.ministers.errorMessage}}
+            </p>
             <div id="ministers" class="col-sm-12">
                 <div class="panel panel-default col-sm-1 clickable custom-panel">
                     <div class="panel-body">
@@ -6,10 +10,10 @@
                     </div>
                 </div>
                 <div class="panel panel-default col-sm-2" ng-repeat="minister in myCountry.ministers.activeMinisters track by $index">
-                    <div class="panel-body row" ng-click="fireMinister(minister.ministerType)">
+                    <div class="panel-body row clickable" ng-click="myCountry.ministers.fireMinister(minister)">
                         <i class="fas fa-user"></i>
-                        <span class="font-8pt">{{minister.ministerType}}</span>
-                        <div class="pull-right" uib-tooltip="influence">
+                        <span class="font-8pt" uib-tooltip="{{minister.description}}">{{minister.ministerType}}</span>
+                        <div class="pull-right" uib-tooltip="influence per turn">
                             <i class="fas fa-thumbs-up"></i>
                             <span class="font-8pt">{{minister.influencePT}}</span>
                         </div>

@@ -9,11 +9,15 @@ wciApp.factory('ministerService', function (
         this.allMinisters = [];
         this.remainingMinisters = [];
         this.nextMinisterCost = 1;
+        this.error = false;
+        this.errorMessage = "";
     };
 
     Ministers.prototype.init = function () {
         this.allMinisters = gameDataService.Ministers;
-        this.remainingMinisters = gameDataService.Ministers;
+        this.remainingMinisters = this.allMinisters.filter(function (minister) {
+            return minister.isActive === 1;
+        });
         this.activeMinisters = [];
     };
 
@@ -23,52 +27,62 @@ wciApp.factory('ministerService', function (
 
         //This is a factorial function
         playerService.ministers.activeMinisters.forEach(function (min) {
-            count++;
+            count += 100;
             ministerCost *= count;
         });
         let self = this;
 
         self.nextMinisterCost = ministerCost;
 
-        //open modal
-
-        let modalInstance = modalService.open({
-            templateUrl: 'ministersHireModal.html',
-            controller: 'ministersHiringModalController',
-            size: 'md',
-            resolve: {
-                remainingMinisters: function () {
-                    return self.remainingMinisters
-                },
-                nextMinisterCost: function () {
-                    return self.nextMinisterCost
+        if (playerService.baseStats.influence > ministerCost) {
+            this.error = false;
+            //open modal
+            let modalInstance = modalService.open({
+                templateUrl: 'ministersHireModal.html',
+                controller: 'ministersHiringModalController',
+                size: 'md',
+                resolve: {
+                    remainingMinisters: function () {
+                        return self.remainingMinisters
+                    },
+                    nextMinisterCost: function () {
+                        return self.nextMinisterCost
+                    }
                 }
-            }
-        });
+            });
 
-        modalInstance.result.then(function (ministerType) {
+            modalInstance.result.then(function (ministerType) {
 
-            let minister = self.filterMinister(ministerType);
-            if (minister) {
-                playerService.ministers.activeMinisters.push(minister);
-                var index = playerService.ministers.remainingMinisters.indexOf(minister);
-                playerService.ministers.remainingMinisters.splice(index, 1);
-            }
-            //handle bonuses
-        });
+                let minister = self.filterMinister(ministerType);
+                if (minister) {
+                    playerService.ministers.activeMinisters.push(minister);
+                    var index = playerService.ministers.remainingMinisters.indexOf(minister);
+                    playerService.ministers.remainingMinisters.splice(index, 1);
+                    playerService.baseStats.influence -= ministerCost;
+                }
+                //handle bonuses
+            });
+
+        } else {
+            this.error = true;
+            this.errorMessage = "You do not have enough influence. You need a total of " + ministerCost + " influence.";
+        }
+
+        
     };
 
-    Ministers.prototype.fireMinister = function (ministerType) {
-        //do popup to confirm. 
+    Ministers.prototype.fireMinister = function (minister) {
+        //Confirmation Dialogue
+        var c = confirm("Are you sure you want to fire minister?");
+        if (c == true) {
+            var index = playerService.ministers.activeMinisters.indexOf(minister);
+            playerService.ministers.activeMinisters.splice(index, 1);
 
-        let minister = filterMinister(ministerType);
-        var index = playerService.ministers.activeMinisters.indexOf(minister);
-        playerService.ministers.activeMinisters.splice(index, 1);
+            //Adding it back to the hire list.
+            playerService.ministers.remainingMinisters.push(minister);
 
-        //Adding it back to the hire list.
-        playerService.ministers.remainingMinisters.push(minister);
-
-        //handle bonuses
+            //handle bonuses
+        }
     };
 
     Ministers.prototype.filterMinister = function (ministerType) {
