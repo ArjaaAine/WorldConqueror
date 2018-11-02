@@ -1,62 +1,72 @@
-'use strict';
+"use strict";
 
 wciApp.factory(
-    'debugService',
-    function (playerService) {
-        let Debug = function () {
-            //Add boolean, and set it true/fale to hide/show debug buttons on screen.
-        };
+  "debugService",
+  (playerService) => {
+    class Debug {
+      addEachBuilding (val) {
+        const value = val || 10;
 
-        Debug.prototype.addEachBuilding = function (val) {
-            let value = val || 10;
-            playerService.buildings.structures.forEach(function (structure) {
-                structure.build(value);
-            });
-        };
+        playerService.buildings.structures.forEach((structure) => {
+          structure.build(value);
+        });
+      }
 
-        Debug.prototype.addLand = function (val) {
-            let value = val || 100;
-            playerService.baseStats.land += value;
-        };
+      addLand (val) {
+        const value = val || 100;
 
-        Debug.prototype.addInfluence = function (val) {
-            let value = val || 100000;
-            playerService.baseStats.influence += value;
-        };
+        playerService.baseStats.land += value;
+      }
 
-        Debug.prototype.addResearchPoints = function (val) {
-            let value = val || 1000;
-            playerService.baseStats.baseResearchPoints = value;
-            playerService.research.update();
-            playerService.baseStats.baseResearchPoints = 0;
-        };
+      addInfluence (val) {
+        const value = val || 100000;
 
-        Debug.prototype.stabilityChange = function (val) {
-            playerService.baseStats.stability += val;
-        };
-        Debug.prototype.stabilityIndexChange = function (val) {
-            playerService.baseStats.currentStabilityIndex += val;
-        };
-        Debug.prototype.addUnits = function(val) {
-            let value = val || 100;
-            playerService.military.unitsAtHome.forEach(function(unit){
-                unit.count += value;
-            })
-        };
-        Debug.prototype.addPopulation = function(val) {
-            let value = val || 100;
-            playerService.baseStats.population += value;
-        };
+        playerService.baseStats.influence += value;
+      }
 
-        Debug.prototype.giveMeAll = function() {
-            playerService.baseStats.money += 100000000;
-            if(playerService.baseStats.money > 100000000) playerService.baseStats.money = 100000000;
-            playerService.research.sciencePoints += 1000000;
-            this.addLand(10000000);
-            this.addEachBuilding(100);
-            this.addResearchPoints(10000);
-            this.addUnits(1000);
-            this.addPopulation(10000000);
-        };
-        return new Debug();
-    });
+      addResearchPoints (val) {
+        const value = val || 1000;
+
+        playerService.baseStats.baseResearchPoints = value;
+        playerService.research.update();
+        playerService.baseStats.baseResearchPoints = 0;
+      }
+
+      stabilityChange (val) {
+        playerService.baseStats.stability += val;
+      }
+
+      stabilityIndexChange (val) {
+        playerService.baseStats.currentStabilityIndex += val;
+      }
+
+      addUnits (val) {
+        const value = val || 100;
+
+        playerService.military.unitsAtHome.forEach((unit) => {
+          unit.count += value;
+        });
+      }
+
+      addPopulation (val) {
+        const value = val || 100;
+
+        playerService.baseStats.population += value;
+      }
+
+      giveMeAll () {
+        playerService.baseStats.money += 100000000;
+        if (playerService.baseStats.money > 100000000)
+          playerService.baseStats.money = 100000000;
+        playerService.research.sciencePoints += 1000000;
+        this.addLand(10000000);
+        this.addEachBuilding(100);
+        this.addResearchPoints(10000);
+        this.addUnits(1000);
+        this.addPopulation(10000000);
+      }
+    }
+
+    return new Debug();
+  },
+);
