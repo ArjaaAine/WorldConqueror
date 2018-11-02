@@ -7,7 +7,7 @@
 *.sln.docstates
 node_modules/
 package-lock.json
-*.~lock.Data.ods#
+*.~lock.*.ods#
 
 # Build results
 
