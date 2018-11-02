@@ -1,9 +1,11 @@
+"use strict";
+// eslint-disable-next-line
 wciApp.service("warService", function
-  (
-    worldCountryService,
-    playerService,
-    gameDataService,
-  ) {
+(
+  worldCountryService,
+  playerService,
+  gameDataService,
+) {
 
   class War {
     constructor () {

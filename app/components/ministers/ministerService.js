@@ -1,5 +1,5 @@
 "use strict";
-
+// eslint-disable-next-line
 wciApp.factory("ministerService", function(
   modalService,
   gameDataService,

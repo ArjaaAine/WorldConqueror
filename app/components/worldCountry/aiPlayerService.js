@@ -1,5 +1,7 @@
+"use strict";
+// eslint-disable-next-line
 wciApp.service("AiPlayerService", function
-  (
+(
   militaryService,
   gameDataService,
 ) {

@@ -1,4 +1,6 @@
-wciApp.factory("bonusesService", () => {
+"use strict";
+// eslint-disable-next-line
+wciApp.factory("bonusesService", function () {
 
   class Bonuses {
     constructor () {
