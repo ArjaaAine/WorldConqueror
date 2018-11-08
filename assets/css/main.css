@@ -286,7 +286,7 @@ a {
     /* For mobile phones: */
     .modalOverflow {
         overflow-y: auto;
-        max-height: 300px;
+        max-height: 400px;
     }
     .hiringQueue{
         border-top: 1px solid;
@@ -296,7 +296,7 @@ a {
     /* For PC: */
     .modalOverflow {
         overflow-y: auto;
-        max-height: 600px;
+        max-height: 1000px;
     }
     .worldMap-hiringQueueWidth{
         width: 70px;

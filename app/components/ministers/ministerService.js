@@ -17,6 +17,7 @@ wciApp.factory("ministerService", function(
 
     init () {
       this.allMinisters = gameDataService.Ministers;
+      console.log("TEST");
       this.remainingMinisters = this.allMinisters.filter(minister => minister.isActive === 1);
       this.activeMinisters = [];
     }

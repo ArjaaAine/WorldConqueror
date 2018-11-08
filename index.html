@@ -41,6 +41,10 @@
                         <button ng-click="hideDebug=true" ng-hide="hideDebug">Hide</button>
                         <button ng-click="hideDebug=false" ng-show="hideDebug">Show</button>
                         <div ng-hide="hideDebug">
+                            <button ng-click="simulateTurns()">Simulate {{simulateAmount}} turns</button>
+                            <button ng-click="changeSimulatedTurns(10)">+10</button>
+                            <button ng-click="changeSimulatedTurns(-10)">-10</button><br>
+
                             <button ng-click="game.debug.giveMeAll()">Give All</button><br>
                             <button ng-click="game.debug.addLand()">Land +100</button><br>
                             <button ng-click="game.debug.addInfluence()">Influence +100000</button><br>

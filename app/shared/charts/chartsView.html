@@ -1,25 +1,47 @@
 <div ng-controller="ChartsController">
     <script type="text/ng-template" id="chartsView.html">
-        <div class="well">
-            <h3 class="text-center">Income</h3>
-            <canvas height="100" class="chart chart-line" chart-data="charts.income.data"
-                    chart-labels="labels" chart-series="series" chart-options="options"
-                    chart-dataset-override="datasetOverride" chart-click="onClick">
-            </canvas>
+        <div class="container-fluid modalOverflow">
+            <div class="row" ng-repeat="(name, chart) in charts track by $index">
+                <h3 class="text-center">{{name}}</h3>
+                <div class="col-xs-12 col-sm-6 col-md-3" ng-repeat="(key, chartData) in chart track by $index">
+                    <h4 class="text-center">{{key}}</h4>
+                    <canvas height="130" class="chart chart-line" chart-data="chartData"
+                            chart-labels="labels" chart-series="series" chart-options="options"
+                            chart-dataset-override="datasetOverride" chart-click="onClick">
+                    </canvas>
+                </div>
+            </div>
         </div>
-        <div class="well">
-            <h3 class="text-center">Upkeep</h3>
-            <canvas height="100"  class="chart chart-line" chart-data="charts.upkeep.data"
-                    chart-labels="labels" chart-series="series" chart-options="options"
-                    chart-dataset-override="datasetOverride" chart-click="onClick">
-            </canvas>
-        </div>
-        <div class="well">
-            <h3 class="text-center">Growth</h3>
-            <canvas height="100"  class="chart chart-line" chart-data="charts.growth.data"
-                    chart-labels="labels" chart-series="series" chart-options="options"
-                    chart-dataset-override="datasetOverride" chart-click="onClick">
-            </canvas>
-        </div>
+        <!--<div class="well">-->
+            <!--<h3 class="text-center">Population Amount</h3>-->
+            <!--<canvas height="50" class="chart chart-line" chart-data="charts.actualValues.population"-->
+                    <!--chart-labels="labels" chart-series="series" chart-options="options"-->
+                    <!--chart-dataset-override="datasetOverride" chart-click="onClick">-->
+            <!--</canvas>-->
+            <!--<h3 class="text-center">Income</h3>-->
+            <!--<canvas height="50" class="chart chart-line" chart-data="charts.income.data"-->
+                    <!--chart-labels="labels" chart-series="series" chart-options="options"-->
+                    <!--chart-dataset-override="datasetOverride" chart-click="onClick">-->
+            <!--</canvas>-->
+            <!--<h3 class="text-center">Income</h3>-->
+            <!--<canvas height="50" class="chart chart-line" chart-data="charts.income.data"-->
+                    <!--chart-labels="labels" chart-series="series" chart-options="options"-->
+                    <!--chart-dataset-override="datasetOverride" chart-click="onClick">-->
+            <!--</canvas>-->
+        <!--</div>-->
+        <!--<div class="well">-->
+            <!--<h3 class="text-center">Upkeep</h3>-->
+            <!--<canvas height="50"  class="chart chart-line" chart-data="charts.upkeep.data"-->
+                    <!--chart-labels="labels" chart-series="series" chart-options="options"-->
+                    <!--chart-dataset-override="datasetOverride" chart-click="onClick">-->
+            <!--</canvas>-->
+        <!--</div>-->
+        <!--<div class="well">-->
+            <!--<h3 class="text-center">Growth</h3>-->
+            <!--<canvas height="50"  class="chart chart-line" chart-data="charts.growth.data"-->
+                    <!--chart-labels="labels" chart-series="series" chart-options="options"-->
+                    <!--chart-dataset-override="datasetOverride" chart-click="onClick">-->
+            <!--</canvas>-->
+        <!--</div>-->
     </script>
 </div>

@@ -65,6 +65,10 @@ wciApp.factory(
         this.addUnits(1000);
         this.addPopulation(10000000);
       }
+
+      simulateTurn () {
+        this.addEachBuilding(5);
+      }
     }
 
     return new Debug();

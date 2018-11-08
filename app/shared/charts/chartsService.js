@@ -4,38 +4,70 @@ wciApp.factory("chartsService", function
 (playerService) {
 
   const charts = {};
+  let chartsHistoryLength = 100;
 
+  charts.changeHistoryLength = function (val) {
+    chartsHistoryLength = val;
+  };
   charts.series = [ "Population", "Money", "Food" ];// This needs to be changed based on the order of objects in charts.history.[income, upkeep, growth], best if all of them are in the same order
   // tho object might not keep them ordered... (READ convertChartsTo2dArray object here)
   charts.data = {
     // This is what we need for charts, an array of arrays
-    income: [],
-    upkeep: [],
-    growth: [],
+    population_currentAmount: [],
+    population_income       : [],
+    population_upkeep       : [],
+    population_growth       : [],
+    money_currentAmount     : [],
+    money_income            : [],
+    money_upkeep            : [],
+    money_growth            : [],
+    food_currentAmount      : [],
+    food_income             : [],
+    food_upkeep             : [],
+    food_growth             : [],
   };
   charts.history = {
-    timeLine     : [],
-    currentAmount: {// Just the amount, not income/production
-      population: 0,
-      money     : 0,
-      food      : 0,
+    timeLine  : [],
+    population: {
+      currentAmount: [],
+      income       : [],
+      upkeep       : [],
+      growth       : [],
     },
-    income: {
-      population: [],
-      money     : [],
-      food      : [],
+    money: {
+      currentAmount: [],
+      income       : [],
+      upkeep       : [],
+      growth       : [],
     },
-    upkeep: {
-      population: [],
-      money     : [],
-      food      : [],
+    food: {
+      currentAmount: [],
+      income       : [],
+      upkeep       : [],
+      growth       : [],
+    },
 
-    },
-    growth: {// Formula:  Income - Upkeep = Growth(how much we are left with)
-      population: [],
-      money     : [],
-      food      : [],
-    },
+    // CurrentAmount: {// Just the amount, not income/production
+    //   population: 0,
+    //   money     : 0,
+    //   food      : 0,
+    // },
+    // income: {
+    //   population: [],
+    //   money     : [],
+    //   food      : [],
+    // },
+    // upkeep: {
+    //   population: [],
+    //   money     : [],
+    //   food      : [],
+    //
+    // },
+    // growth: {// Formula:  Income - Upkeep = Growth(how much we are left with)
+    //   population: [],
+    //   money     : [],
+    //   food      : [],
+    // },
   };
 
   charts.update = function () {
@@ -58,57 +90,58 @@ wciApp.factory("chartsService", function
 
     // THIS SHOULD BE IN A $SCOPE INSIDE A CONTROLLER SO IT GETS AUTOMATICALLY UPDATED WITH ACTUAL VALUES SINCE
     // "CURRENT" CAN CHANGE WHEN PLAYER TAKES ACTIONS...Unless we don't use this data for charts...
-    charts.history.currentAmount.population = population;
-    charts.history.currentAmount.money = money;
-    charts.history.currentAmount.food = food;
+    charts.history.population.currentAmount.unshift(population);
+    charts.history.money.currentAmount.unshift(money);
+    charts.history.food.currentAmount.unshift(food);
 
     // Put values in front of an array so we can easily remove last elements with Array.length = 7
     /* INCOME */
-    charts.history.income.population.unshift(populationIncome);
-    charts.history.income.money.unshift(moneyIncome);
-    charts.history.income.food.unshift(foodIncome);
+    charts.history.population.income.unshift(populationIncome);
+    charts.history.money.income.unshift(moneyIncome);
+    charts.history.food.income.unshift(foodIncome);
 
     /* UPKEEP */
-    charts.history.upkeep.population.unshift(populationUpkeep);
-    charts.history.upkeep.money.unshift(moneyUpkeep);
-    charts.history.upkeep.food.unshift(foodUpkeep);
+    charts.history.population.upkeep.unshift(populationUpkeep);
+    charts.history.money.upkeep.unshift(moneyUpkeep);
+    charts.history.food.upkeep.unshift(foodUpkeep);
 
     /* GROWTH */
-    charts.history.growth.population.unshift(populationGrowth);
-    charts.history.growth.money.unshift(moneyGrowth);
-    charts.history.growth.food.unshift(foodGrowth);
+    charts.history.population.growth.unshift(populationGrowth);
+    charts.history.money.growth.unshift(moneyGrowth);
+    charts.history.food.growth.unshift(foodGrowth);
 
     /* Change array size so we don't store too much data */
 
     const storeArraysHere =
-        [ charts.history.income, charts.history.upkeep, charts.history.growth ];
+        [ charts.history.population.currentAmount, charts.history.money.currentAmount, charts.history.food.currentAmount, charts.history.population.income, charts.history.money.income, charts.history.food.income, charts.history.population.growth, charts.history.money.growth, charts.history.food.growth, charts.history.population.upkeep, charts.history.money.upkeep, charts.history.food.upkeep ];
 
     storeArraysHere.forEach((object) => {
-      if (object.length > 7)
-        object.length = 7;
+      if (object.length > chartsHistoryLength)
+        object.length = chartsHistoryLength;
     });
 
-    if (charts.history.timeLine.length > 7) {
+    if (charts.history.timeLine.length > chartsHistoryLength) {
       charts.history.timeLine.reverse();
-      charts.history.timeLine.length = 7;
+      charts.history.timeLine.length = chartsHistoryLength;
       charts.history.timeLine.reverse();
     }
     this.convertChartsTo2dArray();
   };
 
   charts.convertChartsTo2dArray = function () {
-    const chartTypes = [ "income", "upkeep", "growth" ];
+    const chartTypes = [ "population", "food", "money" ];
+    const chartSubTypes = [ "currentAmount", "income", "upkeep", "growth" ];
 
     for (let i = 0; i < chartTypes.length; i++) {
       const type = chartTypes[i];
       const currentChart = this.history[type];
 
-      charts.data[type] = [];
       for (const key in currentChart) {
         if (currentChart.hasOwnProperty(key)) {
           const array = currentChart[key].slice().reverse();
 
-          charts.data[type].push(array);
+          charts.data[`${type}_${key}`] = [];
+          charts.data[`${type}_${key}`].push(array);
         }
       }
     }
