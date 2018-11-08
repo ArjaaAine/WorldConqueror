@@ -4,7 +4,7 @@ wciApp.factory(
   "debugService",
   (playerService) => {
     class Debug {
-      addEachBuilding (val) {
+      static addEachBuilding (val) {
         const value = val || 10;
 
         playerService.buildings.structures.forEach((structure) => {
@@ -12,19 +12,19 @@ wciApp.factory(
         });
       }
 
-      addLand (val) {
+      static addLand (val) {
         const value = val || 100;
 
         playerService.baseStats.land += value;
       }
 
-      addInfluence (val) {
+      static addInfluence (val) {
         const value = val || 100000;
 
         playerService.baseStats.influence += value;
       }
 
-      addResearchPoints (val) {
+      static addResearchPoints (val) {
         const value = val || 1000;
 
         playerService.baseStats.baseResearchPoints = value;
@@ -32,15 +32,15 @@ wciApp.factory(
         playerService.baseStats.baseResearchPoints = 0;
       }
 
-      stabilityChange (val) {
+      static stabilityChange (val) {
         playerService.baseStats.stability += val;
       }
 
-      stabilityIndexChange (val) {
+      static stabilityIndexChange (val) {
         playerService.baseStats.currentStabilityIndex += val;
       }
 
-      addUnits (val) {
+      static addUnits (val) {
         const value = val || 100;
 
         playerService.military.unitsAtHome.forEach((unit) => {
@@ -48,7 +48,7 @@ wciApp.factory(
         });
       }
 
-      addPopulation (val) {
+      static addPopulation (val) {
         const value = val || 100;
 
         playerService.baseStats.population += value;
