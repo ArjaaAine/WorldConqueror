@@ -1,17 +1,13 @@
 <div ng-controller="ChartsController">
     <script type="text/ng-template" id="chartsView.html">
         <div class="container-fluid modalOverflow">
-            <div class="row">
-                <div class="col-xs-3" ng-repeat="name in chartTypes">
-                    <button class="btn btn-small btn-success" ng-click="changeType(name)">{{name}}</button>
-                </div>
-            </div>
             <div class="row" ng-repeat="(name, chart) in charts track by $index">
                 <h3 class="text-center">{{name}}</h3>
                 <div class="col-xs-12 col-sm-6 col-md-3" ng-repeat="(key, chartData) in chart track by $index">
-                    <canvas height="130" class="chart chart-base" chart-data="chartData" chart-type="type"
-                            chart-labels="labels" chart-series="series[name][key]" chart-options="options"
-                            chart-dataset-override="datasetOverride" chart-click="onClick" chart-colors="colors[name]">
+                    <h4 class="text-center">{{key}}</h4>
+                    <canvas height="130" class="chart chart-line" chart-data="chartData"
+                            chart-labels="labels" chart-series="series" chart-options="options"
+                            chart-dataset-override="datasetOverride" chart-click="onClick">
                     </canvas>
                 </div>
             </div>

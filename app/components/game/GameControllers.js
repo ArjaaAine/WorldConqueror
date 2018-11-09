@@ -307,25 +307,15 @@ wciApp.controller('GameController', function (
 
     });
   };
-  $scope.historyLength = 10;
-  $scope.historyLengthToChange = function (val) {
-    $scope.historyLength += val;
-    if ($scope.historyLength < 10)
-      $scope.historyLength = 10;
-
-  };
-  $scope.historyLengthUpdate = function () {
-    chartsService.changeHistoryLength($scope.historyLength);
-  };
   $scope.simulateAmount = 10;
-  $scope.changeSimulatedTurns = function (val) {
+  $scope.changeSimulatedTurns = function(val){
     $scope.simulateAmount += val;
-    if ($scope.simulateAmount < 10)
+    if($scope.simulateAmount < 10){
       $scope.simulateAmount = 10;
-
-  };
-
+    }
+  }
   $scope.simulateTurns = function () {
+    chartsService.changeHistoryLength($scope.simulateAmount);
     for (let i = 0; i < $scope.simulateAmount; i++) {
       debugService.simulateTurn();
       game.nextTurn();

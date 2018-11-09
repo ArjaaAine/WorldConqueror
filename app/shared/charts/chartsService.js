@@ -90,25 +90,25 @@ wciApp.factory("chartsService", function
 
     // THIS SHOULD BE IN A $SCOPE INSIDE A CONTROLLER SO IT GETS AUTOMATICALLY UPDATED WITH ACTUAL VALUES SINCE
     // "CURRENT" CAN CHANGE WHEN PLAYER TAKES ACTIONS...Unless we don't use this data for charts...
-    charts.history.population.currentAmount.unshift(Math.floor(population));
-    charts.history.money.currentAmount.unshift(Math.floor(money));
-    charts.history.food.currentAmount.unshift(Math.floor(food));
+    charts.history.population.currentAmount.unshift(population);
+    charts.history.money.currentAmount.unshift(money);
+    charts.history.food.currentAmount.unshift(food);
 
     // Put values in front of an array so we can easily remove last elements with Array.length = 7
     /* INCOME */
-    charts.history.population.income.unshift(populationIncome.toFixed(2));
-    charts.history.money.income.unshift(moneyIncome.toFixed(2));
-    charts.history.food.income.unshift(foodIncome.toFixed(2));
+    charts.history.population.income.unshift(populationIncome);
+    charts.history.money.income.unshift(moneyIncome);
+    charts.history.food.income.unshift(foodIncome);
 
     /* UPKEEP */
-    charts.history.population.upkeep.unshift(populationUpkeep.toFixed(2));
-    charts.history.money.upkeep.unshift(moneyUpkeep.toFixed(2));
-    charts.history.food.upkeep.unshift(foodUpkeep.toFixed(2));
+    charts.history.population.upkeep.unshift(populationUpkeep);
+    charts.history.money.upkeep.unshift(moneyUpkeep);
+    charts.history.food.upkeep.unshift(foodUpkeep);
 
     /* GROWTH */
-    charts.history.population.growth.unshift(populationGrowth.toFixed(2));
-    charts.history.money.growth.unshift(moneyGrowth.toFixed(2));
-    charts.history.food.growth.unshift(foodGrowth.toFixed(2));
+    charts.history.population.growth.unshift(populationGrowth);
+    charts.history.money.growth.unshift(moneyGrowth);
+    charts.history.food.growth.unshift(foodGrowth);
 
     /* Change array size so we don't store too much data */
 
