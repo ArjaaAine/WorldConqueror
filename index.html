@@ -44,6 +44,9 @@
                             <button ng-click="simulateTurns()">Simulate {{simulateAmount}} turns</button>
                             <button ng-click="changeSimulatedTurns(10)">+10</button>
                             <button ng-click="changeSimulatedTurns(-10)">-10</button><br>
+                            <button ng-click="historyLengthUpdate()">History length: {{historyLength}}</button>
+                            <button ng-click="historyLengthToChange(10)">+10</button>
+                            <button ng-click="historyLengthToChange(-10)">-10</button><br>
 
                             <button ng-click="game.debug.giveMeAll()">Give All</button><br>
                             <button ng-click="game.debug.addLand()">Land +100</button><br>
