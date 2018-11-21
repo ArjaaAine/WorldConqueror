@@ -338,7 +338,7 @@ rules:
   no-whitespace-before-property: error
   nonblock-statement-body-position:
   - error
-  - below # Hate 2
+  - beside # Hate 2
   object-curly-newline:
   - error
   - ObjectExpression:

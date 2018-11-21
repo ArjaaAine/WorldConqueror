@@ -52,14 +52,13 @@ wciApp.factory("saveService", function
     saveData.onWar = onWar;
     saveData.onWarColors = onWarColors;
 
-    localStorage.gameData1 = angular.toJson(saveData);
+    localStorage.gameData5 = angular.toJson(saveData);
   };
   data.load = function () {
     console.log("LOAD");
-    const savedData = angular.fromJson(localStorage.gameData1);
+    const savedData = angular.fromJson(localStorage.gameData5);
 
-    if (!savedData)
-      return;
+    if (!savedData) return;
     const military = playerService.military;
     const research = playerService.research;
     const ministers = playerService.ministers;
@@ -90,6 +89,7 @@ wciApp.factory("saveService", function
 
   // Separated from "newGame" in order to give us an ability to do other stuff which applies only when resetting
   data.reset = function () {
+    localStorage.clear();
 
     /*
           When player resets a game, it will change current view to the main one("/")

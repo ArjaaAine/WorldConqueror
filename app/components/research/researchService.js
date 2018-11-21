@@ -1,7 +1,6 @@
 "use strict";
 
 wciApp.factory("researchService", (gameDataService, bonusesService, playerService) => {
-
   class Research {
     constructor () {
       this.scientists = 1;// Total scientists we have unlocked/bought
@@ -9,52 +8,55 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
       this.scientistPrice = 100;
       this.baseScienceGain = 1;// This is how much science points is gained per turn for each research type
       this.sciencePoints = 0;// Store leftover science points after research is finished.(like in civ)
-      this.researchType = {};// Object to store various research types such as War/Economy
+      this.researchType = [];// Array to store various research types such as War/Economy
       this.isUnlocked = {};// Object key == research name/id, each store a boolean which we save only.
-      this.descriptions = {};
-      this.researchBonuses = {};
+      this.researchBonuses = [];
+      this.totalBonus = {};
+      this.isVisible = {};
     }
 
     init () {
       const researchBonuses = gameDataService.ResearchBonuses;
 
-      this.descriptions = gameDataService.ResearchDescription;
       for (const { type } of gameDataService.ResearchData) {
-        this.researchType[type] = gameDataService[`${type}Research`];
-        this._initBonusProps(type, researchBonuses);
+        const researchType = gameDataService[`${type}Research`];
+        this.researchType.push(type);
+        this._initBonusProps(researchType, researchBonuses);
+        this.checkUnlockedResearch(researchType);
       }
       console.log(this);
-
-      // For testing
-      this.update();
     }
 
     _initBonusProps (type, researchBonuses) {
-      const arr = this.researchType[type];
+      const arr = type;
       const len = arr.length;
 
+      if(type === "Economy") debugger;
       for (let i = 0; i < len; ++i) {
-        const { name, bonus: researchBonus } = arr[i];
-        const obj = this.researchType[type][i];
-        const bonus = obj.bonus = researchBonuses.filter(this._bonusFilter, researchBonus);
+        const value = arr[i];
+        const name = value.name;
+        let bonus = value.bonus;
 
-        this.isUnlocked[name] = false;
-        if (bonus.length < 1) {
-          console.log("Bonus not working! Probably does not exist in the excel file: %s", name);
-          continue;
+        this.researchBonuses = [];
+
+        if (!bonus) continue;
+
+        bonus = bonus.split(", ");
+        for (let j = 0; j < bonus.length; j++) {
+          const bonusValue = bonus[j];
+
+          this.researchBonuses[j] = researchBonuses.filter(this._bonusFilter, bonusValue)[0];
+          if (!this.researchBonuses[0]) {
+            this.researchBonuses.length = 0;
+            console.log("Bonus not working! Probably does not exist in the excel file: %s", name);
+          }
         }
-        const first = bonus[0];
-
-        delete first.ID;
+        if (value.isUnlocked) this.unlockResearch(type, i, true);
       }
     }
 
     _bonusFilter (bonus) {
       return this === bonus.ID;
-    }
-
-    getDescription (property) {
-      return this.descriptions[property];
     }
 
     canAffordScientist () {
@@ -74,11 +76,11 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
       }
     }
 
-    unlockResearch (type, index) {
-      const research = this.researchType[type][index];
+    unlockResearch (type, index, unlockFree) {
+      const research = type[index];
       const price = research.cost;
 
-      if (this.sciencePoints >= price) {
+      if (this.sciencePoints >= price || unlockFree) {
         const military = playerService.military;
         const buildings = playerService.buildings;
         const laws = playerService.laws;
@@ -87,12 +89,12 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
         let unitToUnlock = research.unlockUnit;
         let lawToUnlock = research.unlockLaw;
 
-        this.sciencePoints -= price;
+        if (!unlockFree) this.sciencePoints -= price;
         this.isUnlocked[name] = true;
+        this.isVisible[name] = false;
 
         // Unlock bonuses
-        for (const bonusData of research.bonus)
-          this.unlockBonus(bonusData, research.name);
+        for (const bonusData of this.researchBonuses) this.unlockBonus(bonusData);
 
         // Unlock units
         if (unitToUnlock) {
@@ -111,14 +113,21 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
           lawToUnlock = lawToUnlock.split(", ");
           laws.unlockLaw(lawToUnlock);
         }
+
+        this.checkUnlockedResearch(type);//Make other research visible if we meet requirements.
       }
     }
 
-    unlockBonus (bonusData, name) {
-      this.isUnlocked[name] = true;
-      for (const [ key, bonus ] of Object.entries(bonusData)) {
-        this.researchBonuses[key] = this.researchBonuses[key] || 0;
-        this.researchBonuses[key] += bonus;
+    unlockBonus (bonusData) {
+      for (const bonus of Object.values(bonusData)) {
+        this.totalBonus[bonus.statAffected] = {};
+        const researchBonus = this.totalBonus[bonus.statAffected];
+
+        researchBonus.statAdder = researchBonus.statAdder || 0;
+        researchBonus.statMultiplier = researchBonus.statMultiplier || 1;
+        researchBonus.statAdder += bonus.statAdder;
+        researchBonus.statMultiplier *= bonus.statMultiplier;
+        researchBonus.name = bonus.statName;
       }
       console.log(bonusData);
     }
@@ -129,8 +138,18 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
 
     update () {
       this.sciencePoints += this.scienceGain();
-
     }
+
+    checkUnlockedResearch (type) {
+      for (const research of type) {
+        let requirements = research.requirements;
+
+        if (requirements) requirements = requirements.split(", ");
+        if (!requirements || requirements.every(val => this.isUnlocked[val])) this.isVisible[research.name] = true;
+        if (this.isUnlocked[research.name]) this.isVisible[research.name] = false;
+      }
+    }
+
   }
 
   return Research;

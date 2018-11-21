@@ -24,7 +24,7 @@ wciApp.controller('GameController', function (
   chartsService,
   $log,
 ) {
-
+  let saveTimer;
   $scope.modalButtons = [
     { name       : "Changelog",
       icon       : "glyphicon glyphicon-globe font-9pt font-color-lightblue",
@@ -50,7 +50,7 @@ wciApp.controller('GameController', function (
       icon       : "fas fa-flask",
       templateUrl: "researchView.html",
       controller : "ResearchController",
-      windowClass: "" },
+      windowClass: "full" },
     { name       : "War",
       icon       : "fas fa-fire",
       templateUrl: "warView.html",
@@ -64,12 +64,14 @@ wciApp.controller('GameController', function (
   ];
   const game = this;
   const initGame = function () {
-    game.data = {};
     initService().then(() => {
       saveService.load();
       $scope.createMap();
       game.worldCountries.update();// Necessary to load the map colors.
       chartsService.update();
+
+      //Begin auto saving
+      saveTimer = $interval(saveGame, 1000);
     });
     game.myCountry = playerService;
     game.worldCountries = worldCountryService;
@@ -80,7 +82,15 @@ wciApp.controller('GameController', function (
     game.notification = notificationService;
     game.debug = debugService;
   };
-
+  const saveGame = function () {
+    saveService.save();
+  };
+  const resetGame = function () {
+    saveService.reset();
+    $interval.cancel(saveTimer);
+    console.log(saveTimer);
+    initGame();
+  };
   // #region Private Methods
   const timerfunction = function () {
     // TODO: Put logic here to prompt user of game ending/death due to 0 population.
@@ -101,22 +111,6 @@ wciApp.controller('GameController', function (
 
     // Game.advisors.functions.advisorTimedEffects();
     // game.saveGame();
-  };
-  const saveGame = function () {
-    saveService.save();
-    localStorage.gameData = JSON.stringify(game.data);
-  };
-  const resetGame = function () {
-    game.data = {
-      init: {
-        isFirstTime: true,
-      },
-      paused: false,
-      speed : 1000,
-    };
-    localStorage.clear();
-    initGame();
-    console.log(worldCountryService);
   };
 
   // #endregion
@@ -156,11 +150,9 @@ wciApp.controller('GameController', function (
       game.data.init.isFirstTime = false;
 
     } else {
-      if (game.myCountry.baseStats.countryName.length < 1)
-        game.validation.initCountryName = false;
+      if (game.myCountry.baseStats.countryName.length < 1) game.validation.initCountryName = false;
 
-      if (game.myCountry.baseStats.leaderName.length < 1)
-        game.validation.initLeaderName = false;
+      if (game.myCountry.baseStats.leaderName.length < 1) game.validation.initLeaderName = false;
 
     }
   };
@@ -279,7 +271,6 @@ wciApp.controller('GameController', function (
   };
 
   initGame();
-  const saveTimer = $interval(saveGame, 1000);
 
   $scope.openModal = function (modalIndex) {
     const templateUrl = $scope.modalButtons[modalIndex].templateUrl;
@@ -308,12 +299,11 @@ wciApp.controller('GameController', function (
     });
   };
   $scope.simulateAmount = 10;
-  $scope.changeSimulatedTurns = function(val){
+  $scope.changeSimulatedTurns = function (val) {
     $scope.simulateAmount += val;
-    if($scope.simulateAmount < 10){
-      $scope.simulateAmount = 10;
-    }
-  }
+    if ($scope.simulateAmount < 10) $scope.simulateAmount = 10;
+
+  };
   $scope.simulateTurns = function () {
     chartsService.changeHistoryLength($scope.simulateAmount);
     for (let i = 0; i < $scope.simulateAmount; i++) {

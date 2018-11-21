@@ -18,11 +18,11 @@ wciApp.factory(
   ) => {
     // TODO: We might want to store this in an excel too to allow modding, so we don't have to edit the code in order to add new excel sheet
     const researchFileName = "ResearchData.ods";
-    const researchSheets = [ "ResearchData", "ResearchBonuses", "ConstructionResearch", "WarResearch", "EconomyResearch", "ResearchDescription" ];
+    const researchSheets = [ "ResearchData", "ResearchBonuses", "ConstructionResearch", "WarResearch", "EconomyResearch", "ScienceResearch" ];
     const buildingsFileName = "Buildings.ods";
     const buildingsSheets = ["Buildings"];
     const governanceFileName = "Governance.ods";
-    const governanceSheets = [ "Ministers", "Laws" ];
+    const governanceSheets = [ "Ministers", "Laws", "MinisterBonuses" ];
     const worldCountriesFileName = "WorldCountries.ods";
     const worldCountriesSheets = [ "WorldCountries", "CountryUnitArmyCode" ];
     const unitsFileName = "Units.ods";

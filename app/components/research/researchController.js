@@ -1,5 +1,7 @@
 wciApp.controller(
-    'ResearchController',
-    function ($scope, playerService) {
-        $scope.research = playerService.research;
-});
+  "ResearchController",
+  ($scope, playerService, gameDataService) => {
+    $scope.research = playerService.research;
+    $scope.gameData = gameDataService;
+  },
+);

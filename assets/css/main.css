@@ -192,6 +192,11 @@ a {
     overflow: auto;
 }
 
+.positiveValuePlus{}
+.positiveValuePlus::before{
+    content: "+";
+}
+
 .money {
     color: #d8d313;
 }

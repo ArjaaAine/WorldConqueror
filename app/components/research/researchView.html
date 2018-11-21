@@ -13,7 +13,7 @@
                 <button class="btn btn-sm btn-default" ng-click="research.hireScientist()" ng-class="{'btn-danger': !research.canAffordScientist()}">Hire</button>
             </div>
             <div class="row">
-                <div class="col-xs-4 panel panel-info modalOverflow" ng-repeat="(name, researchType) in research.researchType track by $index">
+                <div class="col-xs-3 panel panel-info modalOverflow" ng-repeat="name in research.researchType track by $index">
                     <div class="row panel-heading">
                         <div class="col-xs-12 text-center">
                             <span>
@@ -21,7 +21,7 @@
                             </span>
                         </div>
                     </div>
-                    <div class="row" ng-repeat="researchData in researchType track by $index">
+                    <div class="row" ng-repeat="researchData in gameData[name + 'Research'] track by $index" ng-show="research.isVisible[researchData.name]">
                         <div class="panel-body">
                             <div class="panel-group">
                                 <div class="panel panel-default">
@@ -30,17 +30,16 @@
                                             <span>{{researchData.name}}</span>
                                             <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white"></i></a>
                                         </span>
-                                        <div class="row" ng-repeat="bonus in researchData.bonus track by $index">
-                                            <div class="col-xs-12" ng-repeat="(key, value) in bonus track by $index" ng-show="value != 0">
-                                                <h5>
-                                                    <span class="label" ng-class="value > 0 ? 'label-success' : value < 0 ? '' : 'label-danger'">
-                                                    {{research.getDescription(key) + ": " + value}}
-                                                    </span>
-                                                </h5>
+                                        <div class="row" ng-repeat="bonus in researchData.researchBonus track by $index">
+                                            <div class="col-xs-12">
+                                                <span class="label label-default" ng-hide="bonus.statAdder === 0 && bonus.multiplier === 1">{{bonus.statName}}</span>
+                                                <span class="label" ng-class="bonus.statAdder > 0 ? 'label-success positiveValuePlus' : value < 0 ? '' : 'label-danger'" ng-hide="bonus.statAdder === 0">{{bonus.statAdder}}</span>
+                                                <span class="label" ng-class="bonus.multiplier > 0 ? 'label-success positiveValuePlus' : value < 0 ? '' : 'label-danger'" ng-hide="bonus.multiplier === 1">{{bonus.multiplier * 100}}%</span>
                                             </div>
+
                                         </div>
                                     </div>
-                                    <button class="btn btn-block btn-success" ng-click="research.unlockResearch(name, $index)"
+                                    <button class="btn btn-block btn-success" ng-click="research.unlockResearch(gameData[name + 'Research'], $index)"
                                                   ng-disabled="research.sciencePoints < researchData.cost || research.isUnlocked[researchData.name]"
                                                   ng-class="{'btn-danger': research.sciencePoints < researchData.cost || research.isUnlocked[researchData.name]}">Unlock</button>
                                 </div>
