@@ -35,10 +35,10 @@ wciApp.factory(
           leaderName     : "Rohan",
           leaderTitle    : "King",
           selectedCountry: "US",
-          difficultyLevel: {
-            Desc : "I am a noob, have mercy!",
-            Value: 1,
-          },
+          //difficultyLevel: {
+          //  Desc : "I am a noob, have mercy!",
+          //  Value: 1,
+          //},
           time                  : 0, // In hours
           currentStabilityIndex : 1, // This is used to determine whether stability will grow or decrease this turn. +ve means growth in stability, -ve means decrease. This is set by various policies etc.
           previousStabilityIndex: 1, // Storing previous stability index to determine if stability has gone down or not.
@@ -83,7 +83,7 @@ wciApp.factory(
           oneChildPolicy: false, // Law
           birthFreeze   : false, // Law
         };
-        this.getLookups();
+        //this.getLookups();
       }
 
       addCountry (countryObject) {
@@ -202,7 +202,7 @@ wciApp.factory(
       getNewDemographics () {
         this.baseStats.population += this.populationGrowth();
         this.setHappiness();
-        this.setCountrySize();
+        //this.setCountrySize();
 
         // Handling edge cases. (Minimum is 2, you and your partner)
         if (this.baseStats.population < 2) this.baseStats.population = 2;
@@ -231,58 +231,58 @@ wciApp.factory(
 
       }
 
-      getLookups () {
-        this.leaderTitles = [ "President", "Prime Minister", "Lord", "Lady", "King", "Queen", "Drag Queen", "Dictator", "Emperor", "Emperess" ];
-        this.difficultyLevels = [
-          {
-            Desc : "I am a noob, have mercy!",
-            Value: 1,
-          },
-          {
-            Desc : "I am a big boy, I saw a horror movie today and didn't piss my pants.",
-            Value: 2,
-          },
-          {
-            Desc : "I am just your average chump with a pc.",
-            Value: 3,
-          },
-          {
-            Desc : "I am a jedi wrapped in human skin.",
-            Value: 4,
-          },
-          {
-            Desc : "Feeble human mind exterminated. Skynet does not tolerate mediocrity.",
-            Value: 5,
-          },
-        ];
-      }
+      //getLookups () {
+      //  this.leaderTitles = [ "President", "Prime Minister", "Lord", "Lady", "King", "Queen", "Drag Queen", "Dictator", "Emperor", "Emperess" ];
+      //  this.difficultyLevels = [
+      //    {
+      //      Desc : "I am a noob, have mercy!",
+      //      Value: 1,
+      //    },
+      //    {
+      //      Desc : "I am a big boy, I saw a horror movie today and didn't piss my pants.",
+      //      Value: 2,
+      //    },
+      //    {
+      //      Desc : "I am just your average chump with a pc.",
+      //      Value: 3,
+      //    },
+      //    {
+      //      Desc : "I am a jedi wrapped in human skin.",
+      //      Value: 4,
+      //    },
+      //    {
+      //      Desc : "Feeble human mind exterminated. Skynet does not tolerate mediocrity.",
+      //      Value: 5,
+      //    },
+      //  ];
+      //}
 
-      setCountrySize () {
-        if (this.gdp() <= 100000) { // 100k
-          this.baseStats.sizeName = "City State";
-          this.baseStats.size = 1;
-        } else if (this.gdp() <= 10000000) { // 10m
-          this.baseStats.sizeName = "Least Developed Country";
-          this.baseStats.size = 2;
+      //setCountrySize () {
+      //  if (this.gdp() <= 100000) { // 100k
+      //    this.baseStats.sizeName = "City State";
+      //    this.baseStats.size = 1;
+      //  } else if (this.gdp() <= 10000000) { // 10m
+      //    this.baseStats.sizeName = "Least Developed Country";
+      //    this.baseStats.size = 2;
 
-          this.sizeIncreaseEvents(2);
-        } else if (this.gdp() <= 1000000000) { // 1b
-          this.baseStats.sizeName = "Developing Nation";
-          this.baseStats.size = 3;
-        } else if (this.gdp() <= 100000000000) { // 100b
-          this.baseStats.sizeName = "Emerging Economy";
-          this.baseStats.size = 4;
-        } else if (this.gdp() <= 10000000000000) { // 10t
-          this.baseStats.sizeName = "Developed Nation";
-          this.baseStats.size = 5;
-        } else if (this.gdp() <= 1000000000000000) { // 1q
-          this.baseStats.sizeName = "World Power";
-          this.baseStats.size = 6;
-        } else {
-          // World Conqueror
-          this.baseStats.size = 7;
-        }
-      }
+      //    this.sizeIncreaseEvents(2);
+      //  } else if (this.gdp() <= 1000000000) { // 1b
+      //    this.baseStats.sizeName = "Developing Nation";
+      //    this.baseStats.size = 3;
+      //  } else if (this.gdp() <= 100000000000) { // 100b
+      //    this.baseStats.sizeName = "Emerging Economy";
+      //    this.baseStats.size = 4;
+      //  } else if (this.gdp() <= 10000000000000) { // 10t
+      //    this.baseStats.sizeName = "Developed Nation";
+      //    this.baseStats.size = 5;
+      //  } else if (this.gdp() <= 1000000000000000) { // 1q
+      //    this.baseStats.sizeName = "World Power";
+      //    this.baseStats.size = 6;
+      //  } else {
+      //    // World Conqueror
+      //    this.baseStats.size = 7;
+      //  }
+      //}
 
       setHappiness () {
         const unemployment = this.unemployment();
