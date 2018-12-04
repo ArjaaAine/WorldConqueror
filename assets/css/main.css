@@ -214,9 +214,12 @@ a {
 }
 
 .map-overlay-stats{
-    position:absolute;
-    z-index: 1;
-    height: 5%;
+    position:fixed;
+    right: 0;
+    left: 0;
+    top: 0;
+    z-index: 1036;
+    /*height: 5%;*/
 }
 
 .map-overlay-buttons{

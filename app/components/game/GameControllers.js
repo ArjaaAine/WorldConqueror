@@ -156,6 +156,7 @@ wciApp.controller('GameController', function (
                 isFirstTime: false,
             },
             hideDebug: true,
+            expandStats: true,
             paused: false,
             speed: 1000,
         };
@@ -330,6 +331,10 @@ wciApp.controller('GameController', function (
             $log.info(`Modal dismissed at: ${new Date()}`);
 
         });
+    };
+
+    $scope.expandStatRow = function () {
+        game.data.expandStats = !game.data.expandStats;
     };
     $scope.simulateAmount = 10;
     $scope.changeSimulatedTurns = function (val) {

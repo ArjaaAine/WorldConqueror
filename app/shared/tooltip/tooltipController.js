@@ -24,8 +24,8 @@ wciApp.controller(
             );
 
             $scope.food = $sce.trustAsHtml(
-                "Production: <span class='bold text-success'>" + foodProduction + "%</span> <br/>\n" +
-                "Consumption: <span class='bold text-danger'>" + foodDemand + "%</span>"
+                "Production: <span class='bold text-success'>" + foodProduction + " units</span> <br/>\n" +
+                "Consumption: <span class='bold text-danger'>" + foodDemand + "units</span>"
             );
         };
         $scope.updateTooltip();
