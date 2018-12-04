@@ -22,9 +22,34 @@ wciApp.controller('GameController', function (
   $filter,
   modalService,
   chartsService,
+  leaderService,
   $log,
 ) {
   let saveTimer;
+
+  $scope.saveService = saveService;
+  $scope.startScreen = true;
+  $scope.gameLoading = true;
+  $scope.toggleStartScreen = function () {
+    $scope.startScreen = !$scope.startScreen;
+  };
+  $scope.saveData = [];
+  $scope.getLocalStorageData = function () {
+    $scope.saveData = [];
+    for (let i = 0; i < 4; i++) {
+      const save = angular.fromJson(localStorage.getItem(`gameData_${i}`));
+
+      console.log(save);
+      $scope.saveData.push(save);
+    }
+    console.log($scope.saveData);
+  };
+  $scope.getLocalStorageData();
+  $scope.gameSlot = 1;
+  $scope.changeGameSlot = function (slot) {
+    $scope.gameSlot = slot;
+  };
+  $scope.leaders = leaderService;
   $scope.modalButtons = [
     { name       : "Changelog",
       icon       : "glyphicon glyphicon-globe font-9pt font-color-lightblue",
@@ -64,15 +89,7 @@ wciApp.controller('GameController', function (
   ];
   const game = this;
   const initGame = function () {
-    initService().then(() => {
-      saveService.load();
-      $scope.createMap();
-      game.worldCountries.update();// Necessary to load the map colors.
-      chartsService.update();
 
-      //Begin auto saving
-      saveTimer = $interval(saveGame, 1000);
-    });
     game.myCountry = playerService;
     game.worldCountries = worldCountryService;
     game.bonuses = bonusesService;
@@ -83,14 +100,16 @@ wciApp.controller('GameController', function (
     game.debug = debugService;
   };
   const saveGame = function () {
-    saveService.save();
+    saveService.save($scope.gameSlot);
   };
   const resetGame = function () {
-    saveService.reset();
     $interval.cancel(saveTimer);
-    console.log(saveTimer);
-    initGame();
+    saveService.reset($scope.gameSlot);
+    $scope.gameLoading = true;
+    $scope.startScreen = true;
+    $scope.getLocalStorageData();
   };
+
   // #region Private Methods
   const timerfunction = function () {
     // TODO: Put logic here to prompt user of game ending/death due to 0 population.
@@ -114,48 +133,30 @@ wciApp.controller('GameController', function (
   };
 
   // #endregion
+  $scope.startGame = function (loadSave, saveSlot) {
+    leaderService.choose();
+    initService().then(() => {
+      if (loadSave) {
+        saveService.load(saveSlot);
+        $scope.gameSlot = saveSlot;
+      }
 
-  // #region Default Values
+      $scope.createMap();
+      game.worldCountries.update();// Necessary to load the map colors.
+      chartsService.update();
+      initGame();
 
-  // Load Game's Settings
-  if (!localStorage.gameData) {
-    game.data = {
-      init: {
-        isFirstTime: false,
-      },
-      paused: false,
-      speed : 1000,
-    };
-  } else {
-    game.data = JSON.parse(localStorage.gameData);
-  }
-  game.version = "0.0.1";
-  game.validation = {
-    initCountryName : true,
-    initCountryTitle: true,
+      // Begin auto saving
+      saveTimer = $interval(saveGame, 1000);
+    });
+    $scope.gameLoading = false;
   };
 
-  // #endregion
+  // Init some values so there are no errors
+  initService().then(() => {
+    initGame();
+  });
 
-  // #region Page Load
-
-  // #endregion
-
-  // #region Click Events
-  game.startGame = function () {
-    if (game.myCountry.baseStats.countryName.length > 0 &&
-                game.myCountry.baseStats.leaderName.length > 0) {
-      game.validation.initCountryName = true;
-      game.validation.initLeaderName = true;
-      game.data.init.isFirstTime = false;
-
-    } else {
-      if (game.myCountry.baseStats.countryName.length < 1) game.validation.initCountryName = false;
-
-      if (game.myCountry.baseStats.leaderName.length < 1) game.validation.initLeaderName = false;
-
-    }
-  };
   game.saveGame = function () {
     saveGame();
   };
@@ -163,9 +164,7 @@ wciApp.controller('GameController', function (
     resetGame();
   };
 
-  // #endregion
-
-  // next turn button
+  // Next turn button
   game.nextTurn = function () {
     timerfunction();
     game.myCountry.baseStats.currentTurn += 1;
@@ -269,8 +268,6 @@ wciApp.controller('GameController', function (
       $log.info(`Modal dismissed at: ${new Date()}`);
     });
   };
-
-  initGame();
 
   $scope.openModal = function (modalIndex) {
     const templateUrl = $scope.modalButtons[modalIndex].templateUrl;

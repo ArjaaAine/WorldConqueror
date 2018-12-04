@@ -104,9 +104,9 @@
                                                                         <span class="text-center">Buy x{{buildings.countToBuy}}</span>
                                                                         <br/>
                                                                         <i class="fas fa-money-bill-alt"></i>
-                                                                        {{structure.cost * buildings.countToBuy}}
+                                                                        {{structure.getCost() * buildings.countToBuy}}
                                                                         <i class="fas fa-flag"></i>
-                                                                        {{structure.landCost * buildings.countToBuy}}
+                                                                        {{structure.getLandCost() * buildings.countToBuy}}
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -170,9 +170,9 @@
                                                         <span class="text-center">Buy x{{buildings.countToBuy}}</span>
                                                         <br/>
                                                         <i class="fas fa-money-bill-alt"></i>
-                                                        {{structure.cost * buildings.countToBuy}}
+                                                        {{structure.getCost() * buildings.countToBuy}}
                                                         <i class="fas fa-flag"></i>
-                                                        {{structure.landCost * buildings.countToBuy}}
+                                                        {{structure.getLandCost() * buildings.countToBuy}}
                                                     </button>
                                                 </div>
                                             </div>

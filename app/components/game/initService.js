@@ -14,6 +14,7 @@ wciApp.factory(
     bonusesService,
     gameDataService,
     warService,
+    leaderService,
     $q,
   ) => {
     // TODO: We might want to store this in an excel too to allow modding, so we don't have to edit the code in order to add new excel sheet
@@ -27,6 +28,8 @@ wciApp.factory(
     const worldCountriesSheets = [ "WorldCountries", "CountryUnitArmyCode" ];
     const unitsFileName = "Units.ods";
     const unitsSheets = ["Units"];
+    const leadersFileName = "LeaderData.ods";
+    const leaderSheets = [ "Leaders", "LeadersStatDescription" ];
 
     const init = function () {
       console.log("INIT");
@@ -37,18 +40,22 @@ wciApp.factory(
         const governanceData = getDataFromExcel($q, governanceSheets, governanceFileName);
         const worldCountriesData = getDataFromExcel($q, worldCountriesSheets, worldCountriesFileName);
         const unitsData = getDataFromExcel($q, unitsSheets, unitsFileName);
+        const leadersData = getDataFromExcel($q, leaderSheets, leadersFileName);
 
-        $q.all([ researchData, buildingsData, governanceData, worldCountriesData, unitsData ]).then((array) => {
+        $q.all([ researchData, buildingsData, governanceData, worldCountriesData, unitsData, leadersData ]).then((array) => {
           const excelObject = { ...array[0],
             ...array[1],
             ...array[2],
             ...array[3],
-            ...array[4] };
+            ...array[4],
+            ...array[5] };
 
           // We return value which is an object of our sheets, we can access them like value.Buildings.
           // pass data to gameDataService before initializing any other service
           gameDataService.init(excelObject);// This is important, it stores all game data, so other services can use it.
+          console.log(gameDataService);
           warService.init();
+          leaderService.init();
           myCountryInit();
           buildingInit();
           militaryInit();

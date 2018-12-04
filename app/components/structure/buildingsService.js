@@ -4,6 +4,7 @@ wciApp.factory("buildingsService", function (
   playerService,
   bonusesService,
   gameDataService, // GameDataService stores object of objects with base values(constants), so we use them inside methods to calculate actual values based on count/research/bonuses etc.
+  leaderService,
 ) {
 
   class Structure {
@@ -19,14 +20,17 @@ wciApp.factory("buildingsService", function (
     }
 
     build (count) {
-      const cost = this.cost * count;
+      const cost = this.getCost() * count;
       const landCost = this.getLandCost() * count;
-
+      const leaderUnitCapMultiplier = leaderService.bonusCalculator("militaryCap", 1);
+      let multiplier = 1;
+      if(this.statAffected === "unitCap") multiplier = leaderUnitCapMultiplier;
       if (playerService.baseStats.money >= cost && this.isUnlocked &&
           playerService.baseStats.land >= landCost) {
         playerService.baseStats[this.statAffected] *= Math.pow(this.statMultiplier * this.countMultiplier, count);
         playerService.baseStats[this.statAffected] += this.statAdder * count;
-        playerService.baseStats.totalJobs += this.jobsIncreased * count;
+        playerService.baseStats[this.statAffected] *= multiplier;//add unitCap bonus above
+        playerService.baseStats.totalJobs += this.getJobsIncreased() * count;
         playerService.baseStats.money -= cost;
         playerService.baseStats.land -= landCost;
         this.count = Number(this.count) + count; //* 1 to force math add and not string add.
@@ -38,8 +42,7 @@ wciApp.factory("buildingsService", function (
       const bonusCost = bonusesService.researchBonuses.landCostAdder || 0;
       const cost = this.landCost - bonusCost;
 
-      if (cost <= 1)
-        return 1;
+      if (cost <= 1) return 1;
 
       return cost;
     }
@@ -74,16 +77,13 @@ wciApp.factory("buildingsService", function (
     }
 
     getCost () {
-      return this.cost;
-    }
+      const leaderCostAdder = leaderService.bonusCalculator("buildingCost", 1);
 
-    getCount () {
-      return this.count;
+      return Math.floor(this.cost * leaderCostAdder);
     }
 
     cantAfford (count) {
-      if (playerService.baseStats.money >= this.cost * count && playerService.baseStats.land >= this.getLandCost() * count)
-        return false;
+      if (playerService.baseStats.money >= this.getCost() * count && playerService.baseStats.land >= this.getLandCost() * count) return false;
 
       return true;
     }
@@ -102,6 +102,7 @@ wciApp.factory("buildingsService", function (
 
     init () {
       const buildingsArray = gameDataService.Buildings;
+      const leaderJobsIncreasedMultiplier = leaderService.bonusCalculator("jobPerStructure", 1);
 
       this.structures = [];
       for (let j = 0; j < buildingsArray.length; j++) {
@@ -117,7 +118,7 @@ wciApp.factory("buildingsService", function (
         structureObj.statMultiplier = buildingsArray[j].statMultiplier;
         structureObj.statAdder = buildingsArray[j].statAdder;
         structureObj.countMultiplier = buildingsArray[j].countMultiplier;
-        structureObj.jobsIncreased = buildingsArray[j].jobsIncreased;
+        structureObj.jobsIncreased = Math.round(buildingsArray[j].jobsIncreased * leaderJobsIncreasedMultiplier);
         structureObj.image = buildingsArray[j].image;
         structureObj.landCost = buildingsArray[j].landCost;
         this.structures.push(new Structure(structureObj));// We create a new object, and we pass some basic values which we need to save/load.
@@ -139,8 +140,7 @@ wciApp.factory("buildingsService", function (
       let upkeep = 0;
 
       // TODO: Might want to return 0 if structureCount is 0, so we avoid unnecessary calculations
-      for (let i = 0; i < this.structures.length; i++)
-        upkeep += this.structures[i].getUpkeep() * this.structures[i].count;
+      for (let i = 0; i < this.structures.length; i++) upkeep += this.structures[i].getUpkeep() * this.structures[i].count;
 
       playerService.baseStats.upkeep = upkeep;
 

@@ -4,6 +4,7 @@ wciApp.factory(
   "playerService",
   (
     bonusesService,
+    leaderService,
   ) => {
 
     class Player {
@@ -23,6 +24,9 @@ wciApp.factory(
       }
 
       init () {
+        const leaderPerCapitaConsumptionAdder = leaderService.bonusCalculator("perCapitaConsumption", 0);
+        const leaderJobGdpMultiplier = leaderService.bonusCalculator("jobGdpMultiplier", 1);
+
         this.conqueredCountries = [];
         this.startingCountries = ["US"];// We can have more than 1...
         this.baseStats = {
@@ -72,6 +76,9 @@ wciApp.factory(
           // Laws
           influence: 0,
         };
+        this.baseStats.leaderName = leaderService.currentLeader.name || "Rohan";
+        this.baseStats.perCapitaConsumption += leaderPerCapitaConsumptionAdder;
+        this.baseStats.jobGdpMultiplier *= leaderJobGdpMultiplier;
         this.events = {
           oneChildPolicy: false, // Law
           birthFreeze   : false, // Law
@@ -98,13 +105,10 @@ wciApp.factory(
         const freezeGrowth = bonusesService.lawsBonuses.freezeGrowth;
         const freezeBirth = bonusesService.lawsBonuses.freezeBirth;
 
-        if (freezeGrowth)
-          growthRate = this.actualMortalityRate();
-        else if (freezeBirth)
-          growthRate = 0;
+        if (freezeGrowth) growthRate = this.actualMortalityRate();
+        else if (freezeBirth) growthRate = 0;
 
-        else
-          growthRate = this.baseStats.baseGrowthRate * (3 * this.baseStats.happiness / 100);
+        else growthRate = this.baseStats.baseGrowthRate * (3 * this.baseStats.happiness / 100);
 
         return growthRate;
       }
@@ -149,8 +153,7 @@ wciApp.factory(
       unemployment () {
         let unemployment = Math.round((this.baseStats.population - this.baseStats.totalJobs) / this.baseStats.population * 100);
 
-        if (unemployment < 0)
-          unemployment = 0;
+        if (unemployment < 0) unemployment = 0;
 
         return unemployment;
       }
@@ -158,19 +161,18 @@ wciApp.factory(
       homelessness () {
         let homelessness = Math.round((this.baseStats.population - this.baseStats.housingCapacity) / this.baseStats.population * 100);
 
-        if (homelessness < 0)
-          homelessness = 0;
+        if (homelessness < 0) homelessness = 0;
 
         return homelessness;
       }
 
       getCurrentStabilityIndex () {
         let indexBonus = bonusesService.lawsBonuses.stabilityChange;
+        const leaderStabilityIndexAdder = leaderService.bonusCalculator("stabilityIndex", 0);
 
-        if (typeof indexBonus !== "number")
-          indexBonus = 0;
+        if (typeof indexBonus !== "number") indexBonus = 0;
 
-        return this.baseStats.currentStabilityIndex + indexBonus;
+        return this.baseStats.currentStabilityIndex + indexBonus + leaderStabilityIndexAdder;
       }
 
       // Timer Methods
@@ -187,11 +189,9 @@ wciApp.factory(
           this.baseStats.turnsAtCurrentState++;
           this.baseStats.stability += currentStabilityIndex * this.baseStats.turnsAtCurrentState;
 
-          if (this.baseStats.stability > 100)
-            this.baseStats.stability = 100;
+          if (this.baseStats.stability > 100) this.baseStats.stability = 100;
 
-          else if (this.baseStats.stability < 0)
-            this.baseStats.stability = 0;
+          else if (this.baseStats.stability < 0) this.baseStats.stability = 0;
 
         } else {
           this.baseStats.turnsAtCurrentState = 0;
@@ -205,12 +205,10 @@ wciApp.factory(
         this.setCountrySize();
 
         // Handling edge cases. (Minimum is 2, you and your partner)
-        if (this.baseStats.population < 2)
-          this.baseStats.population = 2;
+        if (this.baseStats.population < 2) this.baseStats.population = 2;
 
         // Happiness can not be zero, or formulas will break
-        if (this.baseStats.happiness <= 1)
-          this.baseStats.happiness = 1;
+        if (this.baseStats.happiness <= 1) this.baseStats.happiness = 1;
 
       }
 
@@ -218,18 +216,18 @@ wciApp.factory(
         this.baseStats.totalFood += this.foodFlow();
         if (this.baseStats.totalFood < 0) {
           this.baseStats.totalFood = 0;
-          this.baseStats.hunger = Math.round((this.foodDemand() - this.foodGrowth()) / (this.baseStats.perCapitaConsumption * this.baseStats.population) * 100);
+          this.baseStats.hunger = Math.round(Math.abs(this.foodFlow() / this.foodDemand()) * 100);
         } else {
           this.baseStats.hunger = 0;
         }
+        console.log(this.baseStats.hunger);
       }
 
       getNewEconomics () {
         this.baseStats.money += this.moneyGrowth();
 
         // Set the money to a minimum of 0. Once Lending is implemented, then it will be possible for the worldCountry to go negative.
-        if (this.baseStats.money < 0)
-          this.baseStats.money = 0;
+        if (this.baseStats.money < 0) this.baseStats.money = 0;
 
       }
 

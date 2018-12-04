@@ -33,8 +33,8 @@
 </head>
 <body ng-controller="GameController as game">
 <div class="main_overlay">
-    <div class="container-fluid">
-        <div class="row" ng-show="game.data.init.isFirstTime != true">
+    <div class="container-fluid" ng-show="!gameLoading">
+        <div class="row">
             <div class="col-sm-12">
                 <div class="row">
                     <div class="debug-buttons">
@@ -75,6 +75,9 @@
                     <div class="col-xs-3 col-sm-2 col-md-1 leader-icon">
                         <a href="#" class="thumbnail">
                             <img ng-click="openModal(6)" src="./assets/img/avatar_blank.jpeg" alt="">
+                            <div class="caption">
+                                <p>{{game.myCountry.baseStats.leaderName}}</p>
+                            </div>
                         </a>
                     </div>
                     <div class="col-xs-3 col-sm-2 col-md-1 game-time">
@@ -123,11 +126,11 @@
                     </div>
                 </div>
             </div>
-
-            <div ng-include="'app/components/introScreen/introscreenView.html'"></div>
-            <div ng-include="'app/shared/notifications/notificationsView.html'"></div>
-
         </div>
+    </div>
+    <ng-include src="'app/components/introScreen/introscreenView.html'"></ng-include>
+    <div ng-include="'app/shared/notifications/notificationsView.html'"></div>
+
     <ng-include src="'app/components/war/warConfirmation/war_confirmationView.html'"></ng-include>
     <ng-include src="'app/components/war/warSendTroopsModal.html'"></ng-include>
     <ng-include src="'app/components/government/internalAffairsView.html'"></ng-include>
@@ -137,8 +140,6 @@
     <ng-include src="'app/components/research/researchView.html'"></ng-include>
     <ng-include src="'app/components/war/warView.html'"></ng-include>
     <ng-include src="'app/shared/charts/chartsView.html'"></ng-include>
-
-    </div>
 </div>
     <!--Google Analytics-->
     <script>
@@ -180,6 +181,7 @@
         <!-- Services -->
         <script src="app/components/advisors/advisorsService.js"></script>
         <script src="app/components/country/playerService.js"></script>
+        <script src="app/components/country/leaderService.js"></script>
         <script src="app/components/government/lawsService.js"></script>
         <script src="app/components/military/militaryService.js"></script>
         <script src="app/components/research/researchService.js"></script>
@@ -208,6 +210,7 @@
         <!-- Filters -->
         <script src="app/shared/filters/NumberFilters.js"></script>
         <script src="app/shared/filters/DateTimeFilters.js"></script>
+        <script src="app/shared/filters/StringFilters.js"></script>
 
         <!-- Functions -->
         <script src="app/shared/excelLoader.js"></script>

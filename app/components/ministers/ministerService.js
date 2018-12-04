@@ -4,6 +4,7 @@ wciApp.factory("ministerService", function(
   modalService,
   gameDataService,
   playerService,
+  leaderService,
 ) {
 
   class Ministers {
@@ -13,13 +14,17 @@ wciApp.factory("ministerService", function(
       this.nextMinisterCost = 1;
       this.error = false;
       this.errorMessage = "";
+      this.activeMinisters = [];
+      this.maxMinisters = 5;
     }
 
     init () {
+      const leaderMinisterAdder = leaderService.bonusCalculator("maxMinisters", 0);
+
+      this.maxMinisters = 5 + leaderMinisterAdder;
       this.allMinisters = gameDataService.Ministers;
-      console.log("TEST");
       this.remainingMinisters = this.allMinisters.filter(minister => minister.isActive === 1);
-      this.activeMinisters = [];
+      console.log(this.maxMinisters);
     }
 
     openMinisterHire () {
@@ -80,12 +85,12 @@ wciApp.factory("ministerService", function(
       const c = confirm("Are you sure you want to fire minister?");
 
       if (c === true) {
-        const index = playerService.ministers.activeMinisters.indexOf(minister);
+        const index = this.activeMinisters.indexOf(minister);
 
-        playerService.ministers.activeMinisters.splice(index, 1);
+        this.activeMinisters.splice(index, 1);
 
         // Adding it back to the hire list.
-        playerService.ministers.remainingMinisters.push(minister);
+        this.remainingMinisters.push(minister);
 
         // Handle bonuses
       }

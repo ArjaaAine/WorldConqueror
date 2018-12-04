@@ -1,6 +1,19 @@
-﻿<div class="row introScreen" ng-show="game.data.init.isFirstTime === true">
-    <div class="">
-        <div id="IntroScreen">
+﻿<div class="container-fluid introScreen">
+    <div class="row" ng-show="startScreen">
+        <div class="col-xs-3 col-xs-offset-2 text-center" ng-repeat="data in saveData track by $index">
+            <div class="thumbnail">
+                <!-- TODO: Use Leader avatar, or player choosen avatar for custom leaders... -->
+                <img src="./assets/img/avatar_blank.jpeg" alt="...">
+                <p>{{data.baseStats.leaderName}}</p>
+                <p ng-show="data.baseStats.currentTurn >= 0">Year : {{1900 + data.baseStats.currentTurn}}</p>
+                <button class="btn btn-block btn-success" ng-hide="data.baseStats !== undefined" ng-click="toggleStartScreen(); changeGameSlot($index)">New Game</button>
+                <button class="btn btn-block btn-info" ng-show="data.baseStats !== undefined" ng-click="startGame(true, $index)">Load Game</button>
+                <button class="btn btn-block btn-danger" ng-show="data.baseStats !== undefined" ng-click="saveService.reset($index); getLocalStorageData();">Delete</button>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="gameLoading && !startScreen">
+        <div class="col-xs-12" id="IntroScreen">
             <h3>
                 Welcome Conqueror!
             </h3>
@@ -8,7 +21,25 @@
                 Tired of the ceaseless misgivings of your country, you decide to show them how it is done. Banded with a group of like minded individuals you venture to one of the few pieces of unclaimed lands and establish your own nation. <br />
             </span>
             <hr />
-
+            <div class="row">
+                <div class="col-xs-4 col-xs-offset-1 col-md-3 col-lg-2" ng-repeat="leader in leaders.list track by $index">
+                    <button class="btn btn-sm" ng-click="leaders.select($index)" ng-class="leaders.selectedIndex === $index ? 'btn-danger' : 'btn-success'">{{leader.name}}</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6" ng-repeat="name in leaders.list[leaders.selectedIndex].bonusName track by $index">
+                    Positive:
+                    <p>
+                        {{name + ": " + leaders.list[leaders.selectedIndex].bonusValue[$index]}}
+                    </p>
+                </div>
+                <div class="col-xs-6" ng-repeat="name in leaders.list[leaders.selectedIndex].negativeName track by $index">
+                    Negative:
+                    <p>
+                        {{name + ": " + leaders.list[leaders.selectedIndex].negativeValue[$index]}}
+                    </p>
+                </div>
+            </div>
             <div class="form-horizontal">
                 <div class="col-sm-12 form-group" ng-class="game.validation.initCountryName === false ? 'has-error':'' ">
                     <span class="control-label bold col-sm-5">
@@ -65,7 +96,7 @@
             </div>
 
             <div class="margin-top-20 pull-right">
-                <button type="button" class="btn btn-info" ng-click="game.startGame()">
+                <button type="button" class="btn btn-info" ng-click="startGame(false)">
                     Start!
                 </button>
             </div>
@@ -73,6 +104,6 @@
     </div>
 </div>
 <!--Leave this blank, this is what sets the background to black.-->
-<div class="fade_overlay" ng-show="game.data.init.isFirstTime === true">
+<!--<div class="fade_overlay" ng-show="!gameLoading">-->
 
-</div>
+<!--</div>-->

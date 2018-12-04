@@ -18,7 +18,7 @@ wciApp.factory("saveService", function
 
   const data = {};
 
-  data.save = function () {
+  data.save = function (saveSlot) {
     console.log("SAVE");
 
     // TODO: Broken, cyclic object value error.
@@ -44,7 +44,7 @@ wciApp.factory("saveService", function
     saveData.military = military;
     saveData.research = research;
 
-    // SaveData.ministers = ministers;
+    saveData.ministers = ministers;
     // saveData.laws = laws;
     // saveData.lawsUnlocked = lawsUnlocked;
     saveData.buildings = buildings;
@@ -52,11 +52,11 @@ wciApp.factory("saveService", function
     saveData.onWar = onWar;
     saveData.onWarColors = onWarColors;
 
-    localStorage.gameData5 = angular.toJson(saveData);
+    localStorage[`gameData_${saveSlot}`] = angular.toJson(saveData);
   };
-  data.load = function () {
+  data.load = function (saveSlot) {
     console.log("LOAD");
-    const savedData = angular.fromJson(localStorage.gameData5);
+    const savedData = angular.fromJson(localStorage[`gameData_${saveSlot}`]);
 
     if (!savedData) return;
     const military = playerService.military;
@@ -74,7 +74,7 @@ wciApp.factory("saveService", function
     angular.merge(military, savedData.military);
     angular.merge(research, savedData.research);
 
-    // Angular.merge(ministers, savedData.ministers);
+    angular.merge(ministers, savedData.ministers);
     // angular.merge(laws, savedData.laws);
     // angular.merge(lawsUnlocked, savedData.lawsUnlocked);
     angular.merge(buildings, savedData.buildings);
@@ -88,8 +88,10 @@ wciApp.factory("saveService", function
   };
 
   // Separated from "newGame" in order to give us an ability to do other stuff which applies only when resetting
-  data.reset = function () {
-    localStorage.clear();
+  data.reset = function (saveSlot) {
+    // TODO: SPECIFY SAVE SLOT TO RESET/CLEAR!
+    localStorage.removeItem(`gameData_${saveSlot}`)
+    // localStorage.clear();
 
     /*
           When player resets a game, it will change current view to the main one("/")

@@ -1,7 +1,7 @@
 wciApp.factory(
   "gameDataService",
   () => {
-    const convertToObject = ["ResearchDescription"];
+    const convertToObject = ["LeadersStatDescription"];
     const removeUndefined = ["ResearchBonuses"];
 
     /* Contains all game data for units/research/law/buildings etc. It contains base values only.

@@ -1,6 +1,6 @@
 "use strict";
 
-wciApp.factory("researchService", (gameDataService, bonusesService, playerService) => {
+wciApp.factory("researchService", (gameDataService, bonusesService, playerService, $filter) => {
   class Research {
     constructor () {
       this.scientists = 1;// Total scientists we have unlocked/bought
@@ -31,7 +31,6 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
       const arr = type;
       const len = arr.length;
 
-      if(type === "Economy") debugger;
       for (let i = 0; i < len; ++i) {
         const value = arr[i];
         const name = value.name;
@@ -41,7 +40,7 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
 
         if (!bonus) continue;
 
-        bonus = bonus.split(", ");
+        bonus = $filter("split")(bonus);
         for (let j = 0; j < bonus.length; j++) {
           const bonusValue = bonus[j];
 
@@ -87,7 +86,7 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
         const name = research.name;
         let buildingsToUnlock = research.unlockBuilding;
         let unitToUnlock = research.unlockUnit;
-        let lawToUnlock = research.unlockLaw;
+        let lawToUnlock = research.lawUnlock;
 
         if (!unlockFree) this.sciencePoints -= price;
         this.isUnlocked[name] = true;
@@ -98,19 +97,19 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
 
         // Unlock units
         if (unitToUnlock) {
-          unitToUnlock = unitToUnlock.split(", ");
+          unitToUnlock = $filter("split")(unitToUnlock);
           military.unlockUnits(unitToUnlock);
         }
 
         // Unlock buildings
         if (buildingsToUnlock) {
-          buildingsToUnlock = buildingsToUnlock.split(", ");
+          buildingsToUnlock = $filter("split")(buildingsToUnlock);
           buildings.unlockBuilding(buildingsToUnlock);
         }
 
         // Unlock law
         if (lawToUnlock) {
-          lawToUnlock = lawToUnlock.split(", ");
+          lawToUnlock = $filter("split")(lawToUnlock);
           laws.unlockLaw(lawToUnlock);
         }
 
@@ -144,7 +143,7 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
       for (const research of type) {
         let requirements = research.requirements;
 
-        if (requirements) requirements = requirements.split(", ");
+        if (requirements) requirements = $filter("split")(requirements);
         if (!requirements || requirements.every(val => this.isUnlocked[val])) this.isVisible[research.name] = true;
         if (this.isUnlocked[research.name]) this.isVisible[research.name] = false;
       }

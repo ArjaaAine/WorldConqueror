@@ -70,16 +70,9 @@ a {
 
 /*Intro Screen*/
 .introScreen {
-    position: absolute;
-    top: 15%;
-    left: 25%;
-    width: 50%;
-    height: 70%;
     padding: 16px;
     border: 4px solid black;
     background-color: white;
-    z-index: 1002;
-    overflow: auto;
 }
 
 /*Governance Screen*/
@@ -223,7 +216,7 @@ a {
     position: absolute;
     z-index: 1;
     left: 1%;
-    bottom: 20%;
+    bottom: 15%;
 }
 .map-overlay-next-turn{
     position:absolute;
@@ -235,7 +228,7 @@ a {
     position:absolute;
     z-index: 2;
     left: 1%;
-    top: 20%;
+    top: 27%;
 }
 
 .leader-icon{

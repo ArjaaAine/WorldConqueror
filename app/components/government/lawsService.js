@@ -27,11 +27,13 @@ wciApp.factory("lawsService", function (gameDataService) {
       });
     }
 
-    unlockLaw (id) {
-      const law = this.filterLaw(id);
+    unlockLaw (lawsToUnlock) {
+      for(const id of lawsToUnlock.values()) {
+        const law = this.filterLaw(id);
 
-      if (law)
-        this.unlockedLaws.push(law);
+        if (law)
+          this.unlockedLaws.push(law);
+      }
     }
 
     removeLaw (id) {
