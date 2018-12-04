@@ -20,14 +20,15 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
 
       for (const { type } of gameDataService.ResearchData) {
         const researchType = gameDataService[`${type}Research`];
+
         this.researchType.push(type);
-        this._initBonusProps(researchType, researchBonuses);
+        this.initBonusProps(researchType, researchBonuses);
         this.checkUnlockedResearch(researchType);
       }
       console.log(this);
     }
 
-    _initBonusProps (type, researchBonuses) {
+    initBonusProps (type, researchBonuses) {
       const arr = type;
       const len = arr.length;
 
@@ -36,22 +37,23 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
         const name = value.name;
         let bonus = value.bonus;
 
-        this.researchBonuses = [];
-
         if (!bonus) continue;
 
         bonus = $filter("split")(bonus);
         for (let j = 0; j < bonus.length; j++) {
           const bonusValue = bonus[j];
+          const bonusData = researchBonuses.filter(this._bonusFilter, bonusValue)[0];
 
-          this.researchBonuses[j] = researchBonuses.filter(this._bonusFilter, bonusValue)[0];
-          if (!this.researchBonuses[0]) {
-            this.researchBonuses.length = 0;
+          if (bonusData) {
+            this.researchBonuses[bonusValue] = {};
+            this.researchBonuses[bonusValue] = bonusData;
+          } else {
             console.log("Bonus not working! Probably does not exist in the excel file: %s", name);
           }
         }
         if (value.isUnlocked) this.unlockResearch(type, i, true);
       }
+      console.log(this.researchBonuses);
     }
 
     _bonusFilter (bonus) {
@@ -87,13 +89,17 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
         let buildingsToUnlock = research.unlockBuilding;
         let unitToUnlock = research.unlockUnit;
         let lawToUnlock = research.lawUnlock;
+        let bonuses = research.bonus;
 
         if (!unlockFree) this.sciencePoints -= price;
         this.isUnlocked[name] = true;
         this.isVisible[name] = false;
 
         // Unlock bonuses
-        for (const bonusData of this.researchBonuses) this.unlockBonus(bonusData);
+        if (bonuses) {
+          bonuses = $filter("split")(bonuses);
+          for (const bonusData of bonuses) this.unlockBonus(bonusData);
+        }
 
         // Unlock units
         if (unitToUnlock) {
@@ -113,22 +119,29 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
           laws.unlockLaw(lawToUnlock);
         }
 
-        this.checkUnlockedResearch(type);//Make other research visible if we meet requirements.
+        this.checkUnlockedResearch(type);// Make other research visible if we meet requirements.
       }
     }
 
     unlockBonus (bonusData) {
-      for (const bonus of Object.values(bonusData)) {
-        this.totalBonus[bonus.statAffected] = {};
-        const researchBonus = this.totalBonus[bonus.statAffected];
+      const researchBonuses = this.researchBonuses;
+      if (!researchBonuses[bonusData]) {
+        console.log(`BONUS DOES NOT EXIST! ${bonusData}`);
 
-        researchBonus.statAdder = researchBonus.statAdder || 0;
-        researchBonus.statMultiplier = researchBonus.statMultiplier || 1;
-        researchBonus.statAdder += bonus.statAdder;
-        researchBonus.statMultiplier *= bonus.statMultiplier;
-        researchBonus.name = bonus.statName;
+        return;
       }
-      console.log(bonusData);
+      const statAffected = researchBonuses[bonusData].statAffected;
+      if (!this.totalBonus[statAffected]) {
+        this.totalBonus[statAffected] = {};
+        this.totalBonus[statAffected].statAdder = 0;
+        this.totalBonus[statAffected].statMultiplier = 1;
+      }
+
+      this.totalBonus[statAffected].statAdder += researchBonuses[bonusData].statAdder;
+      this.totalBonus[statAffected].statMultiplier *= researchBonuses[bonusData].multiplier;
+
+      this.totalBonus[statAffected].name = researchBonuses[bonusData].statName;
+      console.log(this.totalBonus);
     }
 
     scienceGain () {

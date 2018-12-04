@@ -1,4 +1,4 @@
-﻿<div class="container-fluid introScreen">
+﻿<div class="container-fluid introScreen" ng-show="gameLoading">
     <div class="row" ng-show="startScreen">
         <div class="col-xs-3 col-xs-offset-2 text-center" ng-repeat="data in saveData track by $index">
             <div class="thumbnail">
@@ -12,7 +12,7 @@
             </div>
         </div>
     </div>
-    <div class="row" ng-show="gameLoading && !startScreen">
+    <div class="row" ng-show="!startScreen">
         <div class="col-xs-12" id="IntroScreen">
             <h3>
                 Welcome Conqueror!
