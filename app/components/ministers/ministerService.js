@@ -11,7 +11,7 @@ wciApp.factory("ministerService", function(
     constructor () {
       this.allMinisters = [];
       this.remainingMinisters = [];
-      this.nextMinisterCost = 1;
+      this.nextMinisterCost = 0;
       this.error = false;
       this.errorMessage = "";
       this.activeMinisters = [];
@@ -40,7 +40,12 @@ wciApp.factory("ministerService", function(
 
       self.nextMinisterCost = ministerCost;
 
-      if (playerService.baseStats.influence > ministerCost) {
+      if (this.activeMinisters.length < 1) {
+        ministerCost = 0;
+        this.nextMinisterCost = 0;
+      }
+
+      if (playerService.baseStats.influence >= ministerCost) {
         this.error = false;
 
         // Open modal
@@ -101,8 +106,11 @@ wciApp.factory("ministerService", function(
     }
 
     update () {
+      const playerInfluence = playerService.baseStats;
+      let influenceGain = 0;
 
-      // Write logic to update Influence Points
+      for (const minister of this.activeMinisters.values()) influenceGain += minister.influencePT;
+      playerInfluence.influence += influenceGain;
     }
   }
 
