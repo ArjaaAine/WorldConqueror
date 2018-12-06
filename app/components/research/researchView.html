@@ -30,6 +30,8 @@
                                             <span>{{researchData.name}}</span>
                                             <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white"></i></a>
                                         </span>
+
+                                        <!-- THIS IS NOT WORKING, researchData.bonus stores a string, which we need to split first, then get bonus data from researchBonuses...-->
                                         <div class="row" ng-repeat="bonus in researchData.researchBonus track by $index">
                                             <div class="col-xs-12">
                                                 <span class="label label-default" ng-hide="bonus.statAdder === 0 && bonus.multiplier === 1">{{bonus.statName}}</span>
