@@ -45,7 +45,8 @@ wciApp.factory("saveService", function
     saveData.research = research;
 
     saveData.ministers = ministers;
-    // saveData.laws = laws;
+
+    // SaveData.laws = laws;
     // saveData.lawsUnlocked = lawsUnlocked;
     saveData.buildings = buildings;
     saveData.baseStats = playerService.baseStats;
@@ -75,7 +76,8 @@ wciApp.factory("saveService", function
     angular.merge(research, savedData.research);
 
     angular.merge(ministers, savedData.ministers);
-    // angular.merge(laws, savedData.laws);
+
+    // Angular.merge(laws, savedData.laws);
     // angular.merge(lawsUnlocked, savedData.lawsUnlocked);
     angular.merge(buildings, savedData.buildings);
     angular.merge(baseStats, savedData.baseStats);
@@ -89,9 +91,7 @@ wciApp.factory("saveService", function
 
   // Separated from "newGame" in order to give us an ability to do other stuff which applies only when resetting
   data.reset = function (saveSlot) {
-    // TODO: SPECIFY SAVE SLOT TO RESET/CLEAR!
-    localStorage.removeItem(`gameData_${saveSlot}`)
-    // localStorage.clear();
+    if (confirm("Are you sure?")) localStorage.removeItem(`gameData_${saveSlot}`);
 
     /*
           When player resets a game, it will change current view to the main one("/")

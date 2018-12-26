@@ -54,6 +54,11 @@ a {
     color: #aaa;
 }
 
+.overflow-80vh{
+    overflow:auto;
+    max-height: 80vh;
+}
+
 .panelUnlocked {
     color: #000;
 }
@@ -75,6 +80,9 @@ a {
     background-color: white;
 }
 
+.border-right {
+    border-right: 1px solid black;
+}
 /*Governance Screen*/
 .law-panel {
     /*border-width: 1px;

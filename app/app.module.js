@@ -7,7 +7,8 @@ let wciApp = angular.module(
         'ngRoute',
         'ngSanitize',
         'ui.select',
-        'chart.js'
+        'chart.js',
+        'rzModule'
     ]
 );
 

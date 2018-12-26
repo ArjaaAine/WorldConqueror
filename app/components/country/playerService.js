@@ -48,22 +48,22 @@ wciApp.factory(
           stability             : 25, // % calculated based on warring history, friendly laws.
           size                  : 1,
           sizeName              : "Speck",
-          population            : 100,
+          population            : 100000,
           baseGrowthRate        : 1, // Based on the size of the worldCountry (lower size = lower growth rate)
           baseMortalityRate     : 6, // Based on the size (lower size = higher mortality rate)
-          housingCapacity       : 16,
+          housingCapacity       : 100000,
 
           // Consumption
           perCapitaConsumption: 5, // 1 person's monthly consumption = 3 Mcal * 30 ~ 100 Mcal. (3Mcal is based on the nation's development level. http://www.who.int/nutrition/topics/3_foodconsumption/en/)
-          totalFood           : 800, // In megaCalorie = 1000*kcal...
-          baseFoodGrowth      : 100,
+          totalFood           : 100000, // In megaCalorie = 1000*kcal...
+          baseFoodGrowth      : 550000,
           hunger              : 0,
 
           // Economics
-          money             : 1000, // Earned from Taxes and economic factors.
+          money             : 1000000, // Earned from Taxes and economic factors.
           upkeep            : 0, // Upkeep of structure, advisors and soldiers.
-          totalJobs         : 16,
-          jobGdpMultiplier  : 100, // This is how jobs effect the gdp.
+          totalJobs         : 100000,
+          jobGdpMultiplier  : 10, // This is how jobs effect the gdp.
           // Military
           attack            : 0,
           defense           : 0,

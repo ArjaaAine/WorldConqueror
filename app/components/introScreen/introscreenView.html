@@ -27,16 +27,17 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-6" ng-repeat="name in leaders.list[leaders.selectedIndex].bonusName track by $index">
+            <div class="row">
+                <div class="col-xs-6" ng-repeat="bonus in leaders.list[leaders.selectedIndex].bonuses track by $index">
                     Positive:
                     <p>
-                        {{name + ": " + leaders.list[leaders.selectedIndex].bonusValue[$index]}}
+                        {{bonus.name + ": " + bonus.value}}
                     </p>
                 </div>
-                <div class="col-xs-6" ng-repeat="name in leaders.list[leaders.selectedIndex].negativeName track by $index">
+                <div class="col-xs-6" ng-repeat="negative in leaders.list[leaders.selectedIndex].negatives track by $index">
                     Negative:
                     <p>
-                        {{name + ": " + leaders.list[leaders.selectedIndex].negativeValue[$index]}}
+                        {{negative.name + ": " + negative.value}}
                     </p>
                 </div>
             </div>

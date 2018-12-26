@@ -21,10 +21,11 @@ wciApp.factory("ministerService", function(
     init () {
       const leaderMinisterAdder = leaderService.bonusCalculator("maxMinisters", 0);
 
+      this.allMinisters = [];
+      this.activeMinisters = [];
       this.maxMinisters = 5 + leaderMinisterAdder;
       this.allMinisters = gameDataService.Ministers;
       this.remainingMinisters = this.allMinisters.filter(minister => minister.isActive === 1);
-      console.log(this.maxMinisters);
     }
 
     openMinisterHire () {
@@ -103,6 +104,10 @@ wciApp.factory("ministerService", function(
 
     filterMinister (ministerType) {
       return this.allMinisters.filter(ministerObject => ministerObject.ministerType.includes(ministerType))[0];
+    }
+
+    modalClosed () {
+      this.error = false;
     }
 
     update () {

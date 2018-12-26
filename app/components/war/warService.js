@@ -12,6 +12,7 @@ wciApp.service("warService", function
       this.currentBattles = [];// Array of objects;
       this.currentlyAtWar = [];
       this.currentWarIndex = 0;// This helps to track current index when we do battle, so war log can be updated.
+      this.unitsQueue = {};
       this.warLog = [];
     }
 
@@ -38,8 +39,7 @@ wciApp.service("warService", function
     declareWar (countryCode) {
       const aiPlayerIndex = worldCountryService.getAiIndexByCountryCode(countryCode);
 
-      if (this.isAtWar(aiPlayerIndex) !== -1)
-        return;// Already at war
+      if (this.isAtWar(aiPlayerIndex) !== -1) return;// Already at war
 
       this.currentlyAtWar.push(aiPlayerIndex);// Later pass an object with queue/warLog(to separate war log from each AI)
       worldCountryService.updateColors(aiPlayerIndex);
@@ -62,9 +62,12 @@ wciApp.service("warService", function
           break;
         }
       }
-      if (canMakePeace)
-        this.removeCountryAtWar(getAiAtWarIndex, this.currentlyAtWar[aiPlayerIndex]);
+      if (canMakePeace) this.removeCountryAtWar(getAiAtWarIndex, this.currentlyAtWar[aiPlayerIndex]);
 
+    }
+
+    canReturnUnits (countryIndex) {
+      return playerService.military.unitsAtWar[countryIndex].length > 0;
     }
 
     returnUnits (countryIndex) {
@@ -73,34 +76,50 @@ wciApp.service("warService", function
       for (let i = playerUnitsInBattle.length - 1; i >= 0; i--) {
         const unit = playerUnitsInBattle[i];
 
-        if (unit.count > 0)
-          playerService.military.unitsAtHome[i].count += unit.count;
+        if (unit.count > 0) playerService.military.unitsAtHome[i].count += unit.count;
         unit.count = 0;
       }
     }
 
-    sendTroops (troops, aiAttackedIndex) {
-      // TODO: Merge troops, or add some delay before they merge etc.
-      // TODO: Remove troops from attacker so he cant have infinite troops...
-
-      for (let i = 0; i < troops.length; i++) {
-        const troopId = troops[i].id;
-
-        // TODO: Create a property for playerService to store "inBattle" units for each country it fights. Or even store this data inside each Unit object
-        // TODO: We sort/filter through all those units anyway, we just need to check if there are any amount of them currently in battle with a country we are looping through.
-        // TODO: Create a method in player service or warService(better) or Entity service(even better, first need to create Entity service tho)
-        // TODO: Entity service is a service above player and AI, it contains shared properties between characters.
-        if (!playerService.military.unitsAtWar[aiAttackedIndex].length) {
-          playerService.military.unitsAtWar[aiAttackedIndex] = [];
-          for (let j = 0; j < gameDataService.Units.length; j++) {
-            playerService.military.unitsAtWar[aiAttackedIndex][j] = {};
-            playerService.military.unitsAtWar[aiAttackedIndex][j] = troops[j];
-          }
-        } else {
-          playerService.military.unitsAtWar[aiAttackedIndex][troopId].count += troops[i].count;
-        }
-        playerService.military.unitsAtHome[troopId].count -= troops[i].count;
+    addTroopsToQueue (troops, aiAttackedIndex) {
+      if (!this.unitsQueue[`AI_${aiAttackedIndex}`]) {
+        this.unitsQueue[`AI_${aiAttackedIndex}`] = {};
+        this.unitsQueue[`AI_${aiAttackedIndex}`].troops = [];
+        this.unitsQueue[`AI_${aiAttackedIndex}`].targetCountryIndex = aiAttackedIndex;
       }
+
+      for (const [ index, unit ] of troops.entries()) {
+        const count = unit.count;
+
+        playerService.military.unitsAtHome[index].count -= count;
+      }
+
+      // Remove units from player after sending.
+
+      this.unitsQueue[`AI_${aiAttackedIndex}`].troops.push(troops);
+    }
+
+    update () {
+      this.sendTroops();
+    }
+
+    sendTroops () {
+      for (const queueData of Object.values(this.unitsQueue)) {
+        const troops = queueData.troops;
+        const targetCountryIndex = queueData.targetCountryIndex;
+
+        for (let i = troops.length - 1; i >= 0; i--) {
+          for (let j = 0; j < troops[i].length; j++) {
+            if (!playerService.military.unitsAtWar[targetCountryIndex][j]) {
+              playerService.military.unitsAtWar[targetCountryIndex][j] = {};
+              playerService.military.unitsAtWar[targetCountryIndex][j] = troops[i][j];
+            } else {
+              playerService.military.unitsAtWar[targetCountryIndex][j].count += troops[i][j].count;
+            }
+          }
+        }
+      }
+      this.unitsQueue = {};// Remove queue;
       console.log(playerService.military);
     }
 
@@ -133,10 +152,9 @@ wciApp.service("warService", function
         }
 
         //* * Check winning conditions **//
-        if (enemyAi.military.getAllUnitsTotalAttack(true) <= 0) {
+        if (enemyAi.getTotalStrength() <= 0) {
           console.log("Enemy country has no units left, you won!");
-          for (let i = 0; i < enemyAi.countries.length; i++)
-            playerService.addCountry(enemyAi.countries[i]);
+          for (let i = 0; i < enemyAi.countries.length; i++) playerService.addCountry(enemyAi.countries[i]);
 
           this.returnUnits(i);
           worldCountryService.removeAi(aiPlayerIndex);
@@ -154,8 +172,8 @@ wciApp.service("warService", function
     calculateResult (playerTroops, enemyCountry, countryAtWarIndex) {
       const playerTotalAttack = playerService.military.getAllUnitsTotalAttack(false, countryAtWarIndex);
       const playerTotalDefense = playerService.military.getAllUnitsTotalDefense(false, countryAtWarIndex);
-      const enemyTotalAttack = enemyCountry.military.getAllUnitsTotalAttack(true);
-      const enemyTotalDefense = enemyCountry.military.getAllUnitsTotalDefense(true);
+      const enemyTotalAttack = enemyCountry.getTotalStrength() / 2;// Need to change it later for actual attack/defense function
+      const enemyTotalDefense = enemyCountry.getTotalStrength() / 2;
       const enemyTroops = enemyCountry.military.unitsAtHome;// Since enemy is defending, in the future when enemies get the ability to declare war and invade the player, it will need to be changed.
 
       console.log("Player Attack/Defense...Enemy Attack/Defense");
@@ -189,16 +207,13 @@ wciApp.service("warService", function
         const unit = sortedUnitsByFrontOrder[i];
         const unitId = unit.id;
 
-        if (!defender[unitId].count)
-          continue;// Dont bother with calculations of unit count is 0;
+        if (!defender[unitId].count) continue;// Dont bother with calculations of unit count is 0;
         const chanceToDie = unit.chanceToDie;// This could be renamed, it basically tells how many % of those units can be killed in a single turn, until attack power is used up
         const unitsAboutToDie = Math.round(attackerPower / unit.defense);// How many units we are capable of killing. Round up to avoid any problems with left over attack and infinite loops...
         let unitsActuallyKilled = Math.ceil(unitsAboutToDie * chanceToDie);// It will round up to 1.
 
-        if (!unitsActuallyKilled)
-          continue;// If there are 0 units to kill
-        if (unitsActuallyKilled > defender[unitId].count)
-          unitsActuallyKilled = defender[unitId].count;
+        if (!unitsActuallyKilled) continue;// If there are 0 units to kill
+        if (unitsActuallyKilled > defender[unitId].count) unitsActuallyKilled = defender[unitId].count;
 
         defenderLostUnits.push({ id   : unitId,
           count: unitsActuallyKilled });
@@ -213,8 +228,7 @@ wciApp.service("warService", function
         const count = unitsToKill[j].count;// How many units died in battle
 
         troopsToDeleteFrom[id].count -= count;// Should never go below 0;
-        if (troopsToDeleteFrom[id].count < 0)
-          console.log("SOMETHING WENT WRONG, YOUR UNIT COUNT IS LESS THAN 0");
+        if (troopsToDeleteFrom[id].count < 0) console.log("SOMETHING WENT WRONG, YOUR UNIT COUNT IS LESS THAN 0");
       }
 
       console.log(troopsToDeleteFrom);

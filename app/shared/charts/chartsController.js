@@ -6,6 +6,14 @@ wciApp.controller("ChartsController", (
   chartsService,
 ) => {
 
+  $scope.historyValue = 10;
+  $scope.changeHistoryLength = function (val) {
+    $scope.historyValue += val;
+    if ($scope.historyValue < 10) $scope.historyValue = 10;
+    if ($scope.historyValue > 30) $scope.historyValue = 30;
+    chartsService.changeHistoryLength($scope.historyValue);
+  };
+
   /* IMPORTANT:  THIS CONTROLLER ACTS AS A ONE BIG CHART, USE OBJECTS TO STORE EACH CHART */
   // TODO: Use playerService to display "current values of food/money etc." Because those values are updated as player makes decission
   // TODO: Or just ignore it if we dont want to display this data on charts...

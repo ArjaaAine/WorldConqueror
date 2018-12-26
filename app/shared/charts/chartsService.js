@@ -4,10 +4,12 @@ wciApp.factory("chartsService", function
 (playerService) {
 
   const charts = {};
-  let chartsHistoryLength = 100;
+  let chartsHistoryLength = 10;
 
   charts.changeHistoryLength = function (val) {
     chartsHistoryLength = val;
+    if (chartsHistoryLength < 10) chartsHistoryLength = 10;
+    if (chartsHistoryLength > 30) chartsHistoryLength = 30;
   };
   charts.series = [ "Population", "Money", "Food" ];// This needs to be changed based on the order of objects in charts.history.[income, upkeep, growth], best if all of them are in the same order
   // tho object might not keep them ordered... (READ convertChartsTo2dArray object here)
@@ -116,8 +118,7 @@ wciApp.factory("chartsService", function
         [ charts.history.population.currentAmount, charts.history.money.currentAmount, charts.history.food.currentAmount, charts.history.population.income, charts.history.money.income, charts.history.food.income, charts.history.population.growth, charts.history.money.growth, charts.history.food.growth, charts.history.population.upkeep, charts.history.money.upkeep, charts.history.food.upkeep ];
 
     storeArraysHere.forEach((object) => {
-      if (object.length > chartsHistoryLength)
-        object.length = chartsHistoryLength;
+      if (object.length > chartsHistoryLength) object.length = chartsHistoryLength;
     });
 
     if (charts.history.timeLine.length > chartsHistoryLength) {

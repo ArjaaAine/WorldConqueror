@@ -20,11 +20,13 @@
     <script src="assets/libs/js/ui-bootstrap-tpls-2.5.0.min.js"></script>
     <script src="assets/libs/js/jquery-jvectormap-2.0.3.min.js"></script>
     <script src="assets/libs/js/jquery-jvectormap-world-mill-en.js"></script>
+    <script src="assets/libs/js/angular-slider.js"></script>
     <!--css-->
     <link rel="stylesheet" href="assets/libs/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/libs/css/font-awesome/all.css">
     <link rel="stylesheet" href="assets/libs/css/select.min.css">
     <link rel="stylesheet" href="assets/libs/css/jquery-jvectormap-2.0.3.css">
+    <link rel="stylesheet" href="assets/libs/css/angular-slider.css">
     <!--<link rel="stylesheet" href="libs/css/metro-bootstrap.css">
     <link rel="stylesheet" href="libs/fonts/metroSysIcons.svg">
     <link rel="stylesheet" href="libs/fonts/metroSysIcons.tff">
@@ -59,10 +61,10 @@
                     </div>
                     <div class="btn-group-vertical map-overlay-buttons">
                         <!--TODO: Tooltip doesn't work on disabled button.-->
-                        <button class="btn btn-info" 
-                                ng-repeat="item in modalButtons" 
-                                ng-click="openModal($index)" 
-                                ng-disabled="!item.isActive" 
+                        <button class="btn btn-info"
+                                ng-repeat="item in modalButtons"
+                                ng-click="openModal($index)"
+                                ng-disabled="!item.isActive"
                                 tooltip-enable="!item.isActive"
                                 tooltip-placement="right"
                                 uib-tooltip="{{item.disabledReason}}">
@@ -135,7 +137,6 @@
     <div ng-include="'app/shared/notifications/notificationsView.html'"></div>
 
     <ng-include src="'app/components/war/warConfirmation/war_confirmationView.html'"></ng-include>
-    <ng-include src="'app/components/war/warSendTroopsModal.html'"></ng-include>
     <ng-include src="'app/components/government/internalAffairsView.html'"></ng-include>
     <ng-include src="'app/components/changelog/changelogView.html'"></ng-include>
     <ng-include src="'app/components/structure/structureView.html'"></ng-include>
@@ -179,7 +180,6 @@
         <script src="app/components/ministers/ministersHiringController.js"></script>
         <script src="app/components/war/warController.js"></script>
         <script src="app/components/war/warConfirmation/warConfirmationController.js"></script>
-        <script src="app/components/war/warSendTroopsController.js"></script>
 
         <!-- Services -->
         <script src="app/components/advisors/advisorsService.js"></script>

@@ -26,10 +26,25 @@ wciApp.service("AiPlayerService", function
       this.totalUnitTier = this.AirUnitTier + this.LandUnitTier + this.NavalUnitTier;
       this.strength = countryData.strength || Math.floor(Math.random() * 1000 * (this.totalUnitTier * 100)) + 10;// This formula is just in case we don't put any data in excel
 
-      this.military = new militaryService();
-      this.military.init();
+      this.military.unitsAtHome = [];
+      this.military.unitsAtWar = [];
+      this.initUnits();
       this.generateUnits();
       this.name = `Random Leader Name_${Math.floor(Math.random() * 1000)}`;
+    }
+
+    initUnits () {
+      const unitsLength = gameDataService.Units.length;
+
+      for (let i = 0; i < unitsLength; i++) {
+        this.military.unitsAtHome[i] = 0;
+        this.military.unitsAtWar[i] = 0;
+      }
+    }
+
+    trainUnits () {
+      this.strength += this.unitGrowth * Math.floor(Math.random() * 10000);
+      this.generateUnits();
     }
 
     generateUnits () {
@@ -37,40 +52,40 @@ wciApp.service("AiPlayerService", function
       let strength = this.strength;
 
       while (strength > 0) {
-        // TODO: Separate units into categories : "Naval": [], "Land": [], "Air": []. This might be useful when working with war
         const type = [ "Air", "Land", "Naval" ];
         const randomType = type[Math.floor(Math.random() * type.length)];
         const randomTier = Math.floor(Math.random() * this[`${randomType}UnitTier`]) + 1;
-        const military = this.military;
 
-        this.military.unitsAtHome.filter((unit) => {
-          const unitId = unit.id;
-          const unitData = gameDataService.Units[unitId];
-          const level = unitData.level;
-          const type = unitData.type;
+        for (const index of this.military.unitsAtHome.keys()) {
+          const unit = gameDataService.Units[index];
 
-          if (level === randomTier && type === randomType) {
-            unit.count = unit.count || 0;
-            unit.count += 1;
-            strength -= military.getStrength(unitId);
+          if (unit.type === randomType && unit.level === randomTier) {
+            this.military.unitsAtHome[index] += 1;
+            strength -= this.getUnitStrength(index);
           }
-        });
+        }
       }
-
-      // Short debug code
-      console.log("CHANGING UNITS HERE, REMOVE IT IN ORDER TO RANDOMIZE DATA AGAIN");
-      // for (let i = 0; i < this.military.unitsAtHome.length; i++)
-      //   this.military.unitsAtHome[i].count = 0;
-      //
-      // this.military.unitsAtHome[1].count = 100;// This sets all counties first index unit to 100, everything else to 0;
-      // END OF DEBUG CODE
-
-      // This will calculate actual strength of the country, since we can generate units with 1 strength, that cost 1000. Or just fix above generation to something better.
       this.strength += Math.abs(strength);
     }
 
+    getUnitStrength (index) {
+      const unit = gameDataService.Units[index];
+
+      return (unit.attack + unit.defense) * this.military.unitsAtHome[index];
+    }
+
     getTotalStrength () {
-      return this.military.getTotalStrength();
+      let strength = 0;
+
+      for (const [ index, count ] of this.military.unitsAtHome.entries()) {
+        const unit = gameDataService.Units[index];
+        const attack = unit.attack;
+        const defense = unit.defense;
+
+        strength += (attack + defense) * count;
+      }
+
+      return strength;
     }
   }
 

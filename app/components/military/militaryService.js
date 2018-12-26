@@ -33,11 +33,8 @@ wciApp.factory("militaryService", function
         const unitObject = unitsArray[i];
 
         this.unitsAtHome[i] = {};
-        this.unitsSendModal[i] = {};
         this.unitsAtHome[i].id = unitObject.id;
-        this.unitsSendModal[i].id = unitObject.id;
         this.unitsAtHome[i].count = 0;
-        this.unitsSendModal[i].count = 0;
         this.unitsAtHome[i].isUnlocked = unitObject.unlocked;// TODO: Currently all of them are unlocked from the start, later need to unlock manually with research etc.
         this.unitsAtHome[i].name = unitObject.name;
       }

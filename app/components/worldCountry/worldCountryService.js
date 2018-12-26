@@ -33,23 +33,21 @@ wciApp.factory("worldCountryService", function
 
         countryObject.countryCode = countryCode;
         countryObject.land = countryData.land || Math.floor(Math.random() * 450) + 50;// 50-500 land
+        countryObject.name = countryData.name;
 
         // Below, create AI players based on countries that player is NOT controlling.
         const playerCountry = playerService.startingCountries.map(code => code === countryCode)[0];
 
         if (!playerCountry) { // If player is not controlling a country, we can create AI from that countryData...
-          const country = new AiPlayerService();
+          const aiPlayer = new AiPlayerService();
 
-          country.init(countryData, countryObject);
-          self.AiPlayers.push(country);// AI with all methods/logic and AiPlayer specific data like military...
+          aiPlayer.init(countryData, countryObject);
+          self.AiPlayers.push(aiPlayer);// AI with all methods/logic and AiPlayer specific data like military...
+          self.allCountriesColors[countryCode] = self.AiPlayers[self.AiPlayers.length - 1].getTotalStrength();
         } else {
           playerService.addCountry(countryObject);
           self.conqueredCountriesColors[countryCode] = playerService.military.getTotalStrength();
         }
-
-        // AI colors for map
-        // Last element, because we pushed them above, so new element is always last.
-        self.allCountriesColors[countryCode] = self.AiPlayers[self.AiPlayers.length - 1].military.getTotalStrength();
       });
     }
 
@@ -57,8 +55,7 @@ wciApp.factory("worldCountryService", function
       const aiIndex = this.getAiIndexByCountryCode(countryCode);
       const filterCounqueredCountries = playerService.conqueredCountries.filter(country => country.countryCode === countryCode)[0];
 
-      if (filterCounqueredCountries !== undefined)
-        return playerService.military.getTotalStrength();
+      if (filterCounqueredCountries !== undefined) return playerService.military.getTotalStrength();
 
       return this.AiPlayers[aiIndex].getTotalStrength();
 
@@ -69,8 +66,7 @@ wciApp.factory("worldCountryService", function
         for (let j = 0; j < this.AiPlayers[i].countries.length; j++) {
           const country = this.AiPlayers[i].countries[j];
 
-          if (country.countryCode === countryCode)
-            return i;
+          if (country.countryCode === countryCode) return i;
 
         }
       }
@@ -113,6 +109,14 @@ wciApp.factory("worldCountryService", function
     }
 
     updateLogic () {
+      for (const aiPlayer of this.AiPlayers.values()) {
+        aiPlayer.trainUnits();
+
+        for (const country of aiPlayer.countries.values()) {
+          this.allCountriesColors[country.countryCode] = aiPlayer.getTotalStrength();
+        }
+      }
+
       // There goes all logic for countries...Using AiPlayerService methods, we make decisions here.
       // While looping AiPlayer array, we can update map colors based on Strength as well
       // this.allCountriesColors[code] = country.getTotalStrength();//This can be called for each country to overwrite the map colors...

@@ -26,7 +26,7 @@ wciApp.controller('GameController', function (
   $log,
 ) {
   let saveTimer;
-
+  const game = this;
   $scope.saveService = saveService;
   $scope.startScreen = true;
   $scope.gameLoading = true;
@@ -53,72 +53,75 @@ wciApp.controller('GameController', function (
     $scope.gameSlot = slot;
   };
   $scope.leaders = leaderService;
-  $scope.modalButtons = [
-    {
-      name          : "Changelog",
-      icon          : "glyphicon glyphicon-globe font-9pt font-color-lightblue",
-      templateUrl   : "changelogView.html",
-      controller    : "ChangelogController",
-      isActive      : true,
-      disabledReason: "",
-      windowClass   : "",
-    },
-    {
-      name          : "Governance",
-      icon          : "glyphicon glyphicon-flag",
-      templateUrl   : "internalAffairsView.html",
-      controller    : "CountryController",
-      isActive      : true,
-      disabledReason: "",
-      windowClass   : "",
-    },
-    {
-      name          : "Structures",
-      icon          : "fas fa-university",
-      templateUrl   : "structureView.html",
-      controller    : "StructureController",
-      isActive      : true,
-      disabledReason: "",
-      windowClass   : "",
-    },
-    {
-      name          : "Military",
-      icon          : "glyphicon glyphicon-screenshot",
-      templateUrl   : "militaryView.html",
-      controller    : "MilitaryController",
-      isActive      : true,
-      disabledReason: "",
-      windowClass   : "full",
-    },
-    {
-      name          : "Research",
-      icon          : "fas fa-flask",
-      templateUrl   : "researchView.html",
-      controller    : "ResearchController",
-      isActive      : true,
-      disabledReason: "",
-      windowClass   : "full",
-    },
-    {
-      name          : "War",
-      icon          : "fas fa-fire",
-      templateUrl   : "warView.html",
-      controller    : "WarController",
-      isActive      : false,
-      disabledReason: "You are not currently at war with anyone.",
-      windowClass   : "",
-    },
-    {
-      name          : "Charts",
-      icon          : "fas fa-chart-line",
-      templateUrl   : "chartsView.html",
-      controller    : "ChartsController",
-      isActive      : true,
-      disabledReason: "343553",
-      windowClass   : "full",
-    },
-  ];
-  const game = this;
+  $scope.modalButtons = [];
+  $scope.initGameModals = function () {
+    $scope.modalButtons = [
+      {
+        name          : "Governance",
+        icon          : "glyphicon glyphicon-flag",
+        templateUrl   : "internalAffairsView.html",
+        controller    : "CountryController",
+        isActive      : true,
+        disabledReason: "",
+        windowClass   : "",
+        closeCallback : game.myCountry.ministers.modalClosed,
+      },
+      {
+        name          : "Structures",
+        icon          : "fas fa-university",
+        templateUrl   : "structureView.html",
+        controller    : "StructureController",
+        isActive      : true,
+        disabledReason: "",
+        windowClass   : "",
+      },
+      {
+        name          : "Military",
+        icon          : "glyphicon glyphicon-screenshot",
+        templateUrl   : "militaryView.html",
+        controller    : "MilitaryController",
+        isActive      : true,
+        disabledReason: "",
+        windowClass   : "full",
+      },
+      {
+        name          : "Research",
+        icon          : "fas fa-flask",
+        templateUrl   : "researchView.html",
+        controller    : "ResearchController",
+        isActive      : true,
+        disabledReason: "",
+        windowClass   : "full",
+      },
+      {
+        name          : "War",
+        icon          : "fas fa-fire",
+        templateUrl   : "warView.html",
+        controller    : "WarController",
+        isActive      : true,
+        disabledReason: "You are not currently at war with anyone.",
+        windowClass   : "full",
+      },
+      {
+        name          : "Charts",
+        icon          : "fas fa-chart-line",
+        templateUrl   : "chartsView.html",
+        controller    : "ChartsController",
+        isActive      : true,
+        disabledReason: "",
+        windowClass   : "full",
+      },
+      {
+        name          : "Changelog",
+        icon          : "glyphicon glyphicon-globe font-9pt font-color-lightblue",
+        templateUrl   : "changelogView.html",
+        controller    : "ChangelogController",
+        isActive      : true,
+        disabledReason: "",
+        windowClass   : "",
+      },
+    ];
+  };
   const initGame = function () {
 
     game.myCountry = playerService;
@@ -129,6 +132,7 @@ wciApp.controller('GameController', function (
     game.helperModals = helperModalsService;
     game.notification = notificationService;
     game.debug = debugService;
+    $scope.initGameModals();
   };
   const saveGame = function () {
     saveService.save($scope.gameSlot);
@@ -156,6 +160,8 @@ wciApp.controller('GameController', function (
     game.myCountry.laws.update();
     game.myCountry.ministers.update();
     game.worldCountries.update();
+    game.worldCountries.updateLogic();
+    warService.update();
     warService.doBattle();
     chartsService.update();
 
@@ -303,6 +309,7 @@ wciApp.controller('GameController', function (
   $scope.openModal = function (modalIndex) {
     const templateUrl = $scope.modalButtons[modalIndex].templateUrl;
     const controller = $scope.modalButtons[modalIndex].controller;
+    const closeCallback = $scope.modalButtons[modalIndex].closeCallback;
     const modalInstance = modalService.open({
       templateUrl,
       controller,
@@ -322,6 +329,7 @@ wciApp.controller('GameController', function (
         return true;
       };
     }, () => {
+      if (closeCallback) closeCallback.call(playerService.ministers);
       $log.info(`Modal dismissed at: ${new Date()}`);
 
     });

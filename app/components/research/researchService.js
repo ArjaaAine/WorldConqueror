@@ -40,6 +40,8 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
         if (!bonus) continue;
 
         bonus = $filter("split")(bonus);
+        value.bonus = bonus;
+
         for (let j = 0; j < bonus.length; j++) {
           const bonusValue = bonus[j];
           const bonusData = researchBonuses.filter(this._bonusFilter, bonusValue)[0];
@@ -97,7 +99,7 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
 
         // Unlock bonuses
         if (bonuses) {
-          bonuses = $filter("split")(bonuses);
+          // bonuses = $filter("split")(bonuses);
           for (const bonusData of bonuses) this.unlockBonus(bonusData);
         }
 
@@ -125,12 +127,14 @@ wciApp.factory("researchService", (gameDataService, bonusesService, playerServic
 
     unlockBonus (bonusData) {
       const researchBonuses = this.researchBonuses;
+
       if (!researchBonuses[bonusData]) {
         console.log(`BONUS DOES NOT EXIST! ${bonusData}`);
 
         return;
       }
       const statAffected = researchBonuses[bonusData].statAffected;
+
       if (!this.totalBonus[statAffected]) {
         this.totalBonus[statAffected] = {};
         this.totalBonus[statAffected].statAdder = 0;
