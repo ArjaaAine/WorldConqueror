@@ -79,8 +79,12 @@ wciApp.service("warService", function
         if (unit.count > 0) playerService.military.unitsAtHome[i].count += unit.count;
         unit.count = 0;
       }
+      playerService.military.unitsAtWar[countryIndex] = [];
     }
 
+    checkIfUnitsInQueue  (aiAttackedIndex) {
+      return this.unitsQueue[`AI_${aiAttackedIndex}`];
+    }
     addTroopsToQueue (troops, aiAttackedIndex) {
       if (!this.unitsQueue[`AI_${aiAttackedIndex}`]) {
         this.unitsQueue[`AI_${aiAttackedIndex}`] = {};

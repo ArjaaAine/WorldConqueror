@@ -23,6 +23,23 @@ wciApp.controller("WarController", (
   $scope.makePeace = function (aiPlayerIndex) {
     warService.makePeace(aiPlayerIndex);
   };
+  $scope.unitsAlreadySent = function (aiIndex, index) {
+    let unitSent = null;
+    const currentWar = warService.currentlyAtWar.filter((el, i) => {
+      if (el === aiIndex) {
+        unitSent = playerService.military.unitsAtWar[i].length;
+        return true;
+      }
+    })[0];
+    const inQueue = this.checkIfUnitsInQueue(index);
+
+    return inQueue || unitSent;
+  };
+
+  $scope.checkIfUnitsInQueue = function (aiIndex) {
+    return warService.checkIfUnitsInQueue(aiIndex);
+  };
+
   $scope.canReturnUnits = function (index) {
     return warService.canReturnUnits(index);
   };
@@ -38,7 +55,7 @@ wciApp.controller("WarController", (
     $scope.refreshSlider();
   };
 
-  $scope.refreshSlider = function() {
+  $scope.refreshSlider = function () {
     $scope.initSlider();
     $timeout(() => {
       $scope.$broadcast("rzSliderForceRender");
@@ -68,8 +85,8 @@ wciApp.controller("WarController", (
   };
   $scope.initUnitsQueue();
 
-  $scope.initSlider = function () {
-    const tickDivider = 10;// How many steps in % for each tick...10 = 10%
+  $scope.initSlider = function (divider) {
+    const tickDivider = divider || 10;// How many steps in % for each tick...10 = 10%
 
     for (const [ index, unit ] of playerService.military.unitsAtHome.entries()) {
       const count = unit.count;
@@ -95,12 +112,11 @@ wciApp.controller("WarController", (
   $scope.updateUnitsQueue = function (index, count) {
     $scope.unitsQueue[index].count = count;
   };
-
   $scope.sendQueuedUnits = function () {
-    for (const [ index, sliderData ] of $scope.slider.entries()) {
-      $scope.unitsQueue[index].count = sliderData.value;
-    }
+    for (const [ index, sliderData ] of $scope.slider.entries()) $scope.unitsQueue[index].count = sliderData.value;
+
     const troops = angular.copy($scope.unitsQueue);
+
     warService.addTroopsToQueue(troops, $scope.currentTargetIndex);
     $scope.initUnitsQueue();
     $scope.refreshSlider();

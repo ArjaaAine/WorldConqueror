@@ -30,7 +30,7 @@ wciApp.service("AiPlayerService", function
       this.military.unitsAtWar = [];
       this.initUnits();
       this.generateUnits();
-      this.name = `Random Leader Name_${Math.floor(Math.random() * 1000)}`;
+      this.name = `Name_${Math.floor(Math.random() * 1000)}`;
     }
 
     initUnits () {

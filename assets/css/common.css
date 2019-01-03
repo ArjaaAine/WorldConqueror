@@ -7,14 +7,28 @@
   margin-top: 5px;
 }
 
+.margin-left-negative-10{
+    margin-left:-10px;
+}
+
 .margin-bottom-20 {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
+}
+.margin-bottom-10 {
+    margin-bottom: 10px;
 }
 
 .margin-left-15 {
-  margin-left: 15px;
+  margin-left: 15px!important;
 }
 
+.margin-left-10{
+    margin-left: 10px!important;
+}
+
+.padding-top-10 {
+    padding-top:10px;
+}
 .padding-10 {
     padding: 10px 10px 10px 10px;
 }
@@ -25,7 +39,38 @@
     cursor: pointer;
 }
 
+.vertical-center-columns-content{
+    float:none;
+    display:inline-block;
+    vertical-align:middle;
+    margin-right:-4px;
+}
 
+.flexRow{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.flexRow > [class^="col-"],
+.flexRow > [class*=" col-"] {
+    display: flex;
+    align-items: center;     /* Align the flex-items vertically */
+    justify-content: flex-end; /* Optional, to align inner flex-items
+                              horizontally within the column  */
+}
+.row-equal-height{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:         flex;
+}
+.stripedBackground {
+    background: repeating-linear-gradient( -55deg, #8a1616, #8a1616 10px, #af3e3e 10px, #af3e3e 20px );
+}
+
+.margin-left-auto{
+    margin-left: auto;
+}
 /*Alignment*/
 .align-left {
     text-align: left;
@@ -44,6 +89,11 @@
 }
 
 /*Font Styles*/
+
+.font-2em {
+    font-size: 2em;
+}
+
 .font-12pt {
     font-size: 12pt;
 }
@@ -83,6 +133,10 @@
 
 .font-color-red {
     color: red;
+}
+
+.font-color-white {
+    color: #e0e0e0;
 }
 
 

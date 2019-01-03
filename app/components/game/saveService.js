@@ -13,6 +13,7 @@ wciApp.factory("saveService", function
   initService,
   bonusesService,
   warService,
+  leaderService,
   $location,
 ) {
 
@@ -28,8 +29,8 @@ wciApp.factory("saveService", function
     const research = playerService.research;
     const ministers = playerService.ministers;
 
-    // Let laws = playerService.laws.activeLaws;
-    // let lawsUnlocked = playerService.laws.unlockedLaws;
+    let laws = playerService.laws.activeLaws;
+    let lawsUnlocked = playerService.laws.unlockedLaws;
     const buildings = playerService.buildings;
     const onWar = warService.currentlyAtWar;
     const onWarColors = worldCountryService.countriesColorsAtWar;
@@ -46,12 +47,13 @@ wciApp.factory("saveService", function
 
     saveData.ministers = ministers;
 
-    // SaveData.laws = laws;
-    // saveData.lawsUnlocked = lawsUnlocked;
+    saveData.laws = laws;
+    saveData.lawsUnlocked = lawsUnlocked;
     saveData.buildings = buildings;
     saveData.baseStats = playerService.baseStats;
     saveData.onWar = onWar;
     saveData.onWarColors = onWarColors;
+    saveData.leaders = leaderService;
 
     localStorage[`gameData_${saveSlot}`] = angular.toJson(saveData);
   };
@@ -64,25 +66,28 @@ wciApp.factory("saveService", function
     const research = playerService.research;
     const ministers = playerService.ministers;
 
-    // Let laws = playerService.laws.activeLaws;
-    // let lawsUnlocked = playerService.laws.unlockedLaws;
+    let laws = playerService.laws.activeLaws;
+    let lawsUnlocked = playerService.laws.unlockedLaws;
     const buildings = playerService.buildings;
     const baseStats = playerService.baseStats;
     const onWar = warService.currentlyAtWar;
     const onWarColors = worldCountryService.countriesColorsAtWar;
 
+    const leaders = leaderService;
     // Depreciated, but works :]
     angular.merge(military, savedData.military);
     angular.merge(research, savedData.research);
 
     angular.merge(ministers, savedData.ministers);
 
-    // Angular.merge(laws, savedData.laws);
-    // angular.merge(lawsUnlocked, savedData.lawsUnlocked);
+    angular.merge(laws, savedData.laws);
+    angular.merge(lawsUnlocked, savedData.lawsUnlocked);
     angular.merge(buildings, savedData.buildings);
     angular.merge(baseStats, savedData.baseStats);
     angular.merge(onWar, savedData.onWar);
     angular.merge(onWarColors, savedData.onWarColors);
+
+    angular.merge(leaders, savedData.leaders);
 
     // TODO: Check if saved data exist before merging, also remember to init data before merging(init is like a reset)
     // TODO: Removing data from excel does not remove it from a save. Fix: Remove properties from save file that does not exist in game anymore.

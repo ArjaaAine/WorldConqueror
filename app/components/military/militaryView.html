@@ -19,11 +19,11 @@
                                             <i class="fas fa-male"></i> {{countryData.unitCap}}
                                         </div>
                                         <div class="col-xs-6">
-                                            <button class="btn btn-sm btn-primary" ng-click="military.unitsToHire = 1">1x</button>
-                                            <button class="btn btn-sm btn-primary" ng-click="military.unitsToHire = 5">5x</button>
-                                            <button class="btn btn-sm btn-primary" ng-click="military.unitsToHire = 25">25x</button>
-                                            <button class="btn btn-sm btn-primary" ng-click="military.unitsToHire = 100">100x</button>
-                                            <button class="btn btn-sm btn-primary" ng-click="military.unitsToHire = 1000">1000x</button>
+                                            <button class="btn-sm btn-primary" ng-click="military.unitsToHire = 1">1x</button>
+                                            <button class="btn-sm btn-primary" ng-click="military.unitsToHire = 5">5x</button>
+                                            <button class="btn-sm btn-primary" ng-click="military.unitsToHire = 25">25x</button>
+                                            <button class="btn-sm btn-primary" ng-click="military.unitsToHire = 100">100x</button>
+                                            <button class="btn-sm btn-primary" ng-click="military.unitsToHire = 1000">1000x</button>
                                         </div>
                                     </div>
                                 </div>
@@ -76,7 +76,7 @@
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-xs-12">
-                                                                <button class="btn btn-block btn-success"
+                                                                <button class="btn-block btn-success"
                                                                         ng-click="military.buyQueue(unit.id)">
                                                                     x {{military.unitsToHire}} <i class="fas fa-money-bill-alt"></i>
                                                                     {{military.getCost(unit.id) * military.unitsToHire | niceNumber}}
@@ -127,7 +127,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-xs-6 col-sm-5">
-                                                            <button class="btn btn-block btn-success"
+                                                            <button class="btn-block btn-success"
                                                                     ng-click="military.buyQueue(unit.id)">
                                                                 x {{military.unitsToHire}} <i class="fas fa-money-bill-alt"></i>
                                                                 {{military.getCost(unit.id) * military.unitsToHire | niceNumber}}

@@ -54,6 +54,7 @@ wciApp.factory("lawsService", function (gameDataService) {
       law.isActive = true;
       law.duration = 0;
       this.activeLaws.push(law);
+      return true;
     }
 
     repealLaw (index) {

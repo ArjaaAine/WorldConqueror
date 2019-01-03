@@ -54,6 +54,25 @@ a {
     color: #aaa;
 }
 
+.backgroundImage{
+    background-image: url("../img/background.png");
+    background-color: #cccccc;
+}
+
+.textBackgroundGradient{
+    background-image: linear-gradient(to left, rgba(0, 0, 0, 0.7), rgba(0,0,0,0.1));
+}
+
+.leaderSelectionBackground{
+    background-image: linear-gradient(rgba(155, 68, 68, 0), rgba(255,0,0,0)), radial-gradient(circle at top left, rgba(155, 68, 68, 1), rgba(255,0,0,0));
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+}
+.selectedLeader{
+    border-color: #9db519;
+    border-width: 3px;
+    border-style: solid;
+}
 .overflow-80vh{
     overflow:auto;
     max-height: 80vh;
@@ -63,21 +82,10 @@ a {
     color: #000;
 }
 
-/*Overriding twitter bootstrap*/
-.btn {
-    border-radius: 0;
-}
-
-.btn:hover {
-    background-color: #000;
-    color: #fff;
-}
-
 /*Intro Screen*/
 .introScreen {
-    padding: 16px;
-    border: 4px solid black;
-    background-color: white;
+    border: double 4px #837454;
+    border-radius: 10px;
 }
 
 .border-right {

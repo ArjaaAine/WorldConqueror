@@ -1,108 +1,23 @@
-﻿<div class="container-fluid introScreen" ng-show="gameLoading">
-    <div class="row" ng-show="startScreen">
-        <div class="col-xs-3 col-xs-offset-2 text-center" ng-repeat="data in saveData track by $index">
-            <div class="thumbnail">
-                <!-- TODO: Use Leader avatar, or player choosen avatar for custom leaders... -->
-                <img src="./assets/img/avatar_blank.jpeg" alt="...">
-                <p>{{data.baseStats.leaderName}}</p>
-                <p ng-show="data.baseStats.currentTurn >= 0">Year : {{1900 + data.baseStats.currentTurn}}</p>
-                <button class="btn btn-block btn-success" ng-hide="data.baseStats !== undefined" ng-click="toggleStartScreen(); changeGameSlot($index)">New Game</button>
-                <button class="btn btn-block btn-info" ng-show="data.baseStats !== undefined" ng-click="startGame(true, $index)">Load Game</button>
-                <button class="btn btn-block btn-danger" ng-show="data.baseStats !== undefined" ng-click="saveService.reset($index); getLocalStorageData();">Delete</button>
-            </div>
+﻿<div class="container margin-top-5 margin-bottom-5" ng-show="gameLoading">
+    <div class="row introScreen">
+        <div class="col-xs-12">
+            <h1 class="text-center text-capitalize font-color-lightblue">World Conqueror</h1>
         </div>
     </div>
-    <div class="row" ng-show="!startScreen">
-        <div class="col-xs-12" id="IntroScreen">
-            <h3>
-                Welcome Conqueror!
-            </h3>
-            <span class="margin-top-20 row">
-                Tired of the ceaseless misgivings of your country, you decide to show them how it is done. Banded with a group of like minded individuals you venture to one of the few pieces of unclaimed lands and establish your own nation. <br />
-            </span>
-            <hr />
-            <div class="row">
-                <div class="col-xs-4 col-xs-offset-1 col-md-3 col-lg-2" ng-repeat="leader in leaders.list track by $index">
-                    <button class="btn btn-sm" ng-click="leaders.select($index)" ng-class="leaders.selectedIndex === $index ? 'btn-danger' : 'btn-success'">{{leader.name}}</button>
-                </div>
-            </div>
-            <div class="row">
-            <div class="row">
-                <div class="col-xs-6" ng-repeat="bonus in leaders.list[leaders.selectedIndex].bonuses track by $index">
-                    Positive:
-                    <p>
-                        {{bonus.name + ": " + bonus.value}}
-                    </p>
-                </div>
-                <div class="col-xs-6" ng-repeat="negative in leaders.list[leaders.selectedIndex].negatives track by $index">
-                    Negative:
-                    <p>
-                        {{negative.name + ": " + negative.value}}
-                    </p>
-                </div>
-            </div>
-            <div class="form-horizontal">
-                <div class="col-sm-12 form-group" ng-class="game.validation.initCountryName === false ? 'has-error':'' ">
-                    <span class="control-label bold col-sm-5">
-                        Name your new nation:
-                    </span>
-                    <div class="col-sm-7">
-                        <input type="text" class="form-control" ng-model="game.myCountry.baseStats.countryName" />
-                    </div>
-                </div>
-                <div class="col-sm-12 form-group" ng-class="game.validation.intiLeaderName === false ? 'has-error':'' ">
-                    <span class="control-label bold col-sm-5">
-                        Give yourself a new name befitting a leader:
-                    </span>
-                    <div class="col-sm-7">
-                        <input type="text" class="form-control" ng-model="game.myCountry.baseStats.leaderName" />
-                    </div>
-                </div>
-                <div class="col-sm-12 form-group">
-                    <span class="control-label bold col-sm-5">
-                        What are your people going to call you?
-                    </span>
-                    <div class="col-sm-7">
-                        <ui-select ng-model="game.myCountry.baseStats.leaderTitle" theme="bootstrap">
-                            <ui-select-match placeholder="Select a title for yourself">
-                                {{$select.selected}}
-                            </ui-select-match>
-                            <ui-select-choices repeat="title in game.myCountry.leaderTitles | filter: $select.search">
-                                <div ng-bind-html="title | highlight: $select.search"></div>
-                            </ui-select-choices>
-                        </ui-select>
-                    </div>
-                </div>
-                <div class="col-sm-12 form-group">
-                    <span class="control-label bold col-sm-5">
-                        Difficulty Level:
-                    </span>
-                    <div class="col-sm-7">
-                        <ui-select ng-model="game.myCountry.baseStats.difficultyLevel" theme="bootstrap">
-                            <ui-select-match placeholder="How brave are ya?">
-                                {{$select.selected.Desc}}
-                            </ui-select-match>
-                            <ui-select-choices repeat="level in game.myCountry.difficultyLevels | filter: $select.search">
-                                <div ng-bind-html="level.Desc | highlight: $select.search"></div>
-                            </ui-select-choices>
-                        </ui-select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="has-error margin-top-20 col-md-12" ng-show="(game.validation.initCountryName && game.validation.initLeaderName) === false">
-                <p class="control-label">
-                    Give us something to work with here.. will ya?
-                </p>
-            </div>
-
-            <div class="margin-top-20 pull-right">
-                <button type="button" class="btn btn-info" ng-click="startGame(false)">
-                    Start!
-                </button>
-            </div>
+</div>
+<div class="container margin-top-5 margin-bottom-5" ng-show="gameLoading">
+    <div class="row flexRow introScreen">
+        <div class="col-xs-6 col-xs-offset-2">
+            <span class="font-color-white font-2em">{{currentWindowText}}</span>
+        </div>
+        <div class="col-xs-5">
+            <button ng-show="!startScreen" class="btn-xs btn-primary" ng-click="goBack()">Back</button>
         </div>
     </div>
+</div>
+<div class="container margin-top-5" ng-show="gameLoading">
+    <ng-include ng-show="startScreen" src="'app/components/introScreen/templates/startingScreenView.html'"></ng-include>
+    <ng-include ng-show="!startScreen" src="'app/components/introScreen/templates/leaderSelectionScreenView.html'"></ng-include>
 </div>
 <!--Leave this blank, this is what sets the background to black.-->
 <!--<div class="fade_overlay" ng-show="!gameLoading">-->

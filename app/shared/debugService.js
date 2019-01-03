@@ -2,7 +2,7 @@
 
 wciApp.factory(
   "debugService",
-  (playerService) => {
+  (playerService, gameDataService) => {
     class Debug {
       addEachBuilding (val) {
         const value = val || 10;
@@ -32,6 +32,14 @@ wciApp.factory(
         playerService.baseStats.baseResearchPoints = 0;
       }
 
+      unlockAllResearch () {
+        for (const name of playerService.research.researchType.values()) {
+          for (const index of gameDataService[`${name}Research`].keys()) {
+            playerService.research.unlockResearch(gameDataService[`${name}Research`], index, true);
+          }
+        }
+      }
+
       stabilityChange (val) {
         playerService.baseStats.stability += val;
       }
@@ -56,14 +64,14 @@ wciApp.factory(
 
       giveMeAll () {
         playerService.baseStats.money += 100000000;
-        if (playerService.baseStats.money > 100000000)
-          playerService.baseStats.money = 100000000;
+        if (playerService.baseStats.money > 100000000) playerService.baseStats.money = 100000000;
         playerService.research.sciencePoints += 1000000;
         this.addLand(10000000);
         this.addEachBuilding(100);
         this.addResearchPoints(10000);
         this.addUnits(1000);
         this.addPopulation(10000000);
+        this.unlockAllResearch();
       }
 
       simulateTurn () {

@@ -30,12 +30,18 @@ wciApp.controller('GameController', function (
   $scope.saveService = saveService;
   $scope.startScreen = true;
   $scope.gameLoading = true;
+  $scope.currentWindowText = "Starting Screen";
   $scope.expandStats = true;
   $scope.hideDebug = true;
 
   $scope.toggleStartScreen = function () {
     $scope.startScreen = !$scope.startScreen;
   };
+  $scope.goBack = function () {
+    //TODO: Might need to create an array or an object to store possible routes, so going back will be easier.
+    if(!$scope.startScreen) $scope.toggleStartScreen();
+  };
+
   $scope.saveData = [];
   $scope.getLocalStorageData = function () {
     $scope.saveData = [];
@@ -69,7 +75,7 @@ wciApp.controller('GameController', function (
       {
         name          : "Structures",
         icon          : "fas fa-university",
-        templateUrl   : "structureView.html",
+        templateUrl   : "buildingsView.html",
         controller    : "StructureController",
         isActive      : true,
         disabledReason: "",

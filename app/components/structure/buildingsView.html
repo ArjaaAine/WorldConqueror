@@ -1,5 +1,5 @@
 ﻿<div ng-controller="StructureController">
-    <script type="text/ng-template" id="structureView.html">
+    <script type="text/ng-template" id="buildingsView.html">
         <div id="Buildings" class="container-fluid">
             <h3>
                 <span class="glyphicon glyphicon-home"></span> Buildings
@@ -26,9 +26,9 @@
                                 <i class="fas fa-briefcase"></i> {{countryStats.totalJobs}}
                             </div>
                             <div class="col-xs-4">
-                                <button class="btn btn-sm btn-primary" ng-click="buildings.countToBuy = 1">1x</button>
-                                <button class="btn btn-sm btn-primary" ng-click="buildings.countToBuy = 5">5x</button>
-                                <button class="btn btn-sm btn-primary" ng-click="buildings.countToBuy = 25">25x</button>
+                                <button class="btn-sm btn-primary" ng-click="buildings.countToBuy = 1">1x</button>
+                                <button class="btn-sm btn-primary" ng-click="buildings.countToBuy = 5">5x</button>
+                                <button class="btn-sm btn-primary" ng-click="buildings.countToBuy = 25">25x</button>
                             </div>
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                                     <!-- HIDE ON XS/SMALL RESOLUTION, this is for laptops/PC monitors-->
                                     <div class="col-md-4 hidden-xs hidden-sm">
                                         <div class="row">
-                                            <i ng-hide="structure.isUnlocked" 
+                                            <i ng-hide="structure.isUnlocked"
                                                class="structureLockPosition center-block glyphicon glyphicon-lock glyphicon-black lock-icon-font-size"></i>
                                             <div class="col-md-12" ng-class="structure.isUnlocked ? '' : 'structureNotVisible'">
                                                 <div class="panel panel-primary clickableArea">

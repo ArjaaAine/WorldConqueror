@@ -16,7 +16,7 @@ wciApp.config(function ($routeProvider) {
     //         })
     //     .when('/structure',
     //         {
-    //             templateUrl: 'app/components/structure/structureView.html',
+    //             templateUrl: 'app/components/structure/buildingsView.html',
     //             controller: 'StructureController',
     //             controllerAs: 'structureCtrl'
     //         })

@@ -20,6 +20,7 @@ wciApp.factory("leaderService", function (gameDataService, $filter) {
       const bonusValue = $filter("split")(leader.bonusValue).map(string => parseFloat(string));
       const description = leader.description;
       const name = leader.name;
+      const image = leader.image;
       const negative = $filter("split")(leader.negative);
       const negativeName = this.getDescription(negative);
       const negativeValue = $filter("split")(leader.negativeValue).map(string => parseFloat(string));
@@ -31,7 +32,8 @@ wciApp.factory("leaderService", function (gameDataService, $filter) {
       Object.assign(leaderObject, { bonuses,
         negatives,
         description,
-        name });
+        name,
+        image });
       leaders.list.push(leaderObject);
     }
   };
