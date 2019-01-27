@@ -22,12 +22,15 @@ wciApp.service("warService", function
     declareWar (countryCode) {
       const defenderAi = worldCountryService.allCountriesRulers[countryCode];
       const landLocked = defenderAi.getCountryData(countryCode).isLandLocked;
+      let phase = 1;// Water battle by default
+
+      if (!landLocked) phase = 2;// Land battle if country is not landlocked
       const battleFieldObj = {
         attacker      : playerService,
         defender      : defenderAi,
         countryAtStake: countryCode,
         isLandLocked  : landLocked,
-        battlePhase   : 1, // Phase 1 = water battle, phase 2 = land battle, phase 3 = ?? etc.
+        battlePhase   : phase, // Phase 1 = water battle, phase 2 = land battle, phase 3 = ?? etc.
       };
 
       defenderAi.isAtWar = true;
@@ -202,7 +205,7 @@ wciApp.service("warService", function
     }
 
     static checkIfNoUnitsLeft (units) {
-      if(!units) return true;//units dont even exist, we might hardcode units tho
+      if (!units) return true;// Units dont even exist, we might hardcode units tho
       for (const unit of Object.values(units)) if (unit > 0) return false;
 
       return true;
