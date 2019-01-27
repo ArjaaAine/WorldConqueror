@@ -260,7 +260,7 @@ rules:
   implicit-arrow-linebreak: error
   indent:
   - error
-  - 2
+  - 4
   - SwitchCase: 1
     VariableDeclarator: {let: 2, const: 3}
   jsx-quotes: off
