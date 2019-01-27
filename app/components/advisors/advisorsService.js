@@ -2,7 +2,6 @@
 // eslint-disable-next-line
 wciApp.factory('advisorsService', function (
   $uibModal,
-  playerService,
   buildingsService,
 ) {
 
@@ -12,11 +11,9 @@ wciApp.factory('advisorsService', function (
   };
 
   // First Load
-  if (!localStorage.advisorsService)
-    setInitialAdvisorsData(advisors);
+  if (!localStorage.advisorsService) setInitialAdvisorsData(advisors);
 
-  else
-    advisors.baseStats = JSON.parse(localStorage.advisorsService);
+  else advisors.baseStats = JSON.parse(localStorage.advisorsService);
 
   advisors.functions.hireNewAdvisor = function (advisor) {
 
@@ -86,11 +83,10 @@ wciApp.factory('advisorsService', function (
     for (const activeAdvisor in advisors.baseStats.activeAdvisors) {
       const advisor = advisors.baseStats.activeAdvisors[activeAdvisor];
 
-      if (advisor.Salary)
-        upkeep += advisor.Salary / 8640; // Breakdown yearly salary in hourly = 12*30*24
+      if (advisor.Salary) upkeep += advisor.Salary / 8640; // Breakdown yearly salary in hourly = 12*30*24
 
     }
-    playerService.baseStats.upkeep += upkeep;
+    playerService.baseStats.upkeep.advisors = upkeep;
   };
 
   return advisors;

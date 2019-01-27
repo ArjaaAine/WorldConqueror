@@ -5,27 +5,27 @@
                 <span class="glyphicon glyphicon-home"></span> Buildings
             </h3>
             <div class="row">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <div class="panel panel-primary">
                         <div class="panel-body">
-                            <div class="col-xs-3">
+                            <div class="col-3">
                                 <div class="row">
-                                    <div class="col-xs-12">
+                                    <div class="col-12">
                                         <i class="fas fa-flag"></i> {{countryStats.land}}
                                     </div>
-                                    <div class="col-xs-12">
+                                    <div class="col-12">
                                         <i class="fas fa-money-bill-alt"></i> {{countryStats.money | niceNumber}}
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xs-3">
+                            <div class="col-3">
                                 <i class="fas fa-percent"></i>: {{buildings.getTotalMultiplier()}}
                                 Upkeep: {{buildings.getTotalUpkeep()}}
                             </div>
-                            <div class="col-xs-2">
+                            <div class="col-2">
                                 <i class="fas fa-briefcase"></i> {{countryStats.totalJobs}}
                             </div>
-                            <div class="col-xs-4">
+                            <div class="col-4">
                                 <button class="btn-sm btn-primary" ng-click="buildings.countToBuy = 1">1x</button>
                                 <button class="btn-sm btn-primary" ng-click="buildings.countToBuy = 5">5x</button>
                                 <button class="btn-sm btn-primary" ng-click="buildings.countToBuy = 25">25x</button>
@@ -37,13 +37,13 @@
             <div class="row">
                 <div class="col-md-12 col-sm-12">
                     <div class="row">
-                        <div id="build" class="col-xs-12 col-sm-12">
+                        <div id="build" class="col-12 col-sm-12">
                             <div class="row modalOverflow-600">
                                 <div class=""
                                      ng-repeat="structure in buildings.structures track by $index">
 
                                     <!-- HIDE ON XS/SMALL RESOLUTION, this is for laptops/PC monitors-->
-                                    <div class="col-md-4 hidden-xs hidden-sm">
+                                    <div class="col-md-4 d-none d-md-block">
                                         <div class="row">
                                             <i ng-hide="structure.isUnlocked"
                                                class="structureLockPosition center-block glyphicon glyphicon-lock glyphicon-black lock-icon-font-size"></i>
@@ -118,12 +118,12 @@
                                     <div ng-class="($index + 1)%3 === 0 && $index !== 0 ? 'clearfix' : ''"></div>
 
                                     <!-- HIDE ON MEDIUM/LARGE RESOLUTION, This is where we write html for mobile/tablet/low resolution -->
-                                    <div class="hidden-md hidden-lg">
-                                        <div class="col-xs-12">
+                                    <div class="d-block d-md-none">
+                                        <div class="col-12">
                                             <div class="row clickableArea bottom-border margin-bottom-5">
-                                                <div class="col-xs-8">
+                                                <div class="col-8">
                                                     <div class="row">
-                                                        <div class="col-xs-12">
+                                                        <div class="col-12">
                                                         <span class="tag label label-default text-center center-block">
                                                             {{structure.name}} ({{structure.count}})
                                                             <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white"></i></a>
@@ -131,7 +131,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col-xs-12 text-center">
+                                                        <div class="col-12 text-center">
                                                             <i class="fas fa-angle-double-up"></i>
                                                             <span class="font-8pt">
                                                                     {{structure.countMultiplier}}
@@ -159,7 +159,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-xs-4">
+                                                <div class="col-4">
                                                     <button class="btn btn-block btn-sm btn-success"
                                                             ng-disabled="!structure.isUnlocked || structure.cantAfford(buildings.countToBuy)"
                                                             ng-class="{'btn-danger': structure.cantAfford(buildings.countToBuy)}"

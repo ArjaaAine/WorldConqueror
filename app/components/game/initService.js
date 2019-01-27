@@ -80,7 +80,7 @@ wciApp.factory(
       playerService.buildings.init();
     };
     const militaryInit = function () {
-      playerService.military = new militaryService();
+      playerService.military = new militaryService.PlayerMilitary();
       playerService.military.init();
     };
     const researchInit = function () {

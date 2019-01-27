@@ -1,254 +1,173 @@
 "use strict";
 // eslint-disable-next-line
 wciApp.factory("militaryService", function
-(
-  playerService,
-  gameDataService,
-) {
-
-  // TODO: Consider using this object as a "group", and calculate total upkeep in worldCountry(playerService) service.
-  // TODO: This way we can make multiple copies of this object, without having to use "this.unitsOnMission" array.
+(playerService) {
+  /* MILITARY CLASS */
   class Military {
     constructor () {
-      this.unitsToHire = 1;// How many units we want to hire at once(with a single button press), needed to update the price on screen.
-      this.unitsAtHome = [];
-      this.unitsAtWar = [];
-      this.unitsHiringQueue = [];
-      this.unitsSendModal = [];
-
-      // This array of arrays might contain mixed count of different units...
-      // E.x: 100Militia and 10Battle Ships.  Calculate their upkeep.
-      this.totalUpkeep = 0;
-      this.unitCap = 0;
+      this.unitsAtHome = {
+        land : 0,
+        air  : 0,
+        naval: 0,
+      };
+      this.unitsAtWar = {
+        land : 0,
+        air  : 0,
+        naval: 0,
+      };
+      this.unitStrength = {
+        land : 1,
+        air  : 10,
+        naval: 50,
+      };
     }
 
-    init () {
-      const unitsArray = gameDataService.Units;
+    initializeMainClass () {
+      const units = [ "land", "air", "naval" ];
+      const strength = [ 1, 10, 50 ];
 
-      this.unitsAtHome = [];// Units defending base
-      this.unitsAtWar = [];// Units currently in battle
-      this.unitsHiringQueue = [];// Units in hiring queue
-      this.unitsSendModal = [];// Units chosen by a player before sending to War
-      for (let i = 0; i < unitsArray.length; i++) {
-        const unitObject = unitsArray[i];
-
-        this.unitsAtHome[i] = {};
-        this.unitsAtHome[i].id = unitObject.id;
-        this.unitsAtHome[i].count = 0;
-        this.unitsAtHome[i].isUnlocked = unitObject.unlocked;// TODO: Currently all of them are unlocked from the start, later need to unlock manually with research etc.
-        this.unitsAtHome[i].name = unitObject.name;
-      }
+      units.forEach((unit, index) => {
+        this.unitsAtHome[unit] = 0;
+        this.unitsAtWar[unit] = 0;
+        this.unitStrength[unit] = strength[index];
+      });
     }
 
-    unlockUnits (units) {
-      for (const name of units) {
-        for (const unit of this.unitsAtHome) {
-          if (unit.name === name) {
-            unit.isUnlocked = true;
-            break;
-          }
-        }
-      }
-    }
-
-    cancelQueue (queueIndex) {
-      // TODO: Prompt user when canceling a unitsHiringQueue
-      // TODO: Tell the player about the possible lose of money, change formula to give less money, the longer player waits.
-      // Cancel unitsHiringQueue gives back ~50% money or so
-      const count = this.unitsHiringQueue[queueIndex].count;
-      const unitIndex = this.unitsHiringQueue[queueIndex].id;
-      const unitData = gameDataService.Units[unitIndex];
-      const cost = unitData.cost;// TODO: Use methods to calculate the cost, possible way to cheat by hiring/canceling units after unit cost changes due to some bonuses
-      const popCost = unitData.popCost;
-      const unitCapCost = unitData.unitCapCost;
-
-      playerService.baseStats.money += count * cost / 2;
-      playerService.baseStats.population += count * popCost;// Give back population
-      playerService.baseStats.unitCap += count * unitCapCost;// Give back unit cap...
-      // remove units from unitsHiringQueue
-      this.unitsHiringQueue.splice(queueIndex, 1);
-    }
-
-    // Adding units to unitsHiringQueue when buying, it might take 1 or more turns
-    buyQueue (unitIndex) {
-      const count = this.unitsToHire;
-
-      // TODO: Consider merging same unit unitsHiringQueue if done on same turn.
-      // TODO: For example, militia 10x, instead of storing 10x objects, we can combine them into 1...
-      // TODO: Since time for training them will be the same(because they are unitsHiringQueued on same turn)
-      // TODO: Can be easily done by checking last element in the array and comparing it's timer with current unit timer.
-      const unitData = gameDataService.Units[unitIndex];
-      const cost = unitData.cost;
-      const unitCapCost = unitData.unitCapCost;
-      const popCost = unitData.popCost;
-      const trainingSpeed = unitData.trainingSpeed;
-      const unitId = unitData.id;
-      const name = unitData.name;
-
-      if (playerService.baseStats.money >= count * cost &&
-          playerService.baseStats.unitCap >= count * unitCapCost &&
-          playerService.baseStats.population >= count * popCost) {
-        // Pay for hiring...
-        playerService.baseStats.unitCap -= count * unitCapCost;
-        playerService.baseStats.money -= count * cost;
-        playerService.baseStats.population -= count * popCost;
-
-        // TODO: Training speed might be reduced here...
-
-        // This will check if we are already training that unit, later on we might need to filter to match training speed with current time
-        // In case we reduce training speed while previous unit was in queue, so we can combine them...
-
-        // This stacks up units queue if their training time is the same(it does not take into account reduced time of training if you make a research during the training of the unit...)
-
-        const unitToHire = {
-          count,
-          time: trainingSpeed,
-          id  : unitId,
-          name,
-          trainingSpeed,
-        };
-
-        // Array.find = finds an element and stops iterating
-        // Array.findIndex = finds an index and stops iterating
-        // Array.filter = filter WHOLE array
-        const existingUnitIndex = this.unitsHiringQueue.findIndex(unit => unit.time === trainingSpeed && unit.id === unitId);
-
-        // If we found an element
-        if (existingUnitIndex >= 0)
-          this.unitsHiringQueue[existingUnitIndex].count += count;
-        else
-          this.unitsHiringQueue.push(unitToHire);
-
-      }
-
-      // TODO: Not very efficient to sort array every time we hire units, need fix
-      this.unitsHiringQueue.sort((a, b) => a.time - b.time);
-    }
-
-    // Call every game turn
-    updateQueue () {
-      for (let i = this.unitsHiringQueue.length - 1; i >= 0; i--) {
-        const unitQueue = this.unitsHiringQueue[i];
-
-        unitQueue.time--;// Reduce value by 1(1 turn)
-        // TODO: add more logic which takes research and other bonuses that improve speed.
-        if (unitQueue.time <= 0) {
-          const id = unitQueue.id;
-
-          // Add units to our military.
-          this.unitsAtHome[id].count += unitQueue.count;
-
-          // Remove from unitsHiringQueue
-          this.unitsHiringQueue.splice(i, 1);
-        }
-      }
-    }
-
-    getStrength (unitIndex) {
-      const attack = gameDataService.Units[unitIndex].attack;
-      const defense = gameDataService.Units[unitIndex].defense;
-
-      return this.unitsAtHome[unitIndex].count * (attack + defense);
+    getUnitStrength (type) {
+      return this.unitStrength[type];
     }
 
     getTotalStrength () {
-      let totalStrength = 0;
-      const self = this;
+      const units = this.unitsAtHome;
+      const strength = this.unitStrength;
 
-      this.unitsAtHome.forEach((unit) => {
-        totalStrength += self.getStrength(unit.id) * unit.count || 0;
-      });
-
-      return totalStrength;
+      return units.land * strength.land + units.air * strength.air + units.naval * strength.naval;
     }
 
-    getUpkeep (unitId) {
-      return gameDataService.Units[unitId].upkeep;
+    addUnit (type, value) {
+      this.unitsAtHome[type] += value;
     }
 
-    getTotalUpkeep () {
-      let total = 0;
-      const self = this;
-
-      this.unitsAtHome.forEach((unit) => {
-        total += self.getUpkeep(unit.id) * unit.count;
-      });
-
-      // TODO: Might reduce upkeep with research/buildings...
-      this.totalUpkeep = total;
-
-      return total;
-    }
-
-    getCost (unitId) {
-      return gameDataService.Units[unitId].cost;
-    }
-
-    // TODO: Probably need to create another array of arrays which will store currently sent units "unit group", so we can calculate their cost
-    // TODO: Sending units to fight should increase their upkeep :]
-
-    getAttack (unitId) {
-      return gameDataService.Units[unitId].attack;
-    }
-
-    getTotalUnitAttack (unitId, count) {
-      return this.getAttack(unitId) * count;
-    }
-
-    getAllUnitsTotalAttack (isAtHome, countryAtWarIndex) {
-      let totalAttack = 0;
-
-      if (isAtHome) {
-        for (let i = 0; i < this.unitsAtHome.length; i++)
-          totalAttack += this.getTotalUnitAttack(i, this.unitsAtHome[i].count);
-
-      } else {
-        // Units at war
-        for (let i = 0; i < this.unitsAtWar[countryAtWarIndex].length; i++)
-          totalAttack += this.getTotalUnitAttack(i, this.unitsAtWar[countryAtWarIndex][i].count);
-
-      }
-
-      return totalAttack;
-    }
-
-    getDefense (unitId) {
-      return gameDataService.Units[unitId].defense;
-    }
-
-    getTotalUnitDefense (unitId, count) {
-      return this.getDefense(unitId) * count;
-    }
-
-    getAllUnitsTotalDefense (isAtHome, countryAtWarIndex) {
-      let totalDefense = 0;
-
-      if (isAtHome) {
-        for (let i = 0; i < this.unitsAtHome.length; i++)
-          totalDefense += this.getTotalUnitDefense(i, this.unitsAtHome[i].count);
-
-      } else {
-        // Units at war
-        for (let i = 0; i < this.unitsAtWar[countryAtWarIndex].length; i++)
-          totalDefense += this.getTotalUnitDefense(i, this.unitsAtWar[countryAtWarIndex][i].count);
-
-      }
-
-      return totalDefense;
-    }
-
-    getSiege (unitId) {
-      return gameDataService.Units[unitId].siege;
-    }
-
-    getPopulationCost (unitId) {
-      return gameDataService.Units[unitId].popCost;
-    }
-
-    getTrainingSpeed (unitId) {
-      return gameDataService.Units[unitId].trainingSpeed;
+    // If AI gets attacked, we can use this to remove units. Tho it probably wont be necessary.
+    removeUnit (type, value) {
+      this.unitsAtHome[type] -= value;
     }
   }
 
-  return Military;
+  /* AI MILITARY */
+  class AiMilitary extends Military {
+    constructor () {
+      super();
+    }
+
+
+  }
+
+  /* PLAYER MILITARY CLASS*/
+  class PlayerMilitary extends Military {
+    constructor () {
+      super();// Copy methods from parent class
+      /* Speed in turns to produce units */
+      this.baseHiringAmountPerTurn = {
+        land : 300,
+        air  : 30,
+        naval: 5,
+      };
+
+      /* Cost in population to hire 1 unit of that type */
+      this.baseHiringCost = {
+        land : 1,
+        air  : 3,
+        naval: 5,
+      };
+
+      /* Limit to population simultaneous training */
+      this.baseQueueLimit = {
+        land : 1000,
+        air  : 500,
+        naval: 500,
+      };
+
+      /* How many units are currently in queue, for simplicity, so we don't search through an array... */
+      this.currentQueuedUnits = {
+        land : 0,
+        air  : 0,
+        naval: 0,
+      };
+
+      this.unitUpkeep = {
+        land : 1,
+        air  : 5,
+        naval: 50,
+      };
+      this.hiringQueue = [];
+    }
+
+    update () {
+      this.updateQueue();
+    }
+
+    init () {
+      this.initializeMainClass();
+    }
+
+    addToQueue (type, amount) {
+      const currentPopulation = playerService.baseStats.population;
+      const baseCost = this.baseHiringCost[type];
+      const baseQueueLimit = this.baseQueueLimit[type];
+      const currentlyInQueue = this.currentQueuedUnits[type];
+
+      if (currentlyInQueue + amount >= baseQueueLimit) {
+        console.log(`Can't hire units, queue limit reached! You can hire only${baseQueueLimit - currentlyInQueue}`);
+      } else if (baseCost >= currentPopulation) {
+        console.log(`${`Not Enough population to hire units. You need ${baseCost}` - currentPopulation} more population.`);
+      } else {
+        // Hire units, finally :)
+        this.hiringQueue.push({
+          type,
+          amount,
+        });
+      }
+
+    //  TODO: Add bonuses from research/law/leaders etc.(leaders could be added during init as base values)
+    }
+
+    updateQueue () {
+      const hireLimit = this.baseHiringAmountPerTurn;
+
+      for (const unitToHire of this.hiringQueue.values()) {
+        const type = unitToHire.type;
+        const amount = unitToHire.amount;
+        let amountToHire = amount;
+
+        if (amount >= hireLimit) amountToHire = hireLimit;
+
+        this.unitsAtHome[type] += amountToHire;
+      }
+    }
+
+    getUpkeep () {
+      let totalUpkeep = 0;
+
+      for (const [ type, value ] of Object.entries(this.unitsAtHome)) {
+        const warUpkeep = this.unitUpkeep[type] * 2 * this.unitsAtWar[type];
+
+        totalUpkeep += this.unitUpkeep[type] * value + warUpkeep;
+      }
+      playerService.baseStats.upkeep.military = totalUpkeep;
+    }
+
+    getTrainedUnits () {
+      let totalTrained = 0;
+
+      // Total population of trained units at home and at war, multiplied by "hiringCost" since it represents the full cost of each unit
+
+      for (const [ unit, value ] of Object.entries(this.baseHiringCost)) totalTrained += (this.unitsAtHome[unit] + this.unitsAtWar[unit]) * value;
+
+      return totalTrained;
+    }
+  }
+
+  return { PlayerMilitary,
+    AiMilitary };
 });

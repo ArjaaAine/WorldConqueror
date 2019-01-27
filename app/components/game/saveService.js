@@ -32,7 +32,7 @@ wciApp.factory("saveService", function
     let laws = playerService.laws.activeLaws;
     let lawsUnlocked = playerService.laws.unlockedLaws;
     const buildings = playerService.buildings;
-    const onWar = warService.currentlyAtWar;
+    // const onWar = warService.currentlyAtWar; // FIX THIS
     const onWarColors = worldCountryService.countriesColorsAtWar;
 
     // Save only necessary data
@@ -51,7 +51,7 @@ wciApp.factory("saveService", function
     saveData.lawsUnlocked = lawsUnlocked;
     saveData.buildings = buildings;
     saveData.baseStats = playerService.baseStats;
-    saveData.onWar = onWar;
+    // saveData.onWar = onWar;
     saveData.onWarColors = onWarColors;
     saveData.leaders = leaderService;
 
@@ -70,7 +70,7 @@ wciApp.factory("saveService", function
     let lawsUnlocked = playerService.laws.unlockedLaws;
     const buildings = playerService.buildings;
     const baseStats = playerService.baseStats;
-    const onWar = warService.currentlyAtWar;
+    // const onWar = warService.currentlyAtWar;
     const onWarColors = worldCountryService.countriesColorsAtWar;
 
     const leaders = leaderService;
@@ -84,7 +84,7 @@ wciApp.factory("saveService", function
     angular.merge(lawsUnlocked, savedData.lawsUnlocked);
     angular.merge(buildings, savedData.buildings);
     angular.merge(baseStats, savedData.baseStats);
-    angular.merge(onWar, savedData.onWar);
+    // angular.merge(onWar, savedData.onWar);
     angular.merge(onWarColors, savedData.onWarColors);
 
     angular.merge(leaders, savedData.leaders);

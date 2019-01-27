@@ -27,6 +27,7 @@ wciApp.controller('GameController', function (
 ) {
   let saveTimer;
   const game = this;
+
   $scope.saveService = saveService;
   $scope.startScreen = true;
   $scope.gameLoading = true;
@@ -38,8 +39,8 @@ wciApp.controller('GameController', function (
     $scope.startScreen = !$scope.startScreen;
   };
   $scope.goBack = function () {
-    //TODO: Might need to create an array or an object to store possible routes, so going back will be easier.
-    if(!$scope.startScreen) $scope.toggleStartScreen();
+    // TODO: Might need to create an array or an object to store possible routes, so going back will be easier.
+    if (!$scope.startScreen) $scope.toggleStartScreen();
   };
 
   $scope.saveData = [];
@@ -69,7 +70,6 @@ wciApp.controller('GameController', function (
         controller    : "CountryController",
         isActive      : true,
         disabledReason: "",
-        windowClass   : "",
         closeCallback : game.myCountry.ministers.modalClosed,
       },
       {
@@ -79,7 +79,6 @@ wciApp.controller('GameController', function (
         controller    : "StructureController",
         isActive      : true,
         disabledReason: "",
-        windowClass   : "",
       },
       {
         name          : "Military",
@@ -88,7 +87,6 @@ wciApp.controller('GameController', function (
         controller    : "MilitaryController",
         isActive      : true,
         disabledReason: "",
-        windowClass   : "full",
       },
       {
         name          : "Research",
@@ -97,7 +95,6 @@ wciApp.controller('GameController', function (
         controller    : "ResearchController",
         isActive      : true,
         disabledReason: "",
-        windowClass   : "full",
       },
       {
         name          : "War",
@@ -106,7 +103,6 @@ wciApp.controller('GameController', function (
         controller    : "WarController",
         isActive      : true,
         disabledReason: "You are not currently at war with anyone.",
-        windowClass   : "full",
       },
       {
         name          : "Charts",
@@ -115,7 +111,6 @@ wciApp.controller('GameController', function (
         controller    : "ChartsController",
         isActive      : true,
         disabledReason: "",
-        windowClass   : "full",
       },
       {
         name          : "Changelog",
@@ -124,7 +119,6 @@ wciApp.controller('GameController', function (
         controller    : "ChangelogController",
         isActive      : true,
         disabledReason: "",
-        windowClass   : "",
       },
     ];
   };
@@ -160,15 +154,12 @@ wciApp.controller('GameController', function (
     game.myCountry.getNewConsumption();
     game.myCountry.getNewEconomics();
     game.myCountry.getNewDemographics();
-    game.myCountry.baseStats.upkeep = 0;
-    game.myCountry.buildings.getTotalUpkeep();
     game.myCountry.research.update();
     game.myCountry.laws.update();
     game.myCountry.ministers.update();
     game.worldCountries.update();
     game.worldCountries.updateLogic();
     warService.update();
-    warService.doBattle();
     chartsService.update();
 
     // Game.advisors.functions.advisorTimedEffects();
@@ -251,27 +242,27 @@ wciApp.controller('GameController', function (
           },
         ],
       },
-      onRegionTipShow (e, el, code) {
-        const country = $filter("niceNumber")(worldCountryService.getCountryStrength(code));
+      onRegionTipShow (e, el, countryCode) {
+        const country = $filter("niceNumber")(worldCountryService.getCountryStrength(countryCode));
 
         el.html(`${el.html()} (Strength - ${country})`);
       },
-      onRegionClick (e, code) {
+      onRegionClick (e, countryCode) {
         e.preventDefault();
 
         // Check if an array of objects contains a property with a value of the code we passed in.
-        const controlledCountry = playerService.conqueredCountries.map(e => e.countryCode).indexOf(code);
-        const countryOnWar = warService.isCountryAtWar(code);
+        const controlledCountry = playerService.conqueredCountries.map(e => e.countryCode).indexOf(countryCode);
+        const countryOnWar = worldCountryService.allCountriesRulers[countryCode].isAtWar;
 
         // Might open modal with options to attack if we are already at war.
-        if (controlledCountry !== -1 || countryOnWar !== -1) {
+        if (controlledCountry !== -1 || countryOnWar !== false) {
           console.log("You are already at war or you control that country");
 
           return;// If we currently control that country or are already at war, do nothing
         }
 
         /* TODO: In the future we might want to open different modal, giving us some information of our own country etc.*/
-        openAttackConfirmation(code);
+        openAttackConfirmation(countryCode);
       },
     });
 
@@ -290,7 +281,7 @@ wciApp.controller('GameController', function (
     };
   };
 
-  let openAttackConfirmation = function (code) {
+  let openAttackConfirmation = function (countryCode) {
 
     const modalInstance = modalService.open({
       templateUrl: "warConfirmationModal.html",
@@ -298,14 +289,14 @@ wciApp.controller('GameController', function (
       size       : "sm",
       resolve    : {
         countryAttacked () {
-          return code;
+          return countryCode;
         },
       },
     });
 
     modalInstance.result.then(() => {
       // TODO: Set up first battle phase here using warService.init(attacker,defender)
-      warService.declareWar(code);
+      warService.declareWar(countryCode);
       worldCountryService.update();
     }, () => {
       $log.info(`Modal dismissed at: ${new Date()}`);
@@ -319,8 +310,7 @@ wciApp.controller('GameController', function (
     const modalInstance = modalService.open({
       templateUrl,
       controller,
-      size       : "lg",
-      windowClass: $scope.modalButtons[modalIndex].windowClass,
+      size       : "xl",
     });
 
     // This will close a modal on right click and also prevent context menu from appearing.

@@ -24,12 +24,13 @@ wciApp.factory("buildingsService", function (
       const landCost = this.getLandCost() * count;
       const leaderUnitCapMultiplier = leaderService.bonusCalculator("militaryCap", 1);
       let multiplier = 1;
-      if(this.statAffected === "unitCap") multiplier = leaderUnitCapMultiplier;
+
+      if (this.statAffected === "unitCap") multiplier = leaderUnitCapMultiplier;
       if (playerService.baseStats.money >= cost && this.isUnlocked &&
           playerService.baseStats.land >= landCost) {
         playerService.baseStats[this.statAffected] *= Math.pow(this.statMultiplier * this.countMultiplier, count);
         playerService.baseStats[this.statAffected] += this.statAdder * count;
-        playerService.baseStats[this.statAffected] *= multiplier;//add unitCap bonus above
+        playerService.baseStats[this.statAffected] *= multiplier;// Add unitCap bonus above
         playerService.baseStats.totalJobs += this.getJobsIncreased() * count;
         playerService.baseStats.money -= cost;
         playerService.baseStats.land -= landCost;
@@ -125,6 +126,10 @@ wciApp.factory("buildingsService", function (
       }
     }
 
+    update () {
+      this.getTotalUpkeep();
+    }
+
     unlockBuilding (buildingsToUnlock) {
       for (const value of buildingsToUnlock) {
         for (const building of this.structures.values()) {
@@ -139,12 +144,9 @@ wciApp.factory("buildingsService", function (
     getTotalUpkeep () {
       let upkeep = 0;
 
-      // TODO: Might want to return 0 if structureCount is 0, so we avoid unnecessary calculations
       for (let i = 0; i < this.structures.length; i++) upkeep += this.structures[i].getUpkeep() * this.structures[i].count;
 
-      playerService.baseStats.upkeep = upkeep;
-
-      return upkeep;
+      playerService.baseStats.upkeep.buildings = upkeep;
     }
 
     getTotalMultiplier () {

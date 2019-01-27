@@ -13,6 +13,7 @@ wciApp.factory("worldCountryService", function
       // Countries store some basic data such as Land.
       this.AiPlayers = [];// List of all AI players.//This is an array, so we can loop through few countries each turn and save index for next loop on next turn. Using objects would be a pain.
       // Other properties are objects because we need to have an easy access to them via bracket notation like country[code].someData
+      this.allCountriesRulers = {}; // Object with countries, containing a reference. Should not be saved, but initialized on game start
       this.allCountriesColors = {};// Objects with all countries colors...like this.countryColors.US = 15---This is the neutral color, blue
       this.countriesColorsAtWar = {};// Objects with all countries we are at war. Red color
     }
@@ -25,7 +26,6 @@ wciApp.factory("worldCountryService", function
       this.allCountriesColors = {};
       this.conqueredCountriesColors = {};
       this.countriesColorsAtWar = {};
-      const self = this;
 
       countries.forEach((countryData) => {
         const countryCode = countryData.countryCode;
@@ -34,6 +34,7 @@ wciApp.factory("worldCountryService", function
         countryObject.countryCode = countryCode;
         countryObject.land = countryData.land || Math.floor(Math.random() * 450) + 50;// 50-500 land
         countryObject.name = countryData.name;
+        countryObject.isLandLocked = countryData.isLandLocked;
 
         // Below, create AI players based on countries that player is NOT controlling.
         const playerCountry = playerService.startingCountries.map(code => code === countryCode)[0];
@@ -42,13 +43,19 @@ wciApp.factory("worldCountryService", function
           const aiPlayer = new AiPlayerService();
 
           aiPlayer.init(countryData, countryObject);
-          self.AiPlayers.push(aiPlayer);// AI with all methods/logic and AiPlayer specific data like military...
-          self.allCountriesColors[countryCode] = self.AiPlayers[self.AiPlayers.length - 1].getTotalStrength();
+	        this.AiPlayers.push(aiPlayer);// AI with all methods/logic and AiPlayer specific data like military...
+	        this.allCountriesColors[countryCode] = this.AiPlayers[this.AiPlayers.length - 1].military.getTotalStrength();
+	        this.allCountriesRulers[countryCode] = aiPlayer;
         } else {
           playerService.addCountry(countryObject);
-          self.conqueredCountriesColors[countryCode] = playerService.military.getTotalStrength();
+	        this.conqueredCountriesColors[countryCode] = playerService.military.getTotalStrength();
+          this.allCountriesRulers[countryCode] = playerService;
         }
       });
+    }
+
+    changeCountryRuler (countryCode, newRuler) {
+      this.allCountriesRulers[countryCode] = newRuler;
     }
 
     getCountryStrength (countryCode) {
@@ -57,7 +64,7 @@ wciApp.factory("worldCountryService", function
 
       if (filterCounqueredCountries !== undefined) return playerService.military.getTotalStrength();
 
-      return this.AiPlayers[aiIndex].getTotalStrength();
+      return this.AiPlayers[aiIndex].military.getTotalStrength();
 
     }
 
@@ -97,14 +104,15 @@ wciApp.factory("worldCountryService", function
       delete this.countriesColorsAtWar[countryCode];
     }
 
-    updateColors (aiPlayerIndex) {
-      const aiPlayer = this.AiPlayers[aiPlayerIndex];
+    updateColors (aiPlayer) {
       const self = this;
 
       aiPlayer.countries.forEach((country) => {
         const countryCode = country.countryCode;
 
-        self.countriesColorsAtWar[countryCode] = self.getCountryStrength(countryCode);
+        if (aiPlayer.isAtWar) self.countriesColorsAtWar[countryCode] = self.getCountryStrength(countryCode);
+        else self.allCountriesColors[countryCode] = self.getCountryStrength(countryCode);
+
       });
     }
 
@@ -112,9 +120,8 @@ wciApp.factory("worldCountryService", function
       for (const aiPlayer of this.AiPlayers.values()) {
         aiPlayer.trainUnits();
 
-        for (const country of aiPlayer.countries.values()) {
-          this.allCountriesColors[country.countryCode] = aiPlayer.getTotalStrength();
-        }
+        for (const country of aiPlayer.countries.values()) this.allCountriesColors[country.countryCode] = aiPlayer.military.getTotalStrength();
+
       }
 
       // There goes all logic for countries...Using AiPlayerService methods, we make decisions here.

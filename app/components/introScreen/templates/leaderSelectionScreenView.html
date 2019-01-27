@@ -1,20 +1,20 @@
 <div class="row introScreen">
-    <div class="col-xs-10 col-xs-offset-1" id="IntroScreen">
+    <div class="col-10 offset-1" id="IntroScreen">
         <div class="row flexRow text-center leaderSelectionBackground">
             <a ng-repeat="leader in leaders.list track by $index" ng-click="leaders.select($index)">
-                <img ng-src="./assets/img/leaderImages/{{leader.image}}.jpg" class="img-circle margin-left-10" alt="{{leader.image}}"
+                <img ng-src="./assets/img/leaderImages/{{leader.image}}.jpg" class="rounded-circle margin-left-10" alt="{{leader.image}}"
                      ng-class="leaders.selectedIndex === $index ? 'selectedLeader' : ''">
             </a>
         </div>
         <div class="row">
-            <div class="col-xs-12 text-center font-color-white bottom-border">
+            <div class="col-12 text-center font-color-white bottom-border">
                 <h3>{{leaders.list[leaders.selectedIndex].name}}</h3>
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-6 col-xs-offset-1">
+            <div class="col-6 offset-1">
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <h4 class="text-success">Bonus:</h4>
                         <p class="textBackgroundGradient font-color-white" ng-repeat="bonus in leaders.list[leaders.selectedIndex].bonuses track by $index">
                             {{bonus.name + ": " + bonus.value}}
@@ -22,7 +22,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <h4 class="text-danger">Penalty:</h4>
                         <p class="textBackgroundGradient font-color-white" ng-repeat="negative in leaders.list[leaders.selectedIndex].negatives track by $index">
                             {{negative.name + ": " + negative.value}}
@@ -35,7 +35,7 @@
                     </button>
                 </div>
             </div>
-            <div class="col-xs-5">
+            <div class="col-5">
                 <img ng-src="./assets/img/leaderImages/defaultLeader.png" class="margin-top-20 pull-right" alt="Default Leader">
             </div>
         </div>

@@ -11,7 +11,7 @@ wciApp.controller(
       const growth = $filter("fixedDecimalPlaces")(playerService.actualGrowthRate(), 2);
       const mortality = $filter("fixedDecimalPlaces")(playerService.actualMortalityRate(), 2);
       const income = $filter("niceNumber")(playerService.income());
-      const upkeep = $filter("niceNumber")(playerService.baseStats.upkeep);
+      const upkeep = $filter("niceNumber")(playerService.totalUpkeep());
       const foodProduction = $filter("niceNumber")(playerService.foodGrowth());
       const foodDemand = $filter("niceNumber")(playerService.foodDemand());
 

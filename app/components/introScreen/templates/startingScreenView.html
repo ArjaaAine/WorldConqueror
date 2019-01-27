@@ -1,31 +1,20 @@
-<div class="row introScreen">
-    <div class="col-xs-6 col-xs-offset-3 text-center dark-background margin-bottom-10 margin-top-5" ng-repeat="data in saveData track by $index">
-        <div class="row">
-            <div class="media" ng-show="data.baseStats !== undefined">
-                <div class="media-left">
-                    <a href="#" ng-click="startGame(true, $index)">
-                        <img ng-src="./assets/img/leaderImages/{{data.leaders.currentLeader.image}}.jpg" class="media-object img-circle" alt="{{leader.image}}">
-                    </a>
-                </div>
-                <div class="media-body clickable" ng-click="startGame(true, $index)">
-                    <h4 class="media-middle">
-                        {{data.leaders.currentLeader.name}} -
-                        <span class="small">Year: {{1900 + data.baseStats.currentTurn}}</span>
-                    </h4>
-                </div>
-                <div class="media-right media-middle">
-                    <button class="btn-danger btn-sm" ng-show="data.baseStats !== undefined" ng-click="saveService.reset($index); getLocalStorageData();">Delete</button>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="media" ng-hide="data.baseStats !== undefined">
-                <div class="media-body clickable" ng-click="toggleStartScreen(); changeGameSlot($index)">
-                    <h4 class="media-middle">
-                        Create a new save
-                    </h4>
-                </div>
-            </div>
+<div class="card text-white text-center" ng-repeat="data in saveData track by $index">
+    <div class="card-header bg-success border-0 h-100 d-flex justify-content-center " ng-show="data.baseStats !== undefined">
+        <a class="ml-auto" href="#" ng-click="startGame(true, $index)">
+            <img ng-src="./assets/img/leaderImages/{{data.leaders.currentLeader.image}}.jpg" class="media-object rounded-circle" alt="{{leader.image}}">
+        </a>
+        <h4 class="mt-0 ml-auto clickable d-inline border-bottom" ng-click="startGame(true, $index)">
+            {{data.leaders.currentLeader.name}} -
+            <span class="small">Year: {{1900 + data.baseStats.currentTurn}}</span>
+        </h4>
+        <button class="btn-danger btn-sm ml-auto" ng-show="data.baseStats !== undefined" ng-click="saveService.reset($index); getLocalStorageData();">Delete</button>
+    </div>
+    <div class="card-header text-white bg-secondary" ng-hide="data.baseStats !== undefined">
+        <div class="media-body clickable" ng-click="toggleStartScreen(); changeGameSlot($index)">
+            <h4 class="media-middle">
+                Create a new save
+            </h4>
         </div>
     </div>
 </div>
+

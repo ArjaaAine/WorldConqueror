@@ -9,36 +9,52 @@
     <title>World Conqueror</title>
     <!--Javascript-->
     <script src="assets/libs/js/jquery.min.js"></script>
-    <script src="assets/libs/js/angular.js"></script>
+    <!--bootstrap-->
+    <script src="assets/libs/js/bootstrap.bundle.min.js"></script>
+    <!--angular-->
+    <script src="assets/libs/js/angular.min.js"></script>
+    <script src="assets/libs/js/angular-animate.min.js"></script>
+    <!--charts-->
     <script src="assets/libs/js/chart.js"></script>
     <script src="assets/libs/js/angular-chart.min.js"></script>
+    <!--angular stuff-->
     <script src="assets/libs/js/angular-sanitize.js"></script>
     <script src="assets/libs/js/angular-route.js"></script>
+    <!--?????-->
     <script src="assets/libs/js/select.js"></script>
+    <!--excel converter-->
     <script src="assets/libs/js/xlsx.full.min.js"></script>
-    <script src="assets/libs/js/cpexcel.js"></script>
+    <!--UI bootstrap for angular ui-->
     <script src="assets/libs/js/ui-bootstrap-tpls-2.5.0.min.js"></script>
+    <!--world map library-->
     <script src="assets/libs/js/jquery-jvectormap-2.0.3.min.js"></script>
     <script src="assets/libs/js/jquery-jvectormap-world-mill-en.js"></script>
+    <!--slider-->
     <script src="assets/libs/js/angular-slider.js"></script>
     <!--css-->
+
+    <!--bootstrap-->
     <link rel="stylesheet" href="assets/libs/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/libs/css/bootstrap-theme.min.css">
+    <!--font awesome-->
     <link rel="stylesheet" href="assets/libs/css/font-awesome/all.css">
+    <!--other-->
     <link rel="stylesheet" href="assets/libs/css/select.min.css">
+    <!--world map-->
     <link rel="stylesheet" href="assets/libs/css/jquery-jvectormap-2.0.3.css">
+    <!--angular slider-->
     <link rel="stylesheet" href="assets/libs/css/angular-slider.css">
-    <!--<link rel="stylesheet" href="libs/css/metro-bootstrap.css">
-    <link rel="stylesheet" href="libs/fonts/metroSysIcons.svg">
-    <link rel="stylesheet" href="libs/fonts/metroSysIcons.tff">
-    <link rel="stylesheet" href="libs/fonts/metroSysIcons.woff">
-    -->
 </head>
 <body ng-controller="GameController as game">
 <div class="main_overlay backgroundImage">
     <div class="container-fluid" ng-show="!gameLoading">
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col">
+                <div class="row"style="height: 5vh;">
+                    <div class="col dark-background text-center">
+                        <div ng-include="'app/shared/statHeader/statHeaderView.html'"></div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="debug-buttons">
                         <button ng-click="hideDebug=true" ng-show="!hideDebug">Hide</button>
@@ -70,30 +86,28 @@
                                 tooltip-placement="right"
                                 uib-tooltip="{{item.disabledReason}}">
                             <i ng-class="item.icon"></i>
-                            <span class="hidden-sm hidden-xs" >
+                            <span class="d-none d-sm-none d-md-inline" >
                             {{item.name}}
                             </span>
                         </button>
                     </div>
-                    <div class="col-xs-12 map-overlay-stats dark-background text-center">
-                                <div ng-include="'app/shared/statHeader/statHeaderView.html'"></div>
-                    </div>
-                    <div class="col-xs-3 col-sm-2 col-md-1 leader-icon">
+                    <div class="w-100"></div>
+                    <div class="col-1 leader-icon">
                         <a href="#" class="thumbnail">
-                            <img ng-click="openModal(6)" src="./assets/img/avatar_blank.jpeg" alt="">
+                            <img class="img-fluid" ng-click="openModal(6)" src="./assets/img/avatar_blank.jpeg" alt="">
                             <div class="caption">
                                 <p>{{game.myCountry.baseStats.leaderName}}</p>
                             </div>
                         </a>
                     </div>
-                    <div class="col-xs-3 col-sm-2 col-md-1 game-time">
+                    <div class="col-2 offset-9 game-time">
                         <span class="label label-info">Year: {{1900 + game.myCountry.baseStats.currentTurn}}</span>
                         <button class="btn-danger btn-xs" ng-click="game.resetGame()">
                                 Reset
                         </button>
                     </div>
 
-                    <div class="worldMap-hiringQueue">
+                    <div class="col-1 offset-11 worldMap-hiringQueue">
                         <div class="panel panel-default hidden-xs modalOverflow">
                             <h4 class="text-center"><small>Queue:</small></h4>
                             <div class="worldMap-hiringQueueWidth">
@@ -122,12 +136,15 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="map-overlay-next-turn">
                         <button class="btn-success btn-lg" ng-click="game.nextTurn()">Next Turn</button>
                     </div>
-                    <div id="world-map" style="height: 100vh;">
+                    <div class="col">
+                        <div id="world-map" style="height: 65vh;"></div>
                     </div>
+                </div>
+                <div class="row border border-success bg-dark" style="height: 30vh;">
+
                 </div>
             </div>
         </div>

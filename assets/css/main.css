@@ -235,25 +235,25 @@ a {
     position: absolute;
     z-index: 1;
     left: 1%;
-    bottom: 15%;
+    bottom: 30%;
 }
 .map-overlay-next-turn{
     position:absolute;
     z-index: 1;
     left: 50%;
-    bottom: 0;
+    bottom: 30%
 }
 .debug-buttons{
     position:absolute;
     z-index: 2;
     left: 1%;
-    top: 27%;
+    top: 28%;
 }
 
 .leader-icon{
     position:absolute;
     z-index: 1;
-    top: 5%;
+    top: 10%;
 }
 
 .visible{
@@ -334,7 +334,7 @@ a {
 .game-time{
     position:absolute;
     right: 0;
-    top: 5%;
+    top: 10%;
     z-index: 1;
 }
 
@@ -356,3 +356,17 @@ a {
 [ng\:cloak], [ng-cloak], .ng-cloak {
     display: none !important;
 }
+
+/*FIX BOOTSTRAP 4 INVISIBLE MODALS*/
+.fade.in {
+    opacity: 1;
+}
+.modal.in .modal-dialog {
+    -webkit-transform: translate(0, 0);
+    -o-transform: translate(0, 0);
+    transform: translate(0, 0);
+}
+.modal-backdrop.in {
+    opacity: 0.5;
+}
+/*END OF MODAL FIX*/

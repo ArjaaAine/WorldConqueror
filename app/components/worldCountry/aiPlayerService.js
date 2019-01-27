@@ -15,6 +15,7 @@ wciApp.service("AiPlayerService", function
       this.unitGrowth = 0;
       this.strength = 0;
       this.isDefeated = false;// Remove Ai Player if set to true.
+      this.isAtWar = false; // Is at war with player? Does not support ai vs ai...
     }
 
     init (countryData, countryObject) {
@@ -24,22 +25,10 @@ wciApp.service("AiPlayerService", function
       this.LandUnitTier = countryData.LandUnitTier || Math.floor(Math.random() * 6) + 1;
       this.NavalUnitTier = countryData.NavalUnitTier || Math.floor(Math.random() * 6) + 1;
       this.totalUnitTier = this.AirUnitTier + this.LandUnitTier + this.NavalUnitTier;
-      this.strength = countryData.strength || Math.floor(Math.random() * 1000 * (this.totalUnitTier * 100)) + 10;// This formula is just in case we don't put any data in excel
-
-      this.military.unitsAtHome = [];
-      this.military.unitsAtWar = [];
-      this.initUnits();
+      this.strength = countryData.strength || Math.floor(Math.random() * 100 * (this.totalUnitTier * 100)) + 10;// This formula is just in case we don't put any data in excel
+      this.military = new militaryService.AiMilitary();
       this.generateUnits();
       this.name = `Name_${Math.floor(Math.random() * 1000)}`;
-    }
-
-    initUnits () {
-      const unitsLength = gameDataService.Units.length;
-
-      for (let i = 0; i < unitsLength; i++) {
-        this.military.unitsAtHome[i] = 0;
-        this.military.unitsAtWar[i] = 0;
-      }
     }
 
     trainUnits () {
@@ -47,45 +36,22 @@ wciApp.service("AiPlayerService", function
       this.generateUnits();
     }
 
+    getCountryData (countryCode) {
+      for (const countryData of this.countries.values()) if (countryData.countryCode === countryCode) return countryData;
+    }
+
     generateUnits () {
       // Initialize a country with units
       let strength = this.strength;
 
       while (strength > 0) {
-        const type = [ "Air", "Land", "Naval" ];
+        const type = [ "air", "land", "naval" ];
         const randomType = type[Math.floor(Math.random() * type.length)];
-        const randomTier = Math.floor(Math.random() * this[`${randomType}UnitTier`]) + 1;
 
-        for (const index of this.military.unitsAtHome.keys()) {
-          const unit = gameDataService.Units[index];
-
-          if (unit.type === randomType && unit.level === randomTier) {
-            this.military.unitsAtHome[index] += 1;
-            strength -= this.getUnitStrength(index);
-          }
-        }
+        this.military.unitsAtHome[randomType] += 1;
+        strength -= this.military.getUnitStrength(randomType);
       }
       this.strength += Math.abs(strength);
-    }
-
-    getUnitStrength (index) {
-      const unit = gameDataService.Units[index];
-
-      return (unit.attack + unit.defense) * this.military.unitsAtHome[index];
-    }
-
-    getTotalStrength () {
-      let strength = 0;
-
-      for (const [ index, count ] of this.military.unitsAtHome.entries()) {
-        const unit = gameDataService.Units[index];
-        const attack = unit.attack;
-        const defense = unit.defense;
-
-        strength += (attack + defense) * count;
-      }
-
-      return strength;
     }
   }
 

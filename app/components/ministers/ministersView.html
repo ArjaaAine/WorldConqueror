@@ -1,38 +1,40 @@
-﻿        <div class="row">
-            <p id="errors" class="col-md-12 bg-danger padding-10 bold" ng-show="myCountry.ministers.error">
-                <i class="fa fa-info-circle"></i>
-                {{myCountry.ministers.errorMessage}}
-            </p>
-            <div class="col-xs-12">
-                <p>
-                    Influence: {{myCountry.baseStats.influence}}
-                </p>
+﻿<div class="row">
+    <p id="errors" class="col-md-12 bg-danger padding-10 bold" ng-show="myCountry.ministers.error">
+        <i class="fa fa-info-circle"></i>
+        {{myCountry.ministers.errorMessage}}
+    </p>
+    <div class="col-12">
+        <p>
+            Influence: {{myCountry.baseStats.influence}}
+        </p>
+    </div>
+    <div id="ministers" class="col-12">
+        <div class="card-group">
+            <div class="card clickable custom-panel">
+                <div class="card-body">
+                    <i class="fas fa-chevron-left"></i>
+                </div>
             </div>
-            <div id="ministers" class="col-sm-12">
-                <div class="panel panel-default col-sm-1 clickable custom-panel">
-                    <div class="panel-body">
-                        <i class="fas fa-chevron-left"></i>
+            <div class="card" ng-repeat="minister in myCountry.ministers.activeMinisters track by $index">
+                <div class="card-body row clickable" ng-click="myCountry.ministers.fireMinister(minister)">
+                    <i class="fas fa-user"></i>
+                    <span class="font-8pt" uib-tooltip="{{minister.description}}">{{minister.ministerType}}</span>
+                    <div class="pull-right" uib-tooltip="influence per turn">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span class="font-8pt">{{minister.influencePT}}</span>
                     </div>
                 </div>
-                <div class="panel panel-default col-sm-2" ng-repeat="minister in myCountry.ministers.activeMinisters track by $index">
-                    <div class="panel-body row clickable" ng-click="myCountry.ministers.fireMinister(minister)">
-                        <i class="fas fa-user"></i>
-                        <span class="font-8pt" uib-tooltip="{{minister.description}}">{{minister.ministerType}}</span>
-                        <div class="pull-right" uib-tooltip="influence per turn">
-                            <i class="fas fa-thumbs-up"></i>
-                            <span class="font-8pt">{{minister.influencePT}}</span>
-                        </div>
-                    </div>
+            </div>
+            <div class="card clickable custom-panel" ng-if="myCountry.ministers.activeMinisters.length < 5">
+                <div class="card-body" ng-click="myCountry.ministers.openMinisterHire()">
+                    <i class="text-center fas fa-plus"></i>
                 </div>
-                <div ng-if="myCountry.ministers.activeMinisters.length < 5" class="panel panel-default col-sm-1 clickable custom-panel">
-                    <div class="panel-body" ng-click="myCountry.ministers.openMinisterHire()">
-                        <i class="text-center fas fa-plus"></i>
-                    </div>
-                </div>
-                <div class="panel panel-default col-sm-1 clickable custom-panel">
-                    <div class="panel-body">
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
+            </div>
+            <div class="card clickable custom-panel">
+                <div class="card-body">
+                    <i class="fas fa-chevron-right"></i>
                 </div>
             </div>
         </div>
+    </div>
+</div>

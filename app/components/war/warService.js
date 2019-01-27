@@ -4,244 +4,210 @@ wciApp.service("warService", function
 (
   worldCountryService,
   playerService,
-  gameDataService,
 ) {
 
   class War {
     constructor () {
-      this.currentBattles = [];// Array of objects;
-      this.currentlyAtWar = [];
-      this.currentWarIndex = 0;// This helps to track current index when we do battle, so war log can be updated.
-      this.unitsQueue = {};
-      this.warLog = [];
+      this.battlefields = {}; // Key = countryCode, contains an array which stores all battles in progress... Merge battles sent by same person.
+      this.unitDamageBonus = {
+        land : { air: 1.5 },
+        air  : { naval: 1.5 },
+        naval: { land: 1.5 },
+      };
     }
 
-    init () {
-      this.currentBattles = [];
-      this.currentlyAtWar = [];
-    }
+    init () {}
 
-    initBattle (attacker, defender) {
-      console.log(attacker);
-      console.log(defender);
-    }
-
-    isCountryAtWar (countryCode) {
-      const aiPlayerIndex = worldCountryService.getAiIndexByCountryCode(countryCode);
-
-      return this.isAtWar(aiPlayerIndex);
-    }
-
-    isAtWar (aiPlayerIndex) {
-      return this.currentlyAtWar.indexOf(aiPlayerIndex);// It will return -1 if it can't find
-    }
-
+    // Called when declaring war, removed when making peace, including returning units to attackers.
     declareWar (countryCode) {
-      const aiPlayerIndex = worldCountryService.getAiIndexByCountryCode(countryCode);
+      const defenderAi = worldCountryService.allCountriesRulers[countryCode];
+      const landLocked = defenderAi.getCountryData(countryCode).isLandLocked;
+      const battleFieldObj = {
+        attacker      : playerService,
+        defender      : defenderAi,
+        countryAtStake: countryCode,
+        isLandLocked  : landLocked,
+        battlePhase   : 1, // Phase 1 = water battle, phase 2 = land battle, phase 3 = ?? etc.
+      };
 
-      if (this.isAtWar(aiPlayerIndex) !== -1) return;// Already at war
-
-      this.currentlyAtWar.push(aiPlayerIndex);// Later pass an object with queue/warLog(to separate war log from each AI)
-      worldCountryService.updateColors(aiPlayerIndex);
-      playerService.military.unitsAtWar[this.currentlyAtWar.length - 1] = [];
-      this.addToWarLog(`You have declared war against ${countryCode}`);
+      defenderAi.isAtWar = true;
+      this.getOrInitBattlefield(countryCode).battles.push(battleFieldObj);
+      worldCountryService.updateColors(defenderAi);
     }
 
-    makePeace (aiPlayerIndex) {
-      const getAiAtWarIndex = this.currentlyAtWar.indexOf(aiPlayerIndex);
-      const playerUnitsInBattle = playerService.military.unitsAtWar[aiPlayerIndex];
-      let canMakePeace = true;
+    getOrInitBattlefield (countryCode) {
+      // Getting battlefield object
+      let battlefield = this.battlefields[countryCode];
 
-      // TODO: Check if player has any units in enemy country(loop + check for count > 0 and/or if array length > 0)
-      for (let i = 0; i < playerUnitsInBattle.length; i++) {
-        const unit = playerUnitsInBattle[i];
+      if (battlefield !== undefined) return battlefield;
 
-        if (unit.count > 0) {
-          console.log("##### Cannot make peace, because you have units in that country! #####");
-          canMakePeace = false;
-          break;
+      // Initializing battlefield object
+      battlefield = { battles: [] };
+      this.battlefields[countryCode] = battlefield;
+
+      return battlefield;
+    }
+
+    makePeace (countryCode, attacker) {
+      const battles = this.battlefields[countryCode].battles;
+
+      worldCountryService.allCountriesRulers[countryCode].isAtWar = false;
+
+      // This is a partial support for multiple attackers, currently ai does not support ai vs ai...
+      // Each country might be under attack from multiple attackers, so we need to check which one is making peace before returning units
+      for (let i = 0; i < battles.length; i++) if (attacker === battles.attacker) this.returnUnits(countryCode, i);
+    }
+
+    sendUnits (units, countryCode, attacker) {
+      // This code allows for multiple attackers to attack same country together.
+      for (const battlefieldObject of this.battlefields[countryCode].battles.values()) if (battlefieldObject.attacker === attacker) War.mergeUnits(battlefieldObject, units);
+    }
+
+    // When you send units twice, they will be merged here to create a single battlefield for them.
+    static mergeUnits (battlefieldObject, unitsToMerge) {
+      for (const [ unitKey, amount ] of Object.entries(unitsToMerge)) {
+        // Loose equality checks for null/undefined.
+        if (battlefieldObject.attackerUnits == null) {
+          battlefieldObject.attackerUnits = {
+            land : 0,
+            air  : 0,
+            naval: 0,
+          };
         }
+        battlefieldObject.attackerUnits[unitKey] += amount;
       }
-      if (canMakePeace) this.removeCountryAtWar(getAiAtWarIndex, this.currentlyAtWar[aiPlayerIndex]);
-
     }
 
-    canReturnUnits (countryIndex) {
-      return playerService.military.unitsAtWar[countryIndex].length > 0;
-    }
+    returnUnits (countryCode, battleFieldIndex) {
+      const attackerUnits = this.battlefields[countryCode].battles[battleFieldIndex].attackerUnits;
+      const attacker = this.battlefields[countryCode].battles[battleFieldIndex].attacker;
 
-    returnUnits (countryIndex) {
-      const playerUnitsInBattle = playerService.military.unitsAtWar[countryIndex];
-
-      for (let i = playerUnitsInBattle.length - 1; i >= 0; i--) {
-        const unit = playerUnitsInBattle[i];
-
-        if (unit.count > 0) playerService.military.unitsAtHome[i].count += unit.count;
-        unit.count = 0;
+      for (const [ unitType, unitAmount ] of Object.entries(attackerUnits)) {
+        attacker.military.addUnit(unitType, unitAmount);
+        attackerUnits[unitType] = 0;
       }
-      playerService.military.unitsAtWar[countryIndex] = [];
-    }
-
-    checkIfUnitsInQueue  (aiAttackedIndex) {
-      return this.unitsQueue[`AI_${aiAttackedIndex}`];
-    }
-    addTroopsToQueue (troops, aiAttackedIndex) {
-      if (!this.unitsQueue[`AI_${aiAttackedIndex}`]) {
-        this.unitsQueue[`AI_${aiAttackedIndex}`] = {};
-        this.unitsQueue[`AI_${aiAttackedIndex}`].troops = [];
-        this.unitsQueue[`AI_${aiAttackedIndex}`].targetCountryIndex = aiAttackedIndex;
-      }
-
-      for (const [ index, unit ] of troops.entries()) {
-        const count = unit.count;
-
-        playerService.military.unitsAtHome[index].count -= count;
-      }
-
-      // Remove units from player after sending.
-
-      this.unitsQueue[`AI_${aiAttackedIndex}`].troops.push(troops);
     }
 
     update () {
-      this.sendTroops();
+      this.updateBattlefields();
     }
 
-    sendTroops () {
-      for (const queueData of Object.values(this.unitsQueue)) {
-        const troops = queueData.troops;
-        const targetCountryIndex = queueData.targetCountryIndex;
+    updateBattlefields () {
+      for (const battlefieldInCountry of Object.values(this.battlefields)) {
+        for (const battlefield of battlefieldInCountry.battles.values()) {
+          const attacker = battlefield.attacker;
+          const defender = battlefield.defender;
+          const attackerUnits = battlefield.attackerUnits;
+          const defenderUnits = defender.military.unitsAtHome;
+          const attackedCountry = battlefield.countryAtStake;
 
-        for (let i = troops.length - 1; i >= 0; i--) {
-          for (let j = 0; j < troops[i].length; j++) {
-            if (!playerService.military.unitsAtWar[targetCountryIndex][j]) {
-              playerService.military.unitsAtWar[targetCountryIndex][j] = {};
-              playerService.military.unitsAtWar[targetCountryIndex][j] = troops[i][j];
-            } else {
-              playerService.military.unitsAtWar[targetCountryIndex][j].count += troops[i][j].count;
-            }
+          // This seem like repetition, but it happens before we start battle, we don't want to battle with no units.
+          // But we also want to know if our or enemy units died after the battle, hence the code below.
+          if (War.checkIfNoUnitsLeft(attackerUnits)) continue;
+
+          this.doBattle(battlefield);
+          if (War.checkIfNoUnitsLeft(defenderUnits)) {
+            // Attacker wins
+            War.addCountriesToTheAttacker(attacker, defender, attackedCountry);
+          } else if (War.checkIfNoUnitsLeft(attackerUnits)) {
+            // Defender wins
           }
         }
       }
-      this.unitsQueue = {};// Remove queue;
-      console.log(playerService.military);
     }
 
-    addToWarLog (text) {
-      text = `${1900 + playerService.baseStats.currentTurn}: ${text}`;
-      this.warLog.push(text);
+    doBattle (battlefield) {
+      const isLandLocked = battlefield.isLandLocked;
+
+      // Each phase could take multiple turns, once it's over we should change to the next phase(or any other we want)
+      if (isLandLocked && battlefield.battlePhase === 1) {
+        // Phase 1: Water Battle
+        const lockedUnitTypes = { land: true };
+        const unitBlockingPhase = { naval: true };
+
+        const isFinished = this.fight(battlefield, lockedUnitTypes, unitBlockingPhase);
+
+        if (isFinished) battlefield.battlePhase++;
+
+      } else if (battlefield.battlePhase === 2) {
+        // Phase 2: Land battle
+        const lockedUnitTypes = { naval: true };
+
+        this.fight(battlefield, lockedUnitTypes);
+      }
+
+      // Can add more phases
     }
 
-    doBattle () {
-      // Calculate battle
-      for (let i = this.currentlyAtWar.length - 1; i >= 0; i--) {
-        this.currentWarIndex = i;
-        const aiPlayerIndex = this.currentlyAtWar[i];
+    fight (battlefield, lockedUnitTypes, unitBlockingPhase) {
+      const attackerUnits = battlefield.attackerUnits;
+      const defenderUnits = battlefield.defender.military.unitsAtHome;
 
-        // Here we start the battle calculations and/or battle stages...
-        const enemyAi = worldCountryService.AiPlayers[aiPlayerIndex];// Used in defense in this case
-        const aiMilitary = enemyAi.military.unitsAtHome;
-        const playerMilitary = playerService.military.unitsAtWar[i];// Current player units in battle, we use them to calculate the result...
+      // Both battles happens "simultaneously" so both sides will attack with full force(as if no units were lost)
+      // This will prevent you from annihilating opponent before he can kill any of your units.
+      for (const unitType of Object.keys(attackerUnits)) {
+        // One unit type will attack all unit types of enemy
+        if (unitType !== lockedUnitTypes) {
+          const defenderKilledUnits = this.attack(attackerUnits[unitType], defenderUnits, battlefield.attacker, unitType);
 
-        console.log("AI MILITARY:");
-        console.log(aiMilitary);
-        console.log("PLAYER MILITARY:");
-        console.log(playerMilitary);
-
-        if (playerMilitary.length) {
-          this.addToWarLog("Battle round begins <<DEBUG>>");
-          this.calculateResult(playerMilitary, enemyAi, i);
-        } else {
-          console.log("<<DEBUG>>Player/Attacker has no units sent, so the fight can't begin...It's intentional, as player needs to send units to attack enemy country");
+          War.removeKilledUnits(defenderUnits, defenderKilledUnits);
         }
+        const attackerKilledUnits = this.attack(defenderUnits[unitType], attackerUnits, battlefield.defender, unitType);
 
-        //* * Check winning conditions **//
-        if (enemyAi.getTotalStrength() <= 0) {
-          console.log("Enemy country has no units left, you won!");
-          for (let i = 0; i < enemyAi.countries.length; i++) playerService.addCountry(enemyAi.countries[i]);
+        War.removeKilledUnits(attackerUnits, attackerKilledUnits);
+      }
+      if (defenderUnits[unitBlockingPhase] <= 0) { // Unlock next battle phase.
+        return true;
+      }
 
-          this.returnUnits(i);
-          worldCountryService.removeAi(aiPlayerIndex);
-          this.removeCountryAtWar(i, aiPlayerIndex);
+    }
+
+    attack (attackingUnits, defendingSide, attacker, attackerUnitType) { // AttackingSide/defendingSide is for units that are CURRENTLY attacking enemy units.(it could be defender attacking the attacker)
+      const killedUnits = {};
+
+      for (const [ unitType, unitAmount ] of Object.entries(defendingSide)) {
+        const attackerUnitDamageBonus = this.unitDamageBonus[attackerUnitType];// An object containing unit types that we have advantage towards to.
+        let unitStrength = attacker.military.getUnitStrength(attackerUnitType);
+
+        if (attackerUnitDamageBonus[attackerUnitType]) {
+          // Attacker will attack with bonus damage
+          unitStrength *= attackerUnitDamageBonus[attackerUnitType];
+        }
+        const unitDamage = unitStrength * attackingUnits;
+        let unitsKilled = unitAmount - (unitAmount - unitDamage);
+
+        if (unitsKilled < 0) unitsKilled = unitAmount; // Means we killed them all
+        killedUnits[unitType] = unitsKilled;
+      }
+
+      return killedUnits;
+    }
+
+    static removeKilledUnits (units, killedUnits) {
+      for (const [ unitType, unitAmount ] of Object.entries(killedUnits)) units[unitType] -= unitAmount;
+
+    }
+
+    static addCountriesToTheAttacker (attacker, defender, countryAtStake) {
+      for (let i = defender.countries.length - 1; i >= 0; i--) {
+        const countryData = defender.countries[i];// Defender country data
+
+        if (countryData.countryCode === countryAtStake) {
+          attacker.addCountry(countryData);// Give attacker a country that belongs to a defender
+          defender.countries.splice(i, 1);// Remove that country from a defender
+          worldCountryService.changeCountryRuler(countryAtStake, attacker);// Change the ruler of a country for easy access later.
+          break;
         }
       }
     }
 
-    removeCountryAtWar (index, aiPlayerIndex) {
-      worldCountryService.removeAiCountriesColor(aiPlayerIndex);
-      worldCountryService.update();
-      this.currentlyAtWar.splice(index, 1);
+    static checkIfNoUnitsLeft (units) {
+      if(!units) return true;//units dont even exist, we might hardcode units tho
+      for (const unit of Object.values(units)) if (unit > 0) return false;
+
+      return true;
     }
 
-    calculateResult (playerTroops, enemyCountry, countryAtWarIndex) {
-      const playerTotalAttack = playerService.military.getAllUnitsTotalAttack(false, countryAtWarIndex);
-      const playerTotalDefense = playerService.military.getAllUnitsTotalDefense(false, countryAtWarIndex);
-      const enemyTotalAttack = enemyCountry.getTotalStrength() / 2;// Need to change it later for actual attack/defense function
-      const enemyTotalDefense = enemyCountry.getTotalStrength() / 2;
-      const enemyTroops = enemyCountry.military.unitsAtHome;// Since enemy is defending, in the future when enemies get the ability to declare war and invade the player, it will need to be changed.
-
-      console.log("Player Attack/Defense...Enemy Attack/Defense");
-      console.log(playerTotalAttack, playerTotalDefense, enemyTotalAttack, enemyTotalDefense);
-
-      //* * CALCULATE THE BATTLE RESULT HERE USING A LOOP OR SOMETHING :X **//
-      // make copies of defeated unit so we can remove them later...
-      //* * IMPORTANT **/
-      //* * You can move "killUnits" method below if you want "fair" battles, otherwise battles will be "turn based" and first attacker will have a huge advantage
-      const enemyLostUnits = this.calculateBattleResult(playerTotalAttack, enemyTroops);// Calculate how many enemy units "die" after this battle
-
-      this.killUnits(enemyLostUnits, enemyTroops);// KILL THOSE UNITS HERE, MOVE IT DOWN IF U WANT TO KILL THEM LATER
-      const playerLostUnits = this.calculateBattleResult(enemyTotalAttack, playerTroops);// If you KILLED some of the units, this player will be "WEAKER" since he already lost some of the units.
-
-      this.killUnits(playerLostUnits, playerTroops);
-      this.addToWarLog("Both sides took some casualties after this year of battling");
-
-    }
-
-    calculateBattleResult (attackerPower, defender) { // AttackerPower is basically total attack power of units.
-      const sortedUnitsByFrontOrder = [];
-
-      angular.copy(gameDataService.Units, sortedUnitsByFrontOrder);
-      sortedUnitsByFrontOrder.sort(this.sortByFrontOrder);
-
-      // Do calculations on the copy, then overwrite real data with copied(we only care about count of units for now)
-      // The reason is that we want to avoid sorting real array, because we use array index as a way to find specific unit.
-      const defenderLostUnits = [];
-
-      for (let i = 0; i < sortedUnitsByFrontOrder.length; i++) {
-        const unit = sortedUnitsByFrontOrder[i];
-        const unitId = unit.id;
-
-        if (!defender[unitId].count) continue;// Dont bother with calculations of unit count is 0;
-        const chanceToDie = unit.chanceToDie;// This could be renamed, it basically tells how many % of those units can be killed in a single turn, until attack power is used up
-        const unitsAboutToDie = Math.round(attackerPower / unit.defense);// How many units we are capable of killing. Round up to avoid any problems with left over attack and infinite loops...
-        let unitsActuallyKilled = Math.ceil(unitsAboutToDie * chanceToDie);// It will round up to 1.
-
-        if (!unitsActuallyKilled) continue;// If there are 0 units to kill
-        if (unitsActuallyKilled > defender[unitId].count) unitsActuallyKilled = defender[unitId].count;
-
-        defenderLostUnits.push({ id   : unitId,
-          count: unitsActuallyKilled });
-      }
-
-      return defenderLostUnits;
-    }
-
-    killUnits (unitsToKill, troopsToDeleteFrom) {
-      for (let j = 0; j < unitsToKill.length; j++) {
-        const id = unitsToKill[j].id;// Id to reference an array
-        const count = unitsToKill[j].count;// How many units died in battle
-
-        troopsToDeleteFrom[id].count -= count;// Should never go below 0;
-        if (troopsToDeleteFrom[id].count < 0) console.log("SOMETHING WENT WRONG, YOUR UNIT COUNT IS LESS THAN 0");
-      }
-
-      console.log(troopsToDeleteFrom);
-    }
-
-    sortByFrontOrder (a, b) {
-      // Pass this to Array.sort(this.sortByFrontOrder) to sort array of object based on property numerical value;
-      return a.frontOrder - b.frontOrder;
-    }
   }
 
   return new War();

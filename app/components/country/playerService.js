@@ -35,10 +35,11 @@ wciApp.factory(
           leaderName     : "Rohan",
           leaderTitle    : "King",
           selectedCountry: "US",
-          //difficultyLevel: {
+
+          // DifficultyLevel: {
           //  Desc : "I am a noob, have mercy!",
           //  Value: 1,
-          //},
+          // },
           time                  : 0, // In hours
           currentStabilityIndex : 1, // This is used to determine whether stability will grow or decrease this turn. +ve means growth in stability, -ve means decrease. This is set by various policies etc.
           previousStabilityIndex: 1, // Storing previous stability index to determine if stability has gone down or not.
@@ -49,6 +50,7 @@ wciApp.factory(
           size                  : 1,
           sizeName              : "Speck",
           population            : 100000,
+          trainedPopulation     : 0, // Our total military
           baseGrowthRate        : 1, // Based on the size of the worldCountry (lower size = lower growth rate)
           baseMortalityRate     : 6, // Based on the size (lower size = higher mortality rate)
           housingCapacity       : 100000,
@@ -61,7 +63,8 @@ wciApp.factory(
 
           // Economics
           money             : 1000000, // Earned from Taxes and economic factors.
-          upkeep            : 0, // Upkeep of structure, advisors and soldiers.
+          upkeep            : { buildings: 0,
+            advisors : 0 }, // Upkeep of structure, advisors and soldiers.
           totalJobs         : 100000,
           jobGdpMultiplier  : 10, // This is how jobs effect the gdp.
           // Military
@@ -83,7 +86,15 @@ wciApp.factory(
           oneChildPolicy: false, // Law
           birthFreeze   : false, // Law
         };
-        //this.getLookups();
+
+        // This.getLookups();
+      }
+
+      totalUpkeep () {
+        // Calculate upkeep
+        const upkeep = this.baseStats.upkeep;
+
+        return upkeep.military + upkeep.advisors + upkeep.buildings;// Can use loop instead...
       }
 
       addCountry (countryObject) {
@@ -139,7 +150,7 @@ wciApp.factory(
       }
 
       moneyGrowth () {
-        return this.income() - this.baseStats.upkeep;
+        return this.income() - this.totalUpkeep();
       }
 
       gdp () {
@@ -201,8 +212,10 @@ wciApp.factory(
 
       getNewDemographics () {
         this.baseStats.population += this.populationGrowth();
+        this.baseStats.trainedPopulation += this.military.getTrainedUnits();
         this.setHappiness();
-        //this.setCountrySize();
+
+        // This.setCountrySize();
 
         // Handling edge cases. (Minimum is 2, you and your partner)
         if (this.baseStats.population < 2) this.baseStats.population = 2;
@@ -231,7 +244,7 @@ wciApp.factory(
 
       }
 
-      //getLookups () {
+      // GetLookups () {
       //  this.leaderTitles = [ "President", "Prime Minister", "Lord", "Lady", "King", "Queen", "Drag Queen", "Dictator", "Emperor", "Emperess" ];
       //  this.difficultyLevels = [
       //    {
@@ -255,9 +268,9 @@ wciApp.factory(
       //      Value: 5,
       //    },
       //  ];
-      //}
+      // }
 
-      //setCountrySize () {
+      // setCountrySize () {
       //  if (this.gdp() <= 100000) { // 100k
       //    this.baseStats.sizeName = "City State";
       //    this.baseStats.size = 1;
@@ -282,7 +295,7 @@ wciApp.factory(
       //    // World Conqueror
       //    this.baseStats.size = 7;
       //  }
-      //}
+      // }
 
       setHappiness () {
         const unemployment = this.unemployment();

@@ -1,23 +1,31 @@
 ﻿<div class="container margin-top-5 margin-bottom-5" ng-show="gameLoading">
-    <div class="row introScreen">
-        <div class="col-xs-12">
+    <div class="row">
+        <div class="col-12">
             <h1 class="text-center text-capitalize font-color-lightblue">World Conqueror</h1>
         </div>
     </div>
 </div>
-<div class="container margin-top-5 margin-bottom-5" ng-show="gameLoading">
-    <div class="row flexRow introScreen">
-        <div class="col-xs-6 col-xs-offset-2">
-            <span class="font-color-white font-2em">{{currentWindowText}}</span>
-        </div>
-        <div class="col-xs-5">
-            <button ng-show="!startScreen" class="btn-xs btn-primary" ng-click="goBack()">Back</button>
+<div class="container" ng-show="gameLoading">
+    <div class="row">
+        <div class="col-8 offset-2">
+            <div class="row pb-3">
+                <div class="col-6 offset-3">
+                    <div class="card bg-dark text-white text-center">
+                        <div class="card-header">
+                            <span class="font-2em">{{currentWindowText}}</span>
+                            <button ng-show="!startScreen" class="btn btn-primary float-right" ng-click="goBack()">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <ng-include ng-show="startScreen" src="'app/components/introScreen/templates/startingScreenView.html'"></ng-include>
+                    <ng-include ng-show="!startScreen" src="'app/components/introScreen/templates/leaderSelectionScreenView.html'"></ng-include>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-<div class="container margin-top-5" ng-show="gameLoading">
-    <ng-include ng-show="startScreen" src="'app/components/introScreen/templates/startingScreenView.html'"></ng-include>
-    <ng-include ng-show="!startScreen" src="'app/components/introScreen/templates/leaderSelectionScreenView.html'"></ng-include>
 </div>
 <!--Leave this blank, this is what sets the background to black.-->
 <!--<div class="fade_overlay" ng-show="!gameLoading">-->

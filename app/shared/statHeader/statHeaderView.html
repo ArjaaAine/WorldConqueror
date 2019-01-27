@@ -1,21 +1,21 @@
 ﻿<div id="Common Header" ng-controller="TooltipController">
 
     <div class="row">
-        <div id="Main Stats" class="col-xs-12">
+        <div id="Main Stats" class="col-12">
             <div class="row">
-                <div class="col-xs-1">
+                <div class="col-1">
                     <span>
                         <i class="fas fa-plus-circle" ng-click="expandStatRow()" ng-show="expandStats === false;"></i>
                         <i class="fas fa-minus-circle" ng-click="expandStatRow()" ng-show="expandStats === true;"></i>
                     </span>
                 </div>
-                <div class="col-xs-2">
+                <div class="col-2">
                     <span>
                         <i class="fas fa-users" tooltip-placement="auto bottom-right"
                            uib-tooltip="Population"></i>
                     </span>
                     <span ng-mouseenter="updateTooltip()">
-                        {{game.myCountry.baseStats.population | number: 0 | niceNumber }}
+                        {{game.myCountry.baseStats.population + game.myCountry.baseStats.trainedPopulation | number: 0 | niceNumber }}
                     </span>
                     <span class="bold hidden-xs" tooltip-placement="auto bottom-right"
                           ng-class="game.myCountry.populationGrowth() >= 0 ? 'text-success' : 'text-danger'"
@@ -23,7 +23,7 @@
                         ({{game.myCountry.populationGrowth() | number: 0 | niceNumber }})
                     </span>
                 </div>
-                <div class="col-xs-2">
+                <div class="col-2">
                     <span style="color:green">
                         <i class="fas fa-money-bill-alt" tooltip-placement="auto bottom-right" uib-tooltip="Money"></i>
                     </span>
@@ -33,10 +33,10 @@
                     <span class="bold" tooltip-placement="auto bottom-right"
                           ng-class="game.myCountry.moneyGrowth() > 0 ? 'text-success': 'text-danger'"
                           uib-tooltip-html="money">
-                        ({{game.myCountry.income() - game.myCountry.baseStats.upkeep | number: 0 | niceNumber}})
+                        ({{game.myCountry.income() - game.myCountry.totalUpkeep() | number: 0 | niceNumber}})
                     </span>
                 </div>
-                <div class="col-xs-2">
+                <div class="col-2">
                     <span class="font-color-orange">
                         <i class="glyphicon glyphicon-cutlery" tooltip-placement="auto bottom-right" uib-tooltip="Food"></i>
                     </span>
@@ -49,7 +49,7 @@
                         ({{game.myCountry.foodFlow() | number: 0 | niceNumber}})
                     </span>
                 </div>
-                <div class="col-xs-2" ng-class="game.myCountry.baseStats.happiness > 75 ? 'text-success' : game.myCountry.baseStats.happiness > 25 ? 'text-warning' : 'text-danger'">
+                <div class="col-2" ng-class="game.myCountry.baseStats.happiness > 75 ? 'text-success' : game.myCountry.baseStats.happiness > 25 ? 'text-warning' : 'text-danger'">
                     <span>
                         <i class="fas bold" tooltip-placement="auto bottom-right" uib-tooltip="Happiness"
                            ng-class="game.myCountry.baseStats.happiness > 75 ? 'fa-smile' : game.myCountry.baseStats.happiness > 25 ? 'fa-meh' : 'fa-frown'"></i>
@@ -58,7 +58,7 @@
                         {{game.myCountry.baseStats.happiness}}
                     </span>
                 </div>
-                <div class="col-xs-2">
+                <div class="col-2">
                     <span>
                         <i class="fas fa-anchor bold" tooltip-placement="auto bottom-right" uib-tooltip="Stability"></i>
                     </span>
@@ -75,9 +75,9 @@
             </div>
 
         </div>
-        <div id="Side Stats" class="col-xs-12" ng-show="expandStats">
+        <div id="Side Stats" class="col-12" ng-show="expandStats">
             <div class="row">
-                <div class="col-xs-2 col-xs-offset-1">
+                <div class="col-2 offset-1">
                     <span class="font-color-blue">
                         <i class="fas fa-home" tooltip-placement="auto bottom-right" uib-tooltip="Housing"></i>
                     </span>
@@ -91,7 +91,7 @@
                     </span>
 
                 </div>
-                <div class="col-xs-2">
+                <div class="col-2">
                     <span class="font-color-blue">
                         <i class="fas fa-briefcase" tooltip-placement="auto bottom-right" uib-tooltip="Jobs"></i>
                     </span>
@@ -104,7 +104,7 @@
                         ({{game.myCountry.unemployment()}}%)
                     </span>
                 </div>
-                <div class="col-xs-2">
+                <div class="col-2">
                     <span class="font-color-orange">
                         <i class="glyphicon glyphicon-cutlery" tooltip-placement="auto bottom-right" uib-tooltip="Food"></i>
                     </span>

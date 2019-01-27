@@ -13,9 +13,9 @@
                 <button class="btn-sm btn-default" ng-click="research.hireScientist()" ng-class="{'btn-danger': !research.canAffordScientist()}">Hire</button>
             </div>
             <div class="row">
-                <div class="col-xs-3 panel panel-info modalOverflow" ng-repeat="name in research.researchType track by $index">
+                <div class="col-3 panel panel-info modalOverflow" ng-repeat="name in research.researchType track by $index">
                     <div class="row panel-heading">
-                        <div class="col-xs-12 text-center">
+                        <div class="col-12 text-center">
                             <span>
                                 {{name}}
                             </span>
@@ -34,7 +34,7 @@
                                         <!-- THIS IS NOT WORKING, researchData.bonus stores a string, which we need to split first, then get bonus data from researchBonuses...-->
                                         <!--Testing github branch-->
                                         <div class="row" ng-repeat="bonus in researchData.bonus track by $index">
-                                            <div class="col-xs-12">
+                                            <div class="col-12">
                                                 <span class="label label-default" ng-hide="research.researchBonuses[bonus].statAdder === 0 && research.researchBonuses[bonus].multiplier === 1">{{research.researchBonuses[bonus].statName}}</span>
                                                 <span class="label" ng-class="research.researchBonuses[bonus].statAdder > 0 ? 'label-success positiveValuePlus' : value < 0 ? '' : 'label-danger'" ng-hide="research.researchBonuses[bonus].statAdder === 0">{{research.researchBonuses[bonus].statAdder}}</span>
                                                 <span class="label" ng-class="research.researchBonuses[bonus].multiplier > 0 ? 'label-success positiveValuePlus' : value < 0 ? '' : 'label-danger'" ng-hide="research.researchBonuses[bonus].multiplier === 1">{{research.researchBonuses[bonus].multiplier * 100}}%</span>
