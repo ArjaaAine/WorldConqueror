@@ -1,56 +1,54 @@
 ﻿<div ng-controller="ResearchController">
-    <script type="text/ng-template" id="researchView.html">
-        <div id="Research" class="container-fluid">
-            <h3>
-                <span class="fas fa-flask"></span> Research
-            </h3>
+    <div id="Research" class="container-fluid">
+        <h3>
+            <span class="fas fa-flask"></span> Research
+        </h3>
 
-            <div class="row">
-                Scientists: {{research.scientists}}/{{research.maxScientists}}
-                Price: {{research.scientistPrice}}
-                Science Gain: {{research.scienceGain()}}
-                Points: {{research.sciencePoints}}
-                <button class="btn-sm btn-default" ng-click="research.hireScientist()" ng-class="{'btn-danger': !research.canAffordScientist()}">Hire</button>
-            </div>
-            <div class="row">
-                <div class="col-3 panel panel-info modalOverflow" ng-repeat="name in research.researchType track by $index">
-                    <div class="row panel-heading">
-                        <div class="col-12 text-center">
-                            <span>
-                                {{name}}
-                            </span>
-                        </div>
+        <div class="row">
+            Scientists: {{research.scientists}}/{{research.maxScientists}}
+            Price: {{research.scientistPrice}}
+            Science Gain: {{research.scienceGain()}}
+            Points: {{research.sciencePoints}}
+            <button class="btn-sm btn-default" ng-click="research.hireScientist()" ng-class="{'btn-danger': !research.canAffordScientist()}">Hire</button>
+        </div>
+        <div class="row">
+            <div class="col-3 panel panel-info modalOverflow" ng-repeat="name in research.researchType track by $index">
+                <div class="row panel-heading">
+                    <div class="col-12 text-center">
+                        <span>
+                            {{name}}
+                        </span>
                     </div>
-                    <div class="row" ng-repeat="researchData in gameData[name + 'Research'] track by $index" ng-show="research.isVisible[researchData.name]">
-                        <div class="panel-body">
-                            <div class="panel-group">
-                                <div class="panel panel-default">
-                                    <div class="panel-body">
-                                        <span class="tag label label-primary center-block">
-                                            <span>{{researchData.name}}</span>
-                                            <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white"></i></a>
-                                        </span>
+                </div>
+                <div class="row" ng-repeat="researchData in gameData[name + 'Research'] track by $index" ng-show="research.isVisible[researchData.name]">
+                    <div class="panel-body">
+                        <div class="panel-group">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <span class="tag label label-primary center-block">
+                                        <span>{{researchData.name}}</span>
+                                        <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white"></i></a>
+                                    </span>
 
-                                        <!-- THIS IS NOT WORKING, researchData.bonus stores a string, which we need to split first, then get bonus data from researchBonuses...-->
-                                        <!--Testing github branch-->
-                                        <div class="row" ng-repeat="bonus in researchData.bonus track by $index">
-                                            <div class="col-12">
-                                                <span class="label label-default" ng-hide="research.researchBonuses[bonus].statAdder === 0 && research.researchBonuses[bonus].multiplier === 1">{{research.researchBonuses[bonus].statName}}</span>
-                                                <span class="label" ng-class="research.researchBonuses[bonus].statAdder > 0 ? 'label-success positiveValuePlus' : value < 0 ? '' : 'label-danger'" ng-hide="research.researchBonuses[bonus].statAdder === 0">{{research.researchBonuses[bonus].statAdder}}</span>
-                                                <span class="label" ng-class="research.researchBonuses[bonus].multiplier > 0 ? 'label-success positiveValuePlus' : value < 0 ? '' : 'label-danger'" ng-hide="research.researchBonuses[bonus].multiplier === 1">{{research.researchBonuses[bonus].multiplier * 100}}%</span>
-                                            </div>
-
+                                    <!-- THIS IS NOT WORKING, researchData.bonus stores a string, which we need to split first, then get bonus data from researchBonuses...-->
+                                    <!--Testing github branch-->
+                                    <div class="row" ng-repeat="bonus in researchData.bonus track by $index">
+                                        <div class="col-12">
+                                            <span class="label label-default" ng-hide="research.researchBonuses[bonus].statAdder === 0 && research.researchBonuses[bonus].multiplier === 1">{{research.researchBonuses[bonus].statName}}</span>
+                                            <span class="label" ng-class="research.researchBonuses[bonus].statAdder > 0 ? 'label-success positiveValuePlus' : value < 0 ? '' : 'label-danger'" ng-hide="research.researchBonuses[bonus].statAdder === 0">{{research.researchBonuses[bonus].statAdder}}</span>
+                                            <span class="label" ng-class="research.researchBonuses[bonus].multiplier > 0 ? 'label-success positiveValuePlus' : value < 0 ? '' : 'label-danger'" ng-hide="research.researchBonuses[bonus].multiplier === 1">{{research.researchBonuses[bonus].multiplier * 100}}%</span>
                                         </div>
+
                                     </div>
-                                    <button class="btn-block btn-success" ng-click="research.unlockResearch(gameData[name + 'Research'], $index)"
-                                                  ng-disabled="research.sciencePoints < researchData.cost || research.isUnlocked[researchData.name]"
-                                                  ng-class="{'btn-danger': research.sciencePoints < researchData.cost || research.isUnlocked[researchData.name]}">Unlock for {{researchData.cost}}</button>
                                 </div>
+                                <button class="btn-block btn-success" ng-click="research.unlockResearch(gameData[name + 'Research'], $index)"
+                                              ng-disabled="research.sciencePoints < researchData.cost || research.isUnlocked[researchData.name]"
+                                              ng-class="{'btn-danger': research.sciencePoints < researchData.cost || research.isUnlocked[researchData.name]}">Unlock for {{researchData.cost}}</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </script>
+    </div>
 </div>

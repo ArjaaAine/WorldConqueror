@@ -1,7 +1,9 @@
+"use strict";
 wciApp.controller(
-    'MilitaryController',
-    function (playerService, $scope) {
+    "MilitaryController",
+    (playerService, $scope) => {
 
         $scope.military = playerService.military;
         $scope.countryData = playerService.baseStats;
-    });
+    },
+);

@@ -1,69 +1,67 @@
 ﻿<div ng-controller="CountryController as countryCtrl">
-    <script type="text/ng-template" id="internalAffairsView.html">
-        <div class="modal-header" id="Internal Affairs">
-            <h4 class="modal-title">
-                <span class="glyphicon glyphicon-flag"></span>
-                <span>
-                    Welcome
-                    <span class="bold font-color-green">{{myCountry.baseStats.leaderName}}</span>!
-                    You are the
-                    <span class="bold font-color-orange">
-                        {{myCountry.baseStats.leaderTitle}}
-                    </span>
-                    of the
-                    <i>
-                        {{myCountry.baseStats.sizeName}}
-                    </i>
-                    <span class="bold font-color-red">
-                        {{myCountry.baseStats.countryName}}!
-                    </span>
+    <div class="modal-header" id="Internal Affairs">
+        <h4 class="modal-title">
+            <span class="glyphicon glyphicon-flag"></span>
+            <span>
+                Welcome
+                <span class="bold font-color-green">{{myCountry.baseStats.leaderName}}</span>!
+                You are the
+                <span class="bold font-color-orange">
+                    {{myCountry.baseStats.leaderTitle}}
                 </span>
-            </h4>
-        </div>
-        <div class="modal-body">
-            <div class="row">
-                <div class="col-12 mb-3">
-                    <div ng-include="'app/components/ministers/ministersView.html'"></div>
-                    <div ng-include="'app/components/ministers/ministersHireModal.html'"></div>
-                </div>
-                <div class="col-md-12 col-sm-12">
-                    <div class="row">
-                        <div class="col-4 modalOverflow">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="list-group">
-                                        <button class="list-group-item padding-10" ng-repeat="(index, lawData) in laws.unlockedLaws" ng-click="selectLawToDisplay(index)"
-                                        ng-class="isActive(lawData) ? 'list-group-item-success' : !canAfford(lawData) ? 'list-group-item-danger' : ''">
-                                            <span><i class="fa fa-calculator"></i>{{lawData.name}}</span>
-                                        </button>
-                                    </div>
+                of the
+                <i>
+                    {{myCountry.baseStats.sizeName}}
+                </i>
+                <span class="bold font-color-red">
+                    {{myCountry.baseStats.countryName}}!
+                </span>
+            </span>
+        </h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-12 mb-3">
+                <div ng-include="'app/components/ministers/ministersView.html'"></div>
+                <div ng-include="'app/components/ministers/ministersHireModal.html'"></div>
+            </div>
+            <div class="col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-4 modalOverflow">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="list-group">
+                                    <button class="list-group-item padding-10" ng-repeat="(index, lawData) in laws.unlockedLaws" ng-click="selectLawToDisplay(index)"
+                                    ng-class="isActive(lawData) ? 'list-group-item-success' : !canAfford(lawData) ? 'list-group-item-danger' : ''">
+                                        <span><i class="fa fa-calculator"></i>{{lawData.name}}</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-8">
-                            <div class="card h-100">
-                                <div class="card-header">
-                                    {{selectedLaw.name}} - <small>Active for: {{selectedLaw.duration}}</small>
-                                </div>
-                                <div class="card-body d-flex flex-column">
-                                    <a href="#">
-                                        <img class="card-img-top" src="..." alt="Icon.png">
-                                    </a>
-                                    <p>{{selectedLaw.description}}</p>
-                                    <p>{{selectedLaw.influenceCost}} influence</p>
-                                    <div class="mt-auto">
-                                        <div class="progress">
-                                            <div class="progress-bar" role="progressbar" ng-class="getProgressBarClass()" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" ng-style="{width : ( getProgressBarWidth() + '%' ) }">
-                                                <span class="sr-only">40% Complete (success)</span>
-                                            </div>
+                    </div>
+                    <div class="col-8">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                {{selectedLaw.name}} - <small>Active for: {{selectedLaw.duration}}</small>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <a href="#">
+                                    <img class="card-img-top" src="..." alt="Icon.png">
+                                </a>
+                                <p>{{selectedLaw.description}}</p>
+                                <p>{{selectedLaw.influenceCost}} influence</p>
+                                <div class="mt-auto">
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" ng-class="getProgressBarClass()" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" ng-style="{width : ( getProgressBarWidth() + '%' ) }">
+                                            <span class="sr-only">40% Complete (success)</span>
                                         </div>
-                                        <button ng-click="enactLaw(selectedLawIndex)" ng-class="!selectedLaw.isActive ? 'btn-success': 'hidden'" ng-disabled="selectedLaw.isActive">
-                                            Enact
-                                        </button>
-                                        <button ng-click="laws.repealLaw(selectedLawIndex)" ng-class="selectedLaw.isActive ? 'btn-danger': 'hidden'" ng-disabled="!selectedLaw.isActive">
-                                            Repeal
-                                        </button>
                                     </div>
+                                    <button ng-click="enactLaw(selectedLawIndex)" ng-class="!selectedLaw.isActive ? 'btn-success': 'hidden'" ng-disabled="selectedLaw.isActive">
+                                        Enact
+                                    </button>
+                                    <button ng-click="laws.repealLaw(selectedLawIndex)" ng-class="selectedLaw.isActive ? 'btn-danger': 'hidden'" ng-disabled="!selectedLaw.isActive">
+                                        Repeal
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -71,5 +69,5 @@
                 </div>
             </div>
         </div>
-    </script>
+    </div>
 </div>

@@ -16,7 +16,14 @@ wciApp.service("warService", function
             };
         }
 
-        init () {}
+        init () {
+            this.battlefields = {};
+            this.unitDamageBonus = {
+                land : { air: 1.5 },
+                air  : { naval: 1.5 },
+                naval: { land: 1.5 },
+            };
+        }
 
         // Called when declaring war, removed when making peace, including returning units to attackers.
         declareWar (countryCode) {
@@ -59,11 +66,16 @@ wciApp.service("warService", function
             // This is a partial support for multiple attackers, currently ai does not support ai vs ai...
             // Each country might be under attack from multiple attackers, so we need to check which one is making peace before returning units
             for (let i = 0; i < battles.length; i++) if (attacker === battles.attacker) this.returnUnits(countryCode, i);
+
         }
 
         sendUnits (units, countryCode, attacker) {
             // This code allows for multiple attackers to attack same country together.
-            for (const battlefieldObject of this.battlefields[countryCode].battles.values()) if (battlefieldObject.attacker === attacker) War.mergeUnits(battlefieldObject, units);
+            // eslint-disable-next-line
+            for (const battlefieldObject of this.battlefields[countryCode].battles) {
+                if (battlefieldObject.attacker === attacker) War.mergeUnits(battlefieldObject, units);
+            }
+
         }
 
         // When you send units twice, they will be merged here to create a single battlefield for them.
@@ -97,7 +109,7 @@ wciApp.service("warService", function
 
         updateBattlefields () {
             for (const battlefieldInCountry of Object.values(this.battlefields)) {
-                for (const battlefield of battlefieldInCountry.battles.values()) {
+                for (const [ battlefieldIndex, battlefield ] of battlefieldInCountry.battles.entries()) {
                     const attacker = battlefield.attacker;
                     const defender = battlefield.defender;
                     const attackerUnits = battlefield.attackerUnits;
@@ -112,8 +124,11 @@ wciApp.service("warService", function
                     if (War.checkIfNoUnitsLeft(defenderUnits)) {
                         // Attacker wins
                         War.addCountriesToTheAttacker(attacker, defender, attackedCountry);
+                        if (defender.countries.length < 1) defender.isDefeated = true;
+                        this.returnUnits(attackedCountry, battlefieldIndex); // Return units to the attacker.
                     } else if (War.checkIfNoUnitsLeft(attackerUnits)) {
                         // Defender wins
+                        // Add war log information, set some booleans for displaying lost war page etc.
                     }
                 }
             }
@@ -142,6 +157,7 @@ wciApp.service("warService", function
             // Can add more phases
         }
 
+        // TODO: lockedUnitTypes can be improved to work for both attacker and defender(we can pass an object)
         fight (battlefield, lockedUnitTypes, unitBlockingPhase) {
             const attackerUnits = battlefield.attackerUnits;
             const defenderUnits = battlefield.defender.military.unitsAtHome;
@@ -150,12 +166,15 @@ wciApp.service("warService", function
             // This will prevent you from annihilating opponent before he can kill any of your units.
             for (const unitType of Object.keys(attackerUnits)) {
                 // One unit type will attack all unit types of enemy
+                const attackerAllowedUnit = attackerUnits[unitType];
+                const defenderAllowedUnit = defenderUnits[unitType];
+
                 if (unitType !== lockedUnitTypes) {
-                    const defenderKilledUnits = this.attack(attackerUnits[unitType], defenderUnits, battlefield.attacker, unitType);
+                    const defenderKilledUnits = this.attack(attackerAllowedUnit, defenderUnits, battlefield.attacker, unitType);
 
                     War.removeKilledUnits(defenderUnits, defenderKilledUnits);
                 }
-                const attackerKilledUnits = this.attack(defenderUnits[unitType], attackerUnits, battlefield.defender, unitType);
+                const attackerKilledUnits = this.attack(defenderAllowedUnit, attackerUnits, battlefield.defender, unitType);
 
                 War.removeKilledUnits(attackerUnits, attackerKilledUnits);
             }

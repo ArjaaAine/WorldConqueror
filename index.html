@@ -76,30 +76,8 @@
                             <button ng-click="game.debug.stabilityIndexChange(-1)">StabilityIndex -1</button><br>
                         </div>
                     </div>
-                    <div class="btn-group-vertical map-overlay-buttons">
-                        <!--TODO: Tooltip doesn't work on disabled button.-->
-                        <button class="btn btn-primary"
-                                ng-repeat="item in modalButtons"
-                                ng-click="openModal($index)"
-                                ng-disabled="!item.isActive"
-                                tooltip-enable="!item.isActive"
-                                tooltip-placement="right"
-                                uib-tooltip="{{item.disabledReason}}">
-                            <i ng-class="item.icon"></i>
-                            <span class="d-none d-sm-none d-md-inline" >
-                            {{item.name}}
-                            </span>
-                        </button>
-                    </div>
+
                     <div class="w-100"></div>
-                    <div class="col-1 leader-icon">
-                        <a href="#" class="thumbnail">
-                            <img class="img-fluid" ng-click="openModal(6)" src="./assets/img/avatar_blank.jpeg" alt="">
-                            <div class="caption">
-                                <p>{{game.myCountry.baseStats.leaderName}}</p>
-                            </div>
-                        </a>
-                    </div>
                     <div class="col-2 offset-9 game-time">
                         <span class="label label-info">Year: {{1900 + game.myCountry.baseStats.currentTurn}}</span>
                         <button class="btn-danger btn-xs" ng-click="game.resetGame()">
@@ -123,7 +101,7 @@
                                                     <i class="fas fa-times"></i>
                                                 </a>
                                             </span>
-                                            <img src="./assets/img/avatar_blank.jpeg">
+                                            <img src="./assets/img/avatar_blank.jpeg" />
                                             <uib-progressbar class="hiringQueue-progressBar"
                                                              value="(100 - unit.time/unit.trainingSpeed * 100)">
                                             </uib-progressbar>
@@ -143,23 +121,39 @@
                         <div id="world-map" style="height: 65vh;"></div>
                     </div>
                 </div>
-                <div class="row border border-success bg-dark" style="height: 30vh;">
-
+                <div class="row border border-success bg-dark font-color-white d-flex align-items-center justify-content-center" style="height: 30vh;">
+                    <div class="col-2 text-center">
+                        <div>
+                            <span class="h5">{{game.myCountry.baseStats.leaderName}}</span><br />
+                            <img class="w-50" ng-click="openModal(6)" src="./assets/img/avatar_blank.jpeg" alt=""/>
+                        </div>
+                    </div>
+                    <div class="col-1">
+                        <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                            <!--TODO: Tooltip doesn't work on disabled button.-->
+                            <button class="btn btn-secondary border border-bottom border-dark" type="button"
+                                    ng-repeat="item in modalButtons"
+                                    ng-click="item.clickCallback($index)"
+                                    ng-disabled="!item.isActive"
+                                    tooltip-enable="!item.isActive"
+                                    tooltip-placement="right"
+                                    uib-tooltip="{{item.disabledReason}}">
+                                <i ng-class="item.icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-9 align-self-start">
+                        <ng-include src="currentView"></ng-include>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <ng-include src="'app/components/introScreen/introscreenView.html'"></ng-include>
     <div ng-include="'app/shared/notifications/notificationsView.html'"></div>
+    <ng-include src="'app/shared/charts/chartsView.html'"></ng-include>
 
     <ng-include src="'app/components/war/warConfirmation/war_confirmationView.html'"></ng-include>
-    <ng-include src="'app/components/government/internalAffairsView.html'"></ng-include>
-    <ng-include src="'app/components/changelog/changelogView.html'"></ng-include>
-    <ng-include src="'app/components/structure/buildingsView.html'"></ng-include>
-    <ng-include src="'app/components/military/militaryView.html'"></ng-include>
-    <ng-include src="'app/components/research/researchView.html'"></ng-include>
-    <ng-include src="'app/components/war/warView.html'"></ng-include>
-    <ng-include src="'app/shared/charts/chartsView.html'"></ng-include>
 </div>
     <!--Google Analytics-->
     <script>
