@@ -213,6 +213,10 @@ a {
     content: "+";
 }
 
+.card-column-1 {
+    column-count: 1;
+}
+
 .dark-background{
     background-color: #333333;
     color: #e6e6e6;
@@ -220,6 +224,14 @@ a {
 
 #world-map{
     position: relative;
+}
+
+.border-5 {
+    border-width: 5px!important;
+}
+
+.border-rounded {
+    border-radius: 10px;
 }
 
 .map-overlay-stats{

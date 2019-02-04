@@ -28,6 +28,20 @@ wciApp.service("warService", function
         // Called when declaring war, removed when making peace, including returning units to attackers.
         declareWar (countryCode) {
             const defenderAi = worldCountryService.allCountriesRulers[countryCode];
+
+            defenderAi.isAtWar = true;
+            this.getOrInitBattlefield(countryCode).battles = [];
+            this.createBattlefieldObject(countryCode);
+            worldCountryService.updateColors(defenderAi);
+
+            // Adds countries to "at War" for player only, so we can easily send units to that country.
+            defenderAi.countries.forEach((countryData) => {
+                playerService.countriesAtWar.push(countryData.countryCode);
+            });
+        }
+
+        createBattlefieldObject (countryCode) {
+            const defenderAi = worldCountryService.allCountriesRulers[countryCode];
             const landLocked = defenderAi.getCountryData(countryCode).isLandLocked;
             let phase = 1;// Water battle by default
 
@@ -40,9 +54,7 @@ wciApp.service("warService", function
                 battlePhase   : phase, // Phase 1 = water battle, phase 2 = land battle, phase 3 = ?? etc.
             };
 
-            defenderAi.isAtWar = true;
-            this.getOrInitBattlefield(countryCode).battles.push(battleFieldObj);
-            worldCountryService.updateColors(defenderAi);
+            this.battlefields[countryCode].battles.push(battleFieldObj);
         }
 
         getOrInitBattlefield (countryCode) {
@@ -61,6 +73,11 @@ wciApp.service("warService", function
         makePeace (countryCode, attacker) {
             const battles = this.battlefields[countryCode].battles;
 
+            // TODO: This should be attacker.countriesAtWar, but AI won't be using it, so its just for player, make sure we dont remove
+            // TODO: a country from AI, as it will cause an error, since AI does not have the object for it.
+            const indexOfCountry = playerService.countriesAtWar.indexOf(countryCode);
+
+            playerService.countriesAtWar.splice(indexOfCountry, 1);
             worldCountryService.allCountriesRulers[countryCode].isAtWar = false;
 
             // This is a partial support for multiple attackers, currently ai does not support ai vs ai...
@@ -72,15 +89,22 @@ wciApp.service("warService", function
         sendUnits (units, countryCode, attacker) {
             // This code allows for multiple attackers to attack same country together.
             // eslint-disable-next-line
-            for (const battlefieldObject of this.battlefields[countryCode].battles) {
-                if (battlefieldObject.attacker === attacker) War.mergeUnits(battlefieldObject, units);
-            }
+            const battlesLength = this.battlefields[countryCode].battles.length
+            let foundOrNot = true;
+
+            if (battlesLength <= 0) this.createBattlefieldObject(countryCode);// Create a battlefield, then merge them below if they belong to the same attacker
+
+            for (let i = 0; i < battlesLength; i++) if (this.battlefields[countryCode].battles[i].attacker !== attacker) foundOrNot = false;
+
+            if (!foundOrNot) this.createBattlefieldObject(countryCode);// Same as above
+
+            for (const battlefieldObject of this.battlefields[countryCode].battles) if (battlefieldObject.attacker === attacker) War.mergeUnits(battlefieldObject, units, attacker);
 
         }
 
         // When you send units twice, they will be merged here to create a single battlefield for them.
-        static mergeUnits (battlefieldObject, unitsToMerge) {
-            for (const [ unitKey, amount ] of Object.entries(unitsToMerge)) {
+        static mergeUnits (battlefieldObject, unitsToMerge, attacker) {
+            for (const [ unitType, amount ] of Object.entries(unitsToMerge)) {
                 // Loose equality checks for null/undefined.
                 if (battlefieldObject.attackerUnits == null) {
                     battlefieldObject.attackerUnits = {
@@ -89,7 +113,8 @@ wciApp.service("warService", function
                         naval: 0,
                     };
                 }
-                battlefieldObject.attackerUnits[unitKey] += amount;
+                battlefieldObject.attackerUnits[unitType] += amount;
+                attacker.military.sendUnitsToWar(unitType, amount);
             }
         }
 
@@ -98,7 +123,7 @@ wciApp.service("warService", function
             const attacker = this.battlefields[countryCode].battles[battleFieldIndex].attacker;
 
             for (const [ unitType, unitAmount ] of Object.entries(attackerUnits)) {
-                attacker.military.addUnit(unitType, unitAmount);
+                attacker.military.sendUnitsBackHome(unitType, unitAmount);
                 attackerUnits[unitType] = 0;
             }
         }
@@ -108,8 +133,9 @@ wciApp.service("warService", function
         }
 
         updateBattlefields () {
-            for (const battlefieldInCountry of Object.values(this.battlefields)) {
-                for (const [ battlefieldIndex, battlefield ] of battlefieldInCountry.battles.entries()) {
+            for (const [ battlefieldKey, battlefieldInCountry ] of Object.entries(this.battlefields)) {
+                for (let battlefieldIndex = battlefieldInCountry.battles.length - 1; battlefieldIndex >= 0; battlefieldIndex--) {
+                    const battlefield = battlefieldInCountry.battles[battlefieldIndex];
                     const attacker = battlefield.attacker;
                     const defender = battlefield.defender;
                     const attackerUnits = battlefield.attackerUnits;
@@ -126,9 +152,11 @@ wciApp.service("warService", function
                         War.addCountriesToTheAttacker(attacker, defender, attackedCountry);
                         if (defender.countries.length < 1) defender.isDefeated = true;
                         this.returnUnits(attackedCountry, battlefieldIndex); // Return units to the attacker.
+                        battlefieldInCountry.battles.splice(battlefieldIndex, 1);
                     } else if (War.checkIfNoUnitsLeft(attackerUnits)) {
                         // Defender wins
                         // Add war log information, set some booleans for displaying lost war page etc.
+                        battlefieldInCountry.battles.splice(battlefieldIndex, 1);
                     }
                 }
             }
@@ -161,6 +189,8 @@ wciApp.service("warService", function
         fight (battlefield, lockedUnitTypes, unitBlockingPhase) {
             const attackerUnits = battlefield.attackerUnits;
             const defenderUnits = battlefield.defender.military.unitsAtHome;
+            let defenderKilledUnits = {};
+            const attackerKilledUnits = {};
 
             // Both battles happens "simultaneously" so both sides will attack with full force(as if no units were lost)
             // This will prevent you from annihilating opponent before he can kill any of your units.
@@ -170,18 +200,30 @@ wciApp.service("warService", function
                 const defenderAllowedUnit = defenderUnits[unitType];
 
                 if (unitType !== lockedUnitTypes) {
-                    const defenderKilledUnits = this.attack(attackerAllowedUnit, defenderUnits, battlefield.attacker, unitType);
+                    const defenderUnitsToKill = this.attack(attackerAllowedUnit, defenderUnits, battlefield.attacker, unitType);
 
-                    War.removeKilledUnits(defenderUnits, defenderKilledUnits);
+                    defenderKilledUnits = this.mergeKilledUnits(defenderKilledUnits, defenderUnitsToKill);
                 }
-                const attackerKilledUnits = this.attack(defenderAllowedUnit, attackerUnits, battlefield.defender, unitType);
+                const attackerUnitsToKill = this.attack(defenderAllowedUnit, attackerUnits, battlefield.defender, unitType);
 
-                War.removeKilledUnits(attackerUnits, attackerKilledUnits);
+                defenderKilledUnits = this.mergeKilledUnits(attackerKilledUnits, attackerUnitsToKill);
             }
+            War.removeKilledUnits(defenderUnits, defenderKilledUnits);
+            War.removeKilledUnits(attackerUnits, attackerKilledUnits);
+
             if (defenderUnits[unitBlockingPhase] <= 0) { // Unlock next battle phase.
                 return true;
             }
 
+        }
+
+        mergeKilledUnits (killedUnits, unitsToKill) {
+            for (const [ unitType, unitAmount ] of Object.entries(unitsToKill)) {
+                if (!killedUnits[unitType]) killedUnits[unitType] = 0;
+                killedUnits[unitType] += unitAmount;
+            }
+
+            return killedUnits;
         }
 
         attack (attackingUnits, defendingSide, attacker, attackerUnitType) { // AttackingSide/defendingSide is for units that are CURRENTLY attacking enemy units.(it could be defender attacking the attacker)
@@ -191,14 +233,15 @@ wciApp.service("warService", function
                 const attackerUnitDamageBonus = this.unitDamageBonus[attackerUnitType];// An object containing unit types that we have advantage towards to.
                 let unitStrength = attacker.military.getUnitStrength(attackerUnitType);
 
-                if (attackerUnitDamageBonus[attackerUnitType]) {
+                if (attackerUnitDamageBonus[unitType]) {
                     // Attacker will attack with bonus damage
-                    unitStrength *= attackerUnitDamageBonus[attackerUnitType];
+                    unitStrength *= attackerUnitDamageBonus[unitType];
                 }
                 const unitDamage = unitStrength * attackingUnits;
                 let unitsKilled = unitAmount - (unitAmount - unitDamage);
 
-                if (unitsKilled < 0) unitsKilled = unitAmount; // Means we killed them all
+                // Check for negative value!
+                if (unitsKilled >= unitAmount) unitsKilled = unitAmount; // Means we killed them all
                 killedUnits[unitType] = unitsKilled;
             }
 
@@ -206,8 +249,10 @@ wciApp.service("warService", function
         }
 
         static removeKilledUnits (units, killedUnits) {
-            for (const [ unitType, unitAmount ] of Object.entries(killedUnits)) units[unitType] -= unitAmount;
-
+            for (const [ unitType, unitAmount ] of Object.entries(killedUnits)) {
+                units[unitType] -= unitAmount;
+                if (units[unitType] < 0) units[unitType] = 0;
+            }
         }
 
         static addCountriesToTheAttacker (attacker, defender, countryAtStake) {

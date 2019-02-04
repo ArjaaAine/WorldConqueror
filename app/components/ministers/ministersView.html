@@ -1,39 +1,27 @@
-﻿<div class="row">
-    <p id="errors" class="col-md-12 bg-danger padding-10 bold" ng-show="myCountry.ministers.error">
-        <i class="fa fa-info-circle"></i>
-        {{myCountry.ministers.errorMessage}}
+﻿<p id="errors" class="col-md-12 bg-danger padding-10 bold clickable" ng-show="myCountry.ministers.error" ng-click="myCountry.ministers.error = false">
+    <i class="fa fa-info-circle"></i>
+    {{myCountry.ministers.errorMessage}}
+</p>
+<div class="col-12">
+    <p>
+        Influence: {{myCountry.baseStats.influence}}
     </p>
-    <div class="col-12">
-        <p>
-            Influence: {{myCountry.baseStats.influence}}
-        </p>
-    </div>
-    <div id="ministers" class="col-12">
-        <div class="card-group">
-            <div class="card clickable custom-panel">
-                <div class="card-body">
-                    <i class="fas fa-chevron-left"></i>
+</div>
+<div id="ministers" class="col-2">
+    <div class="card-columns card-column-1">
+        <div class="card bg-secondary" ng-repeat="minister in myCountry.ministers.activeMinisters track by $index">
+            <div class="card-body p-1 text-center clickable" ng-click="myCountry.ministers.fireMinister(minister)">
+                <i class="fas fa-user"></i>
+                <span class="font-8pt" uib-tooltip="{{minister.description}}">{{minister.ministerType}}</span>
+                <div class="pull-right" uib-tooltip="influence per turn">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span class="font-8pt">{{minister.influencePT}}</span>
                 </div>
             </div>
-            <div class="card" ng-repeat="minister in myCountry.ministers.activeMinisters track by $index">
-                <div class="card-body row clickable" ng-click="myCountry.ministers.fireMinister(minister)">
-                    <i class="fas fa-user"></i>
-                    <span class="font-8pt" uib-tooltip="{{minister.description}}">{{minister.ministerType}}</span>
-                    <div class="pull-right" uib-tooltip="influence per turn">
-                        <i class="fas fa-thumbs-up"></i>
-                        <span class="font-8pt">{{minister.influencePT}}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="card clickable custom-panel" ng-if="myCountry.ministers.activeMinisters.length < 5">
-                <div class="card-body" ng-click="myCountry.ministers.openMinisterHire()">
-                    <i class="text-center fas fa-plus"></i>
-                </div>
-            </div>
-            <div class="card clickable custom-panel">
-                <div class="card-body">
-                    <i class="fas fa-chevron-right"></i>
-                </div>
+        </div>
+        <div class="card bg-dark clickable custom-panel" ng-if="myCountry.ministers.activeMinisters.length < myCountry.ministers.maxMinisters">
+            <div class="card-body" ng-click="myCountry.ministers.openMinisterHire()" ng-class="myCountry.baseStats.influence >= myCountry.ministers.nextMinisterCost ? 'bg-primary' : 'bg-danger'">
+                <i class="text-center fas fa-plus">Cost: {{myCountry.ministers.nextMinisterCost}}</i>
             </div>
         </div>
     </div>

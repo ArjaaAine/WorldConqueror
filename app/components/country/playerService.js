@@ -11,6 +11,7 @@ wciApp.factory(
             constructor () {
                 this.baseStats = {};
                 this.events = {};
+                this.countriesAtWar = [];
                 this.leaderTitles = [];
                 this.descriptions = {
                     happiness   : "Happiness affects the productivity of the population and its growth rate.",
@@ -233,7 +234,6 @@ wciApp.factory(
                 } else {
                     this.baseStats.hunger = 0;
                 }
-                console.log(this.baseStats.hunger);
             }
 
             getNewEconomics () {

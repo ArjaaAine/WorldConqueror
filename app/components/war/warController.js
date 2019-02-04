@@ -5,18 +5,23 @@ wciApp.controller("WarController", (
     playerService,
     worldCountryService,
     warService,
-    $uibModalInstance,
     $scope,
 ) => {
-
+    $scope.playerCountriesAtWar = playerService.countriesAtWar;
+    $scope.military = playerService.military;
     $scope.unitsToSend = {
         land : 0,
         air  : 0,
         naval: 0,
     };
+    $scope.battlefields = warService.battlefields;
     $scope.sendUnitsToBattle = function (countryCode) {
-
         warService.sendUnits($scope.unitsToSend, countryCode, playerService);
+        $scope.unitsToSend = {
+            land: 0,
+            air: 0,
+            naval: 0,
+        }
     };
     $scope.proposePeace = function (countryCode) {
         // Can be improved by adding some ai decision etc, for now it will just make peace.

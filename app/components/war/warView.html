@@ -1,77 +1,23 @@
-﻿<div class="container-fluid">
-    <div class="row margin-top-20">
-        <div ng-class="countrySelected ? 'col-sm-4' : 'col-sm-8'">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <span>
-                        Control Room
-                    </span>
-                </div>
-                <div class="panel-body overflow-80vh">
-                    <div class="row" ng-repeat="(index, aiIndex) in warService.currentlyAtWar">
-                        <div class="col-sm-12 introScreen" ng-class="unitsAlreadySent(aiIndex, index) ? 'bg-danger' : 'bg-info'">
-                            <div class="row" ng-repeat="aiCountry in worldCountryService.AiPlayers[aiIndex].countries track by $index">
-                                <div class="col-sm-3">
-                                    <h4>{{aiCountry.name}}
-                                        <small>{{ worldCountryService.AiPlayers[aiIndex].name }}</small>
-                                    </h4>
-                                </div>
-                                <div class="col-sm-3">
-                                    <button type="button" class="btn-success btn-sm" ng-click="makePeace(index)">Make Peace</button>
-                                </div>
-                                <div class="col-sm-3">
-                                    <button type="button" class="btn-warning btn-sm" ng-click="sendUnits(aiIndex, index)" ng-class="buttonId === aiIndex ? 'btn-danger' : 'btn-warning'">Send Troops</button>
-                                </div>
-                                <div class="col-sm-3">
-                                    <button type="button" class="btn-warning btn-sm" ng-click="returnUnits(index)" ng-show="canReturnUnits(index)">Return Troops</button>
-                                </div>
-                            </div>
-                        </div>
+﻿<div class="row" ng-controller="WarController">
+    <div class="col">
+        <h3>Control Room</h3>
+        <div class="row" ng-repeat="countryCode in playerCountriesAtWar track by $index">
+            <div class="col-1">
+                {{countryCode}}
+            </div>
+            <div class="col">
+                <div class="row input-group mb-3" ng-repeat="(unitType, unitAmount) in military.unitsAtHome track by $index">
+                    <div class="input-group-prepend col-3">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">{{unitType}}</span>
+                    </div>
+                    <input class="col-6" type="number" class="form-control" aria-label="Small" ng-model="unitsToSend[unitType]" min="0" max="unitAmount" integer>
+                    <div class="col-3 input-group-append">
+                        <span class="input-group-text">Max: {{unitAmount}}</span>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="col-sm-4">
-            <div class="panel panel-primary" ng-show="mainDisplay === 'sendUnits'">
-                <div class="panel-heading">
-                    <span>
-                        Send Troops to {{worldCountryService.AiPlayers[buttonId].name}}
-                    </span>
-                </div>
-
-                <div class="panel-body overflow-80vh">
-                    <div class="row row-equal-height" ng-repeat="unit in military.unitsAtHome track by $index" ng-show="unit.count > 0">
-                        <div class="col-xs-3 vertical-center-columns-content">
-                            <h3 class="font-12pt">{{unit.name}}</h3>
-                        </div>
-                        <div class="col-xs-9 vertical-center-columns-content">
-                            <rzslider rz-slider-model="slider[$index].value" rz-slider-options="slider[$index].options"></rzslider>
-                            <!--{{unit.name + " " + unit.count}}-->
-                            <!--<input type="number" ng-model="unitModel" value="{{unitModel || 0}}" min="0" max="{{unit.count}}" ng-change="updateUnitsQueue($index, unitModel)">-->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel-footer">
-                    <button class="btn-warning" ng-click="sendQueuedUnits()">Send Troops</button>
-                    <button class="btn-danger" ng-click="cancel()">Go Back</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-4">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <span>
-                        War Log
-                    </span>
-                </div>
-                <div class="panel-body overflow-80vh">
-                    <div class="row" ng-repeat="warLog in warService.warLog track by $index">
-                        <p>{{warLog}}</p>
-                    </div>
-                </div>
+            <div class="col">
+                <button ng-click="sendUnitsToBattle(countryCode)">Send Units</button>
             </div>
         </div>
     </div>

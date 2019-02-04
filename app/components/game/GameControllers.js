@@ -49,10 +49,8 @@ wciApp.controller('GameController', function (
         for (let i = 0; i < 4; i++) {
             const save = angular.fromJson(localStorage.getItem(`gameData_${i}`));
 
-            console.log(save);
             $scope.saveData.push(save);
         }
-        console.log($scope.saveData);
     };
     $scope.getLocalStorageData();
     $scope.gameSlot = 1;
@@ -61,7 +59,7 @@ wciApp.controller('GameController', function (
     };
     $scope.leaders = leaderService;
     $scope.modalButtons = [];
-    $scope.currentView = "app/components/military/militaryView.html";
+    $scope.currentView = "app/components/government/internalAffairsView.html";
     $scope.initGameModals = function () {
         $scope.modalButtons = [
             {
@@ -158,9 +156,9 @@ wciApp.controller('GameController', function (
 
     // #region Private Methods
     const timerfunction = function () {
-    // TODO: Put logic here to prompt user of game ending/death due to 0 population.
+    // // TODO: Put logic here to prompt user of game ending/death due to 0 population.
         game.bonuses.update(game);
-        game.myCountry.military.updateQueue();
+        game.myCountry.military.update();
         game.myCountry.getGameTime();
         game.myCountry.getNewConsumption();
         game.myCountry.getNewEconomics();
@@ -211,10 +209,16 @@ wciApp.controller('GameController', function (
 
     // Next turn button
     game.nextTurn = function () {
+        /* TODO: $$$$ PERFORMANCE CHECK START $$$$ */
+        // const startTime = performance.now();
+
         timerfunction();
         game.myCountry.baseStats.currentTurn += 1;
-    };
 
+        /* TODO:  $$$$ PERFORMANCE CHECK END $$$$ */
+        // const duration = performance.now() - startTime;
+        // console.log(`This action took ${duration}ms`);
+    };
     $scope.createMap = function () {
         $(".jvectormap-container").remove();// Remove previous map, used when resetting the game so we don't have to refresh.
         // TODO: Might want to add some loading screen/hide map and show leader creation page etc.

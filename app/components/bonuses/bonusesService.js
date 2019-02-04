@@ -37,7 +37,6 @@ wciApp.factory("bonusesService", function () {
         }
       }
       this.researchBonuses = allBonuses;
-      console.log(this);
     }
 
     updateLaws (lawsService) {

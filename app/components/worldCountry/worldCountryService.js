@@ -124,7 +124,6 @@ wciApp.factory("worldCountryService", function
                 for (const country of aiPlayer.countries.values()) this.allCountriesColors[country.countryCode] = aiPlayer.military.getTotalStrength();
 
             }
-
             // There goes all logic for countries...Using AiPlayerService methods, we make decisions here.
             // While looping AiPlayer array, we can update map colors based on Strength as well
             // this.allCountriesColors[code] = country.getTotalStrength();//This can be called for each country to overwrite the map colors...

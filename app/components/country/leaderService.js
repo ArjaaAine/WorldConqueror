@@ -79,7 +79,6 @@ wciApp.factory("leaderService", function (gameDataService, $filter) {
 
   leaders.choose = function () {
     leaders.currentLeader = leaders.list[this.selectedIndex];
-    console.log(this);
   };
 
   return leaders;

@@ -48,6 +48,23 @@ wciApp.factory("militaryService", function
             return units.land * strength.land + units.air * strength.air + units.naval * strength.naval;
         }
 
+        sendUnitsToWar (type, amount) {
+            this.unitsAtHome[type] -= amount;
+            this.unitsAtWar[type] += amount;
+        }
+
+        sendUnitsBackHome (type, amount) {
+            this.unitsAtHome[type] += amount;
+            this.unitsAtWar[type] -= amount;
+        }
+    }
+
+    /* AI MILITARY */
+    class AiMilitary extends Military {
+        constructor () {
+            super();
+        }
+
         addUnit (type, value) {
             this.unitsAtHome[type] += value;
         }
@@ -58,19 +75,11 @@ wciApp.factory("militaryService", function
         }
     }
 
-    /* AI MILITARY */
-    class AiMilitary extends Military {
-        constructor () {
-            super();
-        }
-
-    }
-
     /* PLAYER MILITARY CLASS*/
     class PlayerMilitary extends Military {
         constructor () {
             super();// Copy methods from parent class
-            /* Speed in turns to produce units */
+            /* Speed in units produced per turn */
             this.baseHiringAmountPerTurn = {
                 land : 300,
                 air  : 30,
@@ -82,13 +91,6 @@ wciApp.factory("militaryService", function
                 land : 1,
                 air  : 3,
                 naval: 5,
-            };
-
-            /* Limit to population simultaneous training */
-            this.baseQueueLimit = {
-                land : 1000,
-                air  : 500,
-                naval: 500,
             };
 
             /* How many units are currently in queue, for simplicity, so we don't search through an array... */
@@ -103,53 +105,61 @@ wciApp.factory("militaryService", function
                 air  : 5,
                 naval: 50,
             };
-            this.hiringQueue = [];
         }
 
         update () {
             this.updateQueue();
+            this.getTotalUpkeep();
         }
 
         init () {
             this.initializeMainClass();
         }
 
+        getHiringSpeed (type) {
+            return this.baseHiringAmountPerTurn[type];
+        }
+
+        getHiringCost (type) {
+            return this.baseHiringCost[type];
+        }
+
+        getCurrentQueuedAmount (type) {
+            return this.currentQueuedUnits[type];
+        }
+
+        getUpkeep (type) {
+            return this.unitUpkeep[type];
+        }
+
         addToQueue (type, amount) {
             const currentPopulation = playerService.baseStats.population;
             const baseCost = this.baseHiringCost[type];
-            const baseQueueLimit = this.baseQueueLimit[type];
-            const currentlyInQueue = this.currentQueuedUnits[type];
 
-            if (currentlyInQueue + amount >= baseQueueLimit) {
-                console.log(`Can't hire units, queue limit reached! You can hire only${baseQueueLimit - currentlyInQueue}`);
-            } else if (baseCost >= currentPopulation) {
+            if (baseCost >= currentPopulation) {
                 console.log(`${`Not Enough population to hire units. You need ${baseCost}` - currentPopulation} more population.`);
             } else {
                 // Hire units, finally :)
-                this.hiringQueue.push({
-                    type,
-                    amount,
-                });
+                this.currentQueuedUnits[type] += amount;
             }
 
             //  TODO: Add bonuses from research/law/leaders etc.(leaders could be added during init as base values)
         }
 
         updateQueue () {
-            const hireLimit = this.baseHiringAmountPerTurn;
 
-            for (const unitToHire of this.hiringQueue.values()) {
-                const type = unitToHire.type;
-                const amount = unitToHire.amount;
-                let amountToHire = amount;
+            for (const [ unitType, unitAmount ] of Object.entries(this.currentQueuedUnits)) {
+                let amountToHire = unitAmount;
+                const hireLimit = this.baseHiringAmountPerTurn[unitType];
 
-                if (amount >= hireLimit) amountToHire = hireLimit;
+                if (unitAmount >= hireLimit) amountToHire = hireLimit;
 
-                this.unitsAtHome[type] += amountToHire;
+                this.unitsAtHome[unitType] += amountToHire;
+                this.currentQueuedUnits[unitType] -= amountToHire;
             }
         }
 
-        getUpkeep () {
+        getTotalUpkeep () {
             let totalUpkeep = 0;
 
             for (const [ type, value ] of Object.entries(this.unitsAtHome)) {

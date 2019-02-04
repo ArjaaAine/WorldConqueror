@@ -1,184 +1,45 @@
 ﻿<div ng-controller="StructureController">
-    <div id="Buildings" class="container-fluid">
-        <h3>
-            <span class="glyphicon glyphicon-home"></span> Buildings
-        </h3>
-        <div class="row">
-            <div class="col-12">
-                <div class="panel panel-primary">
-                    <div class="panel-body">
-                        <div class="col-3">
-                            <div class="row">
-                                <div class="col-12">
-                                    <i class="fas fa-flag"></i> {{countryStats.land}}
-                                </div>
-                                <div class="col-12">
-                                    <i class="fas fa-money-bill-alt"></i> {{countryStats.money | niceNumber}}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <i class="fas fa-percent"></i>: {{buildings.getTotalMultiplier()}}
-                            Upkeep: {{buildings.getTotalUpkeep()}}
-                        </div>
-                        <div class="col-2">
-                            <i class="fas fa-briefcase"></i> {{countryStats.totalJobs}}
-                        </div>
-                        <div class="col-4">
-                            <button class="btn-sm btn-primary" ng-click="buildings.countToBuy = 1">1x</button>
-                            <button class="btn-sm btn-primary" ng-click="buildings.countToBuy = 5">5x</button>
-                            <button class="btn-sm btn-primary" ng-click="buildings.countToBuy = 25">25x</button>
-                        </div>
-                    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-primary">
+                <div class="card-header">
+                        <span class="fas fa-home h5 pr-5">Buildings</span>
+                        <i class="fas fa-flag"></i> {{countryStats.land}}
+                        <i class="fas fa-money-bill-alt"></i> {{countryStats.money | niceNumber}}
+                        <i class="fas fa-percent"></i>: {{buildings.getTotalMultiplier()}}
+                        Upkeep: {{buildings.getTotalUpkeep()}}
+                        <i class="fas fa-briefcase"></i> {{countryStats.totalJobs}}
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <div class="row">
-                    <div id="build" class="col-12 col-sm-12">
-                        <div class="row modalOverflow-600">
-                            <div class=""
-                                 ng-repeat="structure in buildings.structures track by $index">
-
-                                <!-- HIDE ON XS/SMALL RESOLUTION, this is for laptops/PC monitors-->
-                                <div class="col-md-4 d-none d-md-block">
-                                    <div class="row">
-                                        <i ng-hide="structure.isUnlocked"
-                                           class="structureLockPosition center-block glyphicon glyphicon-lock glyphicon-black lock-icon-font-size"></i>
-                                        <div class="col-md-12" ng-class="structure.isUnlocked ? '' : 'structureNotVisible'">
-                                            <div class="panel panel-primary clickableArea">
-                                                <div class="panel-body">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                        <span class="tag label label-default center-block">
-                                                            <span>{{structure.name}} ({{structure.count}})</span>
-                                                            <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white"></i></a>
-                                                        </span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row margin-top-5 form-inline">
-                                                        <div class="col-md-2 text-center">
-                                                            <!--TODO: Add tooltips on hover-->
-                                                            <i class="fas fa-angle-double-up"></i>
-                                                            <span class="font-8pt">
-                                                            {{structure.countMultiplier}}
-                                                        </span>
-                                                        </div>
-                                                        <div class="col-md-2 text-center">
-                                                            <i class="fas fa-percent"></i>
-                                                            <span class="font-8pt">
-                                                            {{structure.statMultiplier}}
-                                                        </span>
-                                                        </div>
-                                                        <div class="col-md-2 text-center">
-                                                            <i class="fas fa-cog"></i>
-                                                            <span class="font-8pt">
-                                                            {{structure.statAdder}}/t
-                                                        </span>
-                                                        </div>
-                                                        <div class="col-md-2 text-center">
-                                                            <i class="fas fa-money-bill-alt"></i>
-                                                            <span class="font-8pt">
-                                                            -{{structure.upkeep}}/t
-                                                        </span>
-                                                        </div>
-                                                        <div class="col-md-2 text-center">
-                                                            <i class="fas fa-briefcase"></i>
-                                                            <span class="font-8pt">
-                                                            {{structure.jobsIncreased}}
-                                                        </span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row form-horizontal">
-                                                        <div>
-                                                            <div class="col-md-12">
-                                                                <button class="btn-block btn-success"
-                                                                        ng-disabled="!structure.isUnlocked || structure.cantAfford(buildings.countToBuy)"
-                                                                        ng-class="{'btn-danger': structure.cantAfford(buildings.countToBuy)}"
-                                                                        ng-click="structure.build(buildings.countToBuy)">
-                                                                    <span class="text-center">Buy x{{buildings.countToBuy}}</span>
-                                                                    <br/>
-                                                                    <i class="fas fa-money-bill-alt"></i>
-                                                                    {{structure.getCost() * buildings.countToBuy}}
-                                                                    <i class="fas fa-flag"></i>
-                                                                    {{structure.getLandCost() * buildings.countToBuy}}
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Fix for columns with different height sizes, we want them all to ignore height and make proper columns.
-                                ONLY FOR MULTI COLUMNS! <MD/LG IN OUR CASE> SINCE XS/SM ARE 1 COLUMN PER ROW-->
-                                <div ng-class="($index + 1)%3 === 0 && $index !== 0 ? 'clearfix' : ''"></div>
-
-                                <!-- HIDE ON MEDIUM/LARGE RESOLUTION, This is where we write html for mobile/tablet/low resolution -->
-                                <div class="d-block d-md-none">
-                                    <div class="col-12">
-                                        <div class="row clickableArea bottom-border margin-bottom-5">
-                                            <div class="col-8">
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                    <span class="tag label label-default text-center center-block">
-                                                        {{structure.name}} ({{structure.count}})
-                                                        <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white"></i></a>
-                                                    </span>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-12 text-center">
-                                                        <i class="fas fa-angle-double-up"></i>
-                                                        <span class="font-8pt">
-                                                                {{structure.countMultiplier}}
-                                                                </span>
-
-                                                        <i class="fas fa-percent"></i>
-                                                        <span class="font-8pt">
-                                                                {{structure.statMultiplier}}
-                                                                </span>
-                                                        <i class="fas fa-cog"></i>
-                                                        <span class="font-8pt">
-                                                                {{structure.statAdder}}/t
-                                                                </span>
-
-                                                        <i class="fas fa-money-bill-alt"></i>
-                                                        <span class="font-8pt">
-                                                                 -{{structure.upkeep}}/t
-                                                                </span>
-
-                                                        <i class="fas fa-briefcase"></i>
-                                                        <span class="font-8pt">
-                                                                {{structure.jobsIncreased}}
-                                                                </span>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-4">
-                                                <button class="btn btn-block btn-sm btn-success"
-                                                        ng-disabled="!structure.isUnlocked || structure.cantAfford(buildings.countToBuy)"
-                                                        ng-class="{'btn-danger': structure.cantAfford(buildings.countToBuy)}"
-                                                        ng-click="structure.build(buildings.countToBuy)">
-                                                    <span class="text-center">Buy x{{buildings.countToBuy}}</span>
-                                                    <br/>
-                                                    <i class="fas fa-money-bill-alt"></i>
-                                                    {{structure.getCost() * buildings.countToBuy}}
-                                                    <i class="fas fa-flag"></i>
-                                                    {{structure.getLandCost() * buildings.countToBuy}}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
+    </div>
+    <div class="row">
+        <div class="bg-secondary col-2" ng-repeat="structure in buildings.structures track by $index" ng-class="structure.isUnlocked ? '' : 'structureNotVisible'">
+            <div class="row">
+                <div class="col-7">
+                    <div class="row">
+                        <div class="col-12">
+                            <a class=href="#" uib-tooltip-template="'app/components/structure/templates/structuresTooltip.html'">
+                                <span>{{structure.name}} ({{structure.count}})</span>
+                            </a>
                         </div>
                     </div>
-                    <!--<ng-include src="'app/components/advisors/advisorsView.html'"></ng-include>-->
+                    <div class="row">
+                        <div class="col-12">
+                            <i class="fas fa-money-bill-alt"></i>
+                            {{structure.getCost() * buildings.countToBuy | niceNumber}}
+                            <i class="fas fa-flag"></i>
+                            {{structure.getLandCost() * buildings.countToBuy}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <button class="btn btn-sm btn-success"
+                            ng-disabled="!structure.isUnlocked || structure.cantAfford(buildings.countToBuy)"
+                            ng-class="{'btn-danger': structure.cantAfford(buildings.countToBuy)}"
+                            ng-click="structure.build(buildings.countToBuy)">
+                        <span class="text-center">Buy x{{buildings.countToBuy}}</span>
+                    </button>
                 </div>
             </div>
         </div>
