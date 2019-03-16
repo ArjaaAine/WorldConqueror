@@ -32,14 +32,20 @@ wciApp.controller('GameController', function (
     $scope.startScreen = true;
     $scope.gameLoading = true;
     $scope.currentWindowText = "Starting Screen";
+    $scope.viewActive = true;
     $scope.expandStats = true;
+
+    // #region Debug variables.
     $scope.hideDebug = true;
+    $scope.isTesting = true;
+
+    // #endregion
 
     $scope.toggleStartScreen = function () {
         $scope.startScreen = !$scope.startScreen;
     };
     $scope.goBack = function () {
-    // TODO: Might need to create an array or an object to store possible routes, so going back will be easier.
+        // TODO: Might need to create an array or an object to store possible routes, so going back will be easier.
         if (!$scope.startScreen) $scope.toggleStartScreen();
     };
 
@@ -59,77 +65,78 @@ wciApp.controller('GameController', function (
     };
     $scope.leaders = leaderService;
     $scope.modalButtons = [];
-    $scope.currentView = "app/components/government/internalAffairsView.html";
+    $scope.currentView = "app/components/structure/buildingsView.html";
     $scope.initGameModals = function () {
         $scope.modalButtons = [
             {
-                name          : "Governance",
-                icon          : "fas fa-gavel",
-                templateUrl   : "app/components/government/internalAffairsView.html",
-                controller    : "CountryController",
-                isActive      : true,
+                name: "Governance",
+                icon: "fas fa-gavel",
+                templateUrl: "app/components/government/internalAffairsView.html",
+                controller: "CountryController",
+                isActive: true,
                 disabledReason: "",
-                clickCallback : $scope.changeView,
-                closeCallback : game.myCountry.ministers.modalClosed,
+                clickCallback: $scope.changeView,
+                closeCallback: game.myCountry.ministers.dispose,
             },
             {
-                name          : "Structures",
-                icon          : "fas fa-university",
-                templateUrl   : "app/components/structure/buildingsView.html",
-                controller    : "StructureController",
-                isActive      : true,
-                clickCallback : $scope.changeView,
-                disabledReason: "",
-            },
-            {
-                name          : "Military",
-                icon          : "fas fa-warehouse",
-                templateUrl   : "app/components/military/militaryView.html",
-                controller    : "MilitaryController",
-                isActive      : true,
-                clickCallback : $scope.changeView,
+                name: "Structures",
+                icon: "fas fa-university",
+                templateUrl: "app/components/structure/buildingsView.html",
+                controller: "StructureController",
+                isActive: true,
+                clickCallback: $scope.changeView,
                 disabledReason: "",
             },
             {
-                name          : "Research",
-                icon          : "fas fa-university",
-                templateUrl   : "app/components/research/researchView.html",
-                controller    : "ResearchController",
-                isActive      : true,
-                clickCallback : $scope.changeView,
+                name: "Military",
+                icon: "fas fa-warehouse",
+                templateUrl: "app/components/military/militaryView.html",
+                controller: "MilitaryController",
+                isActive: true,
+                clickCallback: $scope.changeView,
                 disabledReason: "",
             },
             {
-                name          : "War",
-                icon          : "fas fa-fire",
-                templateUrl   : "app/components/war/warView.html",
-                controller    : "WarController",
-                isActive      : true,
-                clickCallback : $scope.changeView,
+                name: "Research",
+                icon: "fas fa-university",
+                templateUrl: "app/components/research/researchView.html",
+                controller: "ResearchController",
+                isActive: true,
+                clickCallback: $scope.changeView,
+                disabledReason: "",
+            },
+            {
+                name: "War",
+                icon: "fas fa-fire",
+                templateUrl: "app/components/war/warView.html",
+                controller: "WarController",
+                isActive: true,
+                clickCallback: $scope.changeView,
                 disabledReason: "You are not currently at war with anyone.",
             },
             {
-                name          : "Charts",
-                icon          : "fas fa-chart-line",
-                templateUrl   : "chartsView.html",
-                controller    : "ChartsController",
-                isActive      : true,
-                clickCallback : $scope.openModal,
+                name: "Charts",
+                icon: "fas fa-chart-line",
+                templateUrl: "chartsView.html",
+                controller: "ChartsController",
+                isActive: true,
+                clickCallback: $scope.openModal,
                 disabledReason: "",
             },
             {
-                name          : "Changelog",
-                icon          : "fas fa-globe",
-                templateUrl   : "app/components/changelog/changelogView.html",
-                controller    : "ChangelogController",
-                isActive      : true,
-                clickCallback : $scope.changeView,
+                name: "Changelog",
+                icon: "fas fa-globe",
+                templateUrl: "app/components/changelog/changelogView.html",
+                controller: "ChangelogController",
+                isActive: true,
+                clickCallback: $scope.changeView,
                 disabledReason: "",
             },
         ];
     };
     $scope.changeView = function (index) {
         $scope.currentView = $scope.modalButtons[index].templateUrl;
+        $scope.viewActive = true;
     };
     const initGame = function () {
 
@@ -156,7 +163,7 @@ wciApp.controller('GameController', function (
 
     // #region Private Methods
     const timerfunction = function () {
-    // // TODO: Put logic here to prompt user of game ending/death due to 0 population.
+        // // TODO: Put logic here to prompt user of game ending/death due to 0 population.
         game.bonuses.update(game);
         game.myCountry.military.update();
         game.myCountry.getGameTime();
@@ -171,12 +178,13 @@ wciApp.controller('GameController', function (
         warService.update();
         chartsService.update();
 
-    // Game.advisors.functions.advisorTimedEffects();
-    // game.saveGame();
+        // Game.advisors.functions.advisorTimedEffects();
+        // game.saveGame();
     };
-
     // #endregion
+
     $scope.startGame = function (loadSave, saveSlot) {
+
         leaderService.choose();
         initService().then(() => {
             if (loadSave) {
@@ -198,6 +206,22 @@ wciApp.controller('GameController', function (
     // Init some values so there are no errors
     initService().then(() => {
         initGame();
+        //This is just so I dont have to click the save everytime I refresh. 
+        if ($scope.isTesting) {
+            leaderService.choose();
+            initService().then(() => {
+                saveService.load(0);
+                $scope.gameSlot = 0;
+                $scope.createMap();
+                game.worldCountries.update();// Necessary to load the map colors.
+                chartsService.update();
+                initGame();
+
+                // Begin auto saving
+                saveTimer = $interval(saveGame, 1000);
+            });
+            $scope.gameLoading = false;
+        }
     });
 
     game.saveGame = function () {
@@ -223,46 +247,46 @@ wciApp.controller('GameController', function (
         $(".jvectormap-container").remove();// Remove previous map, used when resetting the game so we don't have to refresh.
         // TODO: Might want to add some loading screen/hide map and show leader creation page etc.
         const map = new jvm.Map({
-            container        : $("#world-map"),
-            map              : "world_mill_en",
-            backgroundColor  : "#a5bfdd",
-            borderColor      : "#818181",
-            borderOpacity    : 0.25,
-            borderWidth      : 1,
-            color            : "#f4f3f0",
+            container: $("#world-map"),
+            map: "world_mill_en",
+            backgroundColor: "#a5bfdd",
+            borderColor: "#818181",
+            borderOpacity: 0.25,
+            borderWidth: 1,
+            color: "#f4f3f0",
             regionsSelectable: true,
-            zoomButtons      : false,
-            zoomMin          : 0.9,
-            focusOn          : {
-                x    : 0.5,
-                y    : 0.5,
+            zoomButtons: false,
+            zoomMin: 0.9,
+            focusOn: {
+                x: 0.5,
+                y: 0.5,
                 scale: 0.9,
             },
             series: {
                 regions: [
                     {
-                        values           : worldCountryService.allCountriesColors,
-                        scale            : [ "#C8EEFF", "#0071A4" ],
+                        values: worldCountryService.allCountriesColors,
+                        scale: ["#C8EEFF", "#0071A4"],
                         normalizeFunction: "polynomial",
                     },
                     {
-                        values           : worldCountryService.conqueredCountriesColors,
-                        scale            : ["#008000"],
+                        values: worldCountryService.conqueredCountriesColors,
+                        scale: ["#008000"],
                         normalizeFunction: "linear",
                     },
                     {
-                        values           : worldCountryService.countriesColorsAtWar,
-                        scale            : [ "#FF0000", "#990000" ],
+                        values: worldCountryService.countriesColorsAtWar,
+                        scale: ["#FF0000", "#990000"],
                         normalizeFunction: "polynomial",
                     },
                 ],
             },
-            onRegionTipShow (e, el, countryCode) {
+            onRegionTipShow(e, el, countryCode) {
                 const country = $filter("niceNumber")(worldCountryService.getCountryStrength(countryCode));
 
                 el.html(`${el.html()} (Strength - ${country})`);
             },
-            onRegionClick (e, countryCode) {
+            onRegionClick(e, countryCode) {
                 e.preventDefault();
 
                 // Check if an array of objects contains a property with a value of the code we passed in.
@@ -300,10 +324,10 @@ wciApp.controller('GameController', function (
 
         const modalInstance = modalService.open({
             templateUrl: "warConfirmationModal.html",
-            controller : "warConfirmationModalController",
-            size       : "sm",
-            resolve    : {
-                countryAttacked () {
+            controller: "warConfirmationModalController",
+            size: "sm",
+            resolve: {
+                countryAttacked() {
                     return countryCode;
                 },
             },
