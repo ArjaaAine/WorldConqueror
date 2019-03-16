@@ -95,7 +95,7 @@ wciApp.factory(
             worldCountryService.init(countriesArray);
         };
         const ministersInit = function () {
-            playerService.ministers = new ministerService();
+            playerService.ministers = ministerService;
             playerService.ministers.init();
         };
 
