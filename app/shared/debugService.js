@@ -50,10 +50,9 @@ wciApp.factory(
 
       addUnits (val) {
         const value = val || 100;
-
-        playerService.military.unitsAtHome.forEach((unit) => {
-          unit.count += value;
-        });
+        for(let unitType of Object.keys(playerService.military.unitsAtHome)) {
+          playerService.military.unitsAtHome[unitType] += value;
+        }
       }
 
       addPopulation (val) {

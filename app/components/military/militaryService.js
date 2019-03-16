@@ -112,6 +112,10 @@ wciApp.factory("militaryService", function
             this.getTotalUpkeep();
         }
 
+        addUnit (type, value) {
+            this.unitsAtHome[type] += value;
+        }
+
         init () {
             this.initializeMainClass();
         }

@@ -29,7 +29,7 @@ wciApp.service("AiPlayerService", function
 
             this.military = new militaryService.AiMilitary();
             this.generateUnits(initialStrength);
-            this.name = `Name_${Math.floor(Math.random() * 1000)}`;
+            this.leaderName = `Name_${Math.floor(Math.random() * 1000)}`;
         }
 
         trainUnits () {
