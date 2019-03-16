@@ -6,11 +6,10 @@ wciApp.factory("ministerService", function (
     leaderService,
 ) {
 
-
     const ministers = {};
 
     //#region Generic Methods
-    ministers.init() = function () {
+    ministers.init = function () {
         const leaderMinisterAdder = leaderService.bonusCalculator("maxMinisters", 0);
 
         this.nextMinisterCost = 0;
@@ -25,10 +24,10 @@ wciApp.factory("ministerService", function (
         this.error = false;
         this.errorMessage = "";
     }
-    ministers.dispose() = function () {
+    ministers.dispose = function () {
         this.error = false;
     }
-    ministers.update() = function () {
+    ministers.update = function () {
         const playerInfluence = playerService.baseStats;
         let influenceGain = 0;
 
@@ -36,10 +35,7 @@ wciApp.factory("ministerService", function (
         playerInfluence.influence += influenceGain;
     }
     //#endregion
-
-
-
-
-    return Ministers;
+         
+    return ministers;
 
 });
