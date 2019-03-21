@@ -6,12 +6,11 @@ wciApp.controller(
     $filter,
     playerService,
   ) {
-    this.myCountry = playerService;
     $scope.updateTooltip = function () {
       const growth = $filter("fixedDecimalPlaces")(playerService.actualGrowthRate(), 2);
       const mortality = $filter("fixedDecimalPlaces")(playerService.actualMortalityRate(), 2);
       const income = $filter("niceNumber")(playerService.income());
-      const upkeep = $filter("niceNumber")(playerService.totalUpkeep());
+      const upkeep = $filter("niceNumber")(playerService.baseStats.totalUpkeep);
       const foodProduction = $filter("niceNumber")(playerService.foodGrowth());
       const foodDemand = $filter("niceNumber")(playerService.foodDemand());
 

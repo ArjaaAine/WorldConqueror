@@ -9,7 +9,7 @@
             Price: {{research.scientistPrice}}
             Science Gain: {{research.scienceGain()}}
             Points: {{research.sciencePoints}}
-            <button class="btn-sm btn-default" ng-click="research.hireScientist()" ng-class="{'btn-danger': !research.canAffordScientist()}">Hire</button>
+            <button class="btn-sm btn-default" ng-click="hireScientist()" ng-class="{'btn-danger': !canAffordScientist()}">Hire</button>
         </div>
         <div class="row">
             <div class="col-3 panel panel-info modalOverflow" ng-repeat="name in research.researchType track by $index">
@@ -41,7 +41,7 @@
 
                                     </div>
                                 </div>
-                                <button class="btn-block btn-success" ng-click="research.unlockResearch(gameData[name + 'Research'], $index)"
+                                <button class="btn-block btn-success" ng-click="unlockResearch(gameData[name + 'Research'], $index)"
                                               ng-disabled="research.sciencePoints < researchData.cost || research.isUnlocked[researchData.name]"
                                               ng-class="{'btn-danger': research.sciencePoints < researchData.cost || research.isUnlocked[researchData.name]}">Unlock for {{researchData.cost}}</button>
                             </div>

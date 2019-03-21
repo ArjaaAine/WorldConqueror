@@ -1,169 +1,107 @@
 "use strict";
 
-wciApp.factory("researchService", (gameDataService, bonusesService, playerService, $filter) => {
-    class Research {
-        constructor () {
-            this.scientists = 1;// Total scientists we have unlocked/bought
-            this.maxScientists = 5;// Max scientists we can hire, scientist can't go higher than maxScientists.
-            this.scientistPrice = 100;
-            this.baseScienceGain = 1;// This is how much science points is gained per turn for each research type
-            this.sciencePoints = 0;// Store leftover science points after research is finished.(like in civ)
-            this.researchType = [];// Array to store various research types such as War/Economy
-            this.isUnlocked = {};// Object key == research name/id, each store a boolean which we save only.
-            this.researchBonuses = [];
-            this.totalBonus = {};
-            this.isVisible = {};
-        }
+wciApp.factory("researchService", (gameDataService, $filter) => {
 
-        init () {
-            const researchBonuses = gameDataService.ResearchBonuses;
+	function initBonusProps (type, researchBonuses) {
+		const arr = type;
+		const len = arr.length;
 
-            for (const { type } of gameDataService.ResearchData) {
-                const researchType = gameDataService[`${type}Research`];
+		for (let i = 0; i < len; ++i) {
+			const value = arr[i];
+			const name = value.name;
+			let bonus = value.bonus;
 
-                this.researchType.push(type);
-                this.initBonusProps(researchType, researchBonuses);
-                this.checkUnlockedResearch(researchType);
-            }
-        }
+			if (!bonus) continue;
 
-        initBonusProps (type, researchBonuses) {
-            const arr = type;
-            const len = arr.length;
+			bonus = $filter("split")(bonus);
+			value.bonus = bonus;
 
-            for (let i = 0; i < len; ++i) {
-                const value = arr[i];
-                const name = value.name;
-                let bonus = value.bonus;
+			for (let j = 0; j < bonus.length; j++) {
+				const bonusValue = bonus[j];
+				const bonusData = researchBonuses.filter(bonusFilter, bonusValue)[0];
 
-                if (!bonus) continue;
+				if (bonusData) {
+					this.researchBonuses[bonusValue] = {};
+					this.researchBonuses[bonusValue] = bonusData;
+				} else {
+					console.log("Bonus not working! Probably does not exist in the excel file: %s", name);
+				}
+			}
+			if (value.isUnlocked) this.unlockResearch(type, i, true);
+		}
+	}
+	function bonusFilter (bonus) {
+		return this === bonus.ID;
+	}
 
-                bonus = $filter("split")(bonus);
-                value.bonus = bonus;
+	const research = {
+		scientists     : 1, // Total scientists we have unlocked/bought
+		maxScientists  : 5, // Max scientists we can hire, scientist can't go higher than maxScientists.
+		scientistPrice : 100,
+		baseScienceGain: 1, // This is how much science points is gained per turn for each research type
+		sciencePoints  : 0, // Store leftover science points after research is finished.(like in civ)
+		researchType   : [], // Array to store various research types such as War/Economy
+		isUnlocked     : {}, // Object key == research name/id, each store a boolean which we save only.
+		researchBonuses: [],
+		totalBonus     : {},
+		isVisible      : {},
+	};
 
-                for (let j = 0; j < bonus.length; j++) {
-                    const bonusValue = bonus[j];
-                    const bonusData = researchBonuses.filter(this._bonusFilter, bonusValue)[0];
+	/* PUBLIC METHODS */
+	research.init = function () {
+		const researchBonuses = gameDataService.ResearchBonuses;
 
-                    if (bonusData) {
-                        this.researchBonuses[bonusValue] = {};
-                        this.researchBonuses[bonusValue] = bonusData;
-                    } else {
-                        console.log("Bonus not working! Probably does not exist in the excel file: %s", name);
-                    }
-                }
-                if (value.isUnlocked) this.unlockResearch(type, i, true);
-            }
-        }
+		for (const { type } of gameDataService.ResearchData) {
+			const researchType = gameDataService[`${type}Research`];
 
-        _bonusFilter (bonus) {
-            return this === bonus.ID;
-        }
+			this.researchType.push(type);
+			initBonusProps(researchType, researchBonuses);
+			this._checkUnlockedResearch(researchType);
+		}
+	};
+	research.scienceGain = function () {
+		return this.baseScienceGain + this.scientists * 3;// In the future each scientist will have it's own stats, for now it's simple
+	};
+	research.update = function () {
+		this.sciencePoints += this.scienceGain();
+	};
 
-        canAffordScientist () {
-            return playerService.baseStats.money >= this.scientistPrice && this.scientists + 1 <= this.maxScientists;
-        }
+	/* END OF PUBLIC METHODS */
 
-        hireScientist () {
-            // TODO: Add different scientists with skill and level them up(might want to use a service for scientist exp/lvl/bonuses or at least a constructor here)
-            if (this.canAffordScientist()) {
-                this.scientists++;
-                playerService.baseStats.money -= this.scientistPrice;
-                this.scientistPrice = Math.floor(this.scientistPrice * 2.5);
-            } else {
-                console.log("Can't hire more scientists! No money or max scientists reached");
-            }
-        }
+	/* PRIVATE METHODS */
+	research._unlockBonus = function (bonusData) {
+		const researchBonuses = this.researchBonuses;
 
-        unlockResearch (type, index, unlockFree) {
-            const research = type[index];
-            const price = research.cost;
+		if (!researchBonuses[bonusData]) {
+			console.log(`BONUS DOES NOT EXIST! ${bonusData}`);
 
-            if (this.sciencePoints >= price || unlockFree) {
-                const military = playerService.military;
-                const buildings = playerService.buildings;
-                const laws = playerService.laws;
-                const name = research.name;
-                let buildingsToUnlock = research.unlockBuilding;
-                let unitToUnlock = research.unlockUnit;
-                let lawToUnlock = research.lawUnlock;
-                const bonuses = research.bonus;
+			return;
+		}
+		const statAffected = researchBonuses[bonusData].statAffected;
 
-                if (!unlockFree) this.sciencePoints -= price;
-                this.isUnlocked[name] = true;
-                this.isVisible[name] = false;
+		if (!this.totalBonus[statAffected]) {
+			this.totalBonus[statAffected] = {};
+			this.totalBonus[statAffected].statAdder = 0;
+			this.totalBonus[statAffected].statMultiplier = 1;
+		}
 
-                // Unlock bonuses
-                if (bonuses) {
-                    // Bonuses = $filter("split")(bonuses);
-                    for (const bonusData of bonuses) this.unlockBonus(bonusData);
-                }
+		this.totalBonus[statAffected].statAdder += researchBonuses[bonusData].statAdder;
+		this.totalBonus[statAffected].statMultiplier *= researchBonuses[bonusData].multiplier;
 
-                // Unlock units
-                if (unitToUnlock) {
-                    unitToUnlock = $filter("split")(unitToUnlock);
-                    military.unlockUnits(unitToUnlock);
-                }
+		this.totalBonus[statAffected].name = researchBonuses[bonusData].statName;
+	};
+	research._checkUnlockedResearch = function (type) {
+		for (const research of type) {
+			let requirements = research.requirements;
 
-                // Unlock buildings
-                if (buildingsToUnlock) {
-                    buildingsToUnlock = $filter("split")(buildingsToUnlock);
-                    buildings.unlockBuilding(buildingsToUnlock);
-                }
+			if (requirements) requirements = $filter("split")(requirements);
+			if (!requirements || requirements.every(val => this.isUnlocked[val])) this.isVisible[research.name] = true;
+			if (this.isUnlocked[research.name]) this.isVisible[research.name] = false;
+		}
+	};
 
-                // Unlock law
-                if (lawToUnlock) {
-                    lawToUnlock = $filter("split")(lawToUnlock);
-                    laws.unlockLaw(lawToUnlock);
-                }
-
-                this.checkUnlockedResearch(type);// Make other research visible if we meet requirements.
-            }
-        }
-
-        unlockBonus (bonusData) {
-            const researchBonuses = this.researchBonuses;
-
-            if (!researchBonuses[bonusData]) {
-                console.log(`BONUS DOES NOT EXIST! ${bonusData}`);
-
-                return;
-            }
-            const statAffected = researchBonuses[bonusData].statAffected;
-
-            if (!this.totalBonus[statAffected]) {
-                this.totalBonus[statAffected] = {};
-                this.totalBonus[statAffected].statAdder = 0;
-                this.totalBonus[statAffected].statMultiplier = 1;
-            }
-
-            this.totalBonus[statAffected].statAdder += researchBonuses[bonusData].statAdder;
-            this.totalBonus[statAffected].statMultiplier *= researchBonuses[bonusData].multiplier;
-
-            this.totalBonus[statAffected].name = researchBonuses[bonusData].statName;
-        }
-
-        scienceGain () {
-            return this.baseScienceGain + this.scientists * 3;// In the future each scientist will have it's own stats, for now it's simple
-        }
-
-        update () {
-            this.sciencePoints += this.scienceGain();
-        }
-
-        checkUnlockedResearch (type) {
-            for (const research of type) {
-                let requirements = research.requirements;
-
-                if (requirements) requirements = $filter("split")(requirements);
-                if (!requirements || requirements.every(val => this.isUnlocked[val])) this.isVisible[research.name] = true;
-                if (this.isUnlocked[research.name]) this.isVisible[research.name] = false;
-            }
-        }
-
-    }
-
-    return Research;
+	/* END OF PRIVATE METHODS */
+	return research;
 });
 
 // Internet - improves research

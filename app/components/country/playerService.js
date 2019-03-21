@@ -64,10 +64,8 @@ wciApp.factory(
 					hunger              : 0,
 
 					// Economics
-					money : 1000000, // Earned from Taxes and economic factors.
-					upkeep: { buildings: 0,
-						advisors : 0,
-						military : 0 }, // Upkeep of structure, advisors and soldiers.
+					money             : 1000000, // Earned from Taxes and economic factors.
+					totalUpkeep       : 0,
 					totalJobs         : 100000,
 					jobGdpMultiplier  : 10, // This is how jobs effect the gdp.
 					// Military
@@ -92,13 +90,6 @@ wciApp.factory(
 				};
 
 				// This.getLookups();
-			}
-
-			totalUpkeep () {
-				// Calculate upkeep
-				const upkeep = this.baseStats.upkeep;
-
-				return upkeep.military + upkeep.advisors + upkeep.buildings;// Can use loop instead...
 			}
 
 			addCountry (countryObject) {
@@ -151,10 +142,6 @@ wciApp.factory(
 			income () {
 				// TODO: 12/22/2014: This might need to be reduced.
 				return Math.round(this.gdp() * 0.1); // You get 4% of the gdp every turn. (Which is one month)
-			}
-
-			moneyGrowth () {
-				return this.income() - this.totalUpkeep();
 			}
 
 			gdp () {
@@ -237,14 +224,6 @@ wciApp.factory(
 				} else {
 					this.baseStats.hunger = 0;
 				}
-			}
-
-			getNewEconomics () {
-				this.baseStats.money += this.moneyGrowth();
-
-				// Set the money to a minimum of 0. Once Lending is implemented, then it will be possible for the worldCountry to go negative.
-				if (this.baseStats.money < 0) this.baseStats.money = 0;
-
 			}
 
 			// GetLookups () {

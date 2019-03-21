@@ -171,7 +171,7 @@ wciApp.factory("militaryService", function
 
                 totalUpkeep += this.unitUpkeep[type] * value + warUpkeep;
             }
-            playerService.baseStats.upkeep.military = totalUpkeep;
+            return totalUpkeep
         }
 
         getTrainedUnits () {

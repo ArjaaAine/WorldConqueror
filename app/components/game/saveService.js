@@ -26,12 +26,12 @@ wciApp.factory("saveService", function
     // TODO: Redesign save/load to only save necessary data as a string, instead of full objects...Ex. Unit.ID = 10 -> 10 units of this type.
     const saveData = {};// All data to save.
     const military = playerService.military;
-    const research = playerService.research;
-    const ministers = playerService.ministers;
+    const research = researchService;
+    const ministers = ministerService;
 
-    let laws = playerService.laws.activeLaws;
-    let lawsUnlocked = playerService.laws.unlockedLaws;
-    const buildings = playerService.buildings;
+    let laws = lawsService.activeLaws;
+    let lawsUnlocked = lawsService.unlockedLaws;
+    const buildings = buildingsService;
     // const onWar = warService.currentlyAtWar; // FIX THIS
     const onWarColors = worldCountryService.countriesColorsAtWar;
 
@@ -63,12 +63,12 @@ wciApp.factory("saveService", function
 
     if (!savedData) return;
     const military = playerService.military;
-    const research = playerService.research;
-    const ministers = playerService.ministers;
+    const research = researchService;
+    const ministers = ministerService;
 
-    let laws = playerService.laws.activeLaws;
-    let lawsUnlocked = playerService.laws.unlockedLaws;
-    const buildings = playerService.buildings;
+    let laws = lawsService.activeLaws;
+    let lawsUnlocked = lawsService.unlockedLaws;
+    const buildings = buildingsService;
     const baseStats = playerService.baseStats;
     // const onWar = warService.currentlyAtWar;
     const onWarColors = worldCountryService.countriesColorsAtWar;

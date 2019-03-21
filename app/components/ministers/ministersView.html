@@ -4,12 +4,12 @@
 </p>
 <div class="col-12">
     <p class="text-white">
-        Influence: {{myCountry.baseStats.influence}}
+        Influence: {{player.baseStats.influence}}
     </p>
 </div>
 <div id="ministers" class="card-deck col-12 mb-2">
-        <div class="card bg-secondary col-2" ng-repeat="minister in myCountry.ministers.activeMinisters track by $index">
-            <div class="card-body p-1 clickable" ng-click="countryCtrl.fireMinister(minister)">
+        <div class="card bg-secondary col-2" ng-repeat="minister in ministers.activeMinisters track by $index">
+            <div class="card-body p-1 clickable" ng-click="fireMinister(minister)">
                 <div class="row">
                     <div class="col-md-auto">
                         <span class="fas fa-user"></span>
@@ -24,12 +24,12 @@
                 </div>
             </div>
         </div>
-        <div class="card col-2" ng-if="myCountry.ministers.activeMinisters.length < myCountry.ministers.maxMinisters" ng-class="myCountry.baseStats.influence >= myCountry.ministers.nextMinisterCost ? 'bg-success' : 'bg-danger'">
-            <div class="card-body p-1 clickable" ng-click="countryCtrl.openMinisterHire()" >
+        <div class="card col-2" ng-if="ministers.activeMinisters.length < ministers.maxMinisters" ng-class="player.baseStats.influence >= ministers.nextMinisterCost ? 'bg-success' : 'bg-danger'">
+            <div class="card-body p-1 clickable" ng-click="openMinisterHire()" >
                 <div class="row">
                     <div class="col-md-auto">
                         <i class="text-center fas fa-plus">
-                            Cost: {{myCountry.ministers.nextMinisterCost}}
+                            Cost: {{ministers.nextMinisterCost}}
                         </i>
                     </div>
                 </div>

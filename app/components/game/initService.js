@@ -76,27 +76,23 @@ wciApp.factory(
             bonusesService.init();
         };
         const buildingInit = function () {
-            playerService.buildings = new buildingsService();
-            playerService.buildings.init();
+            buildingsService.init();
         };
         const militaryInit = function () {
             playerService.military = new militaryService.PlayerMilitary();
             playerService.military.init();
         };
         const researchInit = function () {
-            playerService.research = new researchService();
-            playerService.research.init();
+            researchService.init();
         };
         const lawsInit = function () {
-            playerService.laws = new lawsService();
-            playerService.laws.init();
+            lawsService.init();
         };
         const worldCountriesInit = function (countriesArray) {
             worldCountryService.init(countriesArray);
         };
         const ministersInit = function () {
-            playerService.ministers = ministerService;
-            playerService.ministers.init();
+            ministerService.init();
         };
 
         return init;

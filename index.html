@@ -64,23 +64,23 @@
                             <button ng-click="changeSimulatedTurns(10)">+10</button>
                             <button ng-click="changeSimulatedTurns(-10)">-10</button><br>
 
-                            <button ng-click="game.debug.giveMeAll()">Give All</button><br>
-                            <button ng-click="game.debug.addLand()">Land +100</button><br>
-                            <button ng-click="game.debug.addInfluence()">Influence +100000</button><br>
-                            <button ng-click="game.debug.addUnits()">Units +100</button><br>
-                            <button ng-click="game.debug.addEachBuilding()">Structures +10</button><br>
-                            <button ng-click="game.debug.addResearchPoints()">Science +1k</button><br>
-                            <button ng-click="game.debug.stabilityChange(10)">Stability +10</button><br>
-                            <button ng-click="game.debug.stabilityChange(-10)">Stability -10</button><br>
-                            <button ng-click="game.debug.stabilityIndexChange(1)">StabilityIndex +1</button><br>
-                            <button ng-click="game.debug.stabilityIndexChange(-1)">StabilityIndex -1</button><br>
+                            <button ng-click="debug.giveMeAll()">Give All</button><br>
+                            <button ng-click="debug.addLand()">Land +100</button><br>
+                            <button ng-click="debug.addInfluence()">Influence +100000</button><br>
+                            <button ng-click="debug.addUnits()">Units +100</button><br>
+                            <button ng-click="debug.addEachBuilding()">Structures +10</button><br>
+                            <button ng-click="debug.addResearchPoints()">Science +1k</button><br>
+                            <button ng-click="debug.stabilityChange(10)">Stability +10</button><br>
+                            <button ng-click="debug.stabilityChange(-10)">Stability -10</button><br>
+                            <button ng-click="debug.stabilityIndexChange(1)">StabilityIndex +1</button><br>
+                            <button ng-click="debug.stabilityIndexChange(-1)">StabilityIndex -1</button><br>
                         </div>
                     </div>
 
                     <div class="w-100"></div>
                     <div class="col-2 offset-9 game-time">
-                        <span class="label label-info">Year: {{1900 + game.myCountry.baseStats.currentTurn}}</span>
-                        <button class="btn-danger btn-xs" ng-click="game.resetGame()">
+                        <span class="label label-info">Year: {{1900 + player.baseStats.currentTurn}}</span>
+                        <button class="btn-danger btn-xs" ng-click="resetGame()">
                                 Reset
                         </button>
                     </div>
@@ -88,7 +88,7 @@
                     <div class="col-1 offset-11 worldMap-hiringQueue modalOverflow">
                         <h4 class="text-center"><small>Queue:</small></h4>
                         <div class="row d-flex">
-                            <div class="col-12 text-center" ng-repeat="(type, amount) in game.myCountry.military.currentQueuedUnits track by $index">
+                            <div class="col-12 text-center" ng-repeat="(type, amount) in player.military.currentQueuedUnits track by $index">
                                 <span>
                                 {{type}} - {{amount}}
                             </span>
@@ -99,7 +99,7 @@
 
                     </div>
                     <div class="map-overlay-next-turn">
-                        <button class="btn-success btn-lg" ng-click="game.nextTurn()">Next Turn</button>
+                        <button class="btn-success btn-lg" ng-click="nextTurn()">Next Turn</button>
                     </div>
                     <div class="col pl-1 pr-1">
                         <div id="world-map" style="height: 65vh;"></div>
@@ -108,7 +108,7 @@
                 <div class="row border rounded border-5 border-success bg-dark font-color-white d-flex align-items-center justify-content-center" style="height: 30vh;">
                     <div class="col-2 text-center">
                         <div>
-                            <p class="lead border-bottom border-5 border-success rounded-circle">{{game.myCountry.baseStats.leaderName}}</p>
+                            <p class="lead border-bottom border-5 border-success rounded-circle">{{player.baseStats.leaderName}}</p>
                             <img class="w-50 border border-5 border-success rounded-circle" ng-click="openModal(6)" ng-src="./assets/img/leaderImages/{{leaders.currentLeader.image}}.jpg" alt=""/>
                         </div>
                     </div>

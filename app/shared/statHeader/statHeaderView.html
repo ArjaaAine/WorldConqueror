@@ -15,12 +15,12 @@
                            uib-tooltip="Population"></i>
                     </span>
                     <span ng-mouseenter="updateTooltip()">
-                        {{game.myCountry.baseStats.population + game.myCountry.baseStats.trainedPopulation | number: 0 | niceNumber }}
+                        {{player.baseStats.population + player.baseStats.trainedPopulation | number: 0 | niceNumber }}
                     </span>
                     <span class="bold hidden-xs" tooltip-placement="auto bottom-right"
-                          ng-class="game.myCountry.populationGrowth() >= 0 ? 'text-success' : 'text-danger'"
+                          ng-class="player.populationGrowth() >= 0 ? 'text-success' : 'text-danger'"
                           uib-tooltip-html="population">
-                        ({{game.myCountry.populationGrowth() | number: 0 | niceNumber }})
+                        ({{player.populationGrowth() | number: 0 | niceNumber }})
                     </span>
                 </div>
                 <div class="col-2">
@@ -28,12 +28,12 @@
                         <i class="fas fa-money-bill-alt" tooltip-placement="auto bottom-right" uib-tooltip="Money"></i>
                     </span>
                     <span ng-mouseenter="updateTooltip()">
-                        {{game.myCountry.baseStats.money | number:0 | niceNumber}}
+                        {{player.baseStats.money | number:0 | niceNumber}}
                     </span>
                     <span class="bold" tooltip-placement="auto bottom-right"
-                          ng-class="game.myCountry.moneyGrowth() > 0 ? 'text-success': 'text-danger'"
+                          ng-class="moneyGrowth() > 0 ? 'text-success': 'text-danger'"
                           uib-tooltip-html="money">
-                        ({{game.myCountry.income() - game.myCountry.totalUpkeep() | number: 0 | niceNumber}})
+                        ({{player.income() - totalUpkeep() | number: 0 | niceNumber}})
                     </span>
                 </div>
                 <div class="col-2">
@@ -41,21 +41,21 @@
                         <i class="glyphicon glyphicon-cutlery" tooltip-placement="auto bottom-right" uib-tooltip="Food"></i>
                     </span>
                     <span ng-mouseenter="updateTooltip()">
-                        {{game.myCountry.baseStats.totalFood | number: 0 | niceNumber}}
+                        {{player.baseStats.totalFood | number: 0 | niceNumber}}
                     </span>
                     <span class="bold hidden-xs" tooltip-placement="auto bottom-right"
-                          ng-class="game.myCountry.foodFlow() > 0 ? 'text-success' : 'text-danger'"
+                          ng-class="player.foodFlow() > 0 ? 'text-success' : 'text-danger'"
                           uib-tooltip-html="food">
-                        ({{game.myCountry.foodFlow() | number: 0 | niceNumber}})
+                        ({{player.foodFlow() | number: 0 | niceNumber}})
                     </span>
                 </div>
-                <div class="col-2" ng-class="game.myCountry.baseStats.happiness > 75 ? 'text-success' : game.myCountry.baseStats.happiness > 25 ? 'text-warning' : 'text-danger'">
+                <div class="col-2" ng-class="player.baseStats.happiness > 75 ? 'text-success' : player.baseStats.happiness > 25 ? 'text-warning' : 'text-danger'">
                     <span>
                         <i class="fas bold" tooltip-placement="auto bottom-right" uib-tooltip="Happiness"
-                           ng-class="game.myCountry.baseStats.happiness > 75 ? 'fa-smile' : game.myCountry.baseStats.happiness > 25 ? 'fa-meh' : 'fa-frown'"></i>
+                           ng-class="player.baseStats.happiness > 75 ? 'fa-smile' : player.baseStats.happiness > 25 ? 'fa-meh' : 'fa-frown'"></i>
                     </span>
                     <span class="bold">
-                        {{game.myCountry.baseStats.happiness}}
+                        {{player.baseStats.happiness}}
                     </span>
                 </div>
                 <div class="col-2">
@@ -63,13 +63,13 @@
                         <i class="fas fa-anchor bold" tooltip-placement="auto bottom-right" uib-tooltip="Stability"></i>
                     </span>
                     <span class="bold" tooltip-placement="auto bottom-right"
-                          ng-class="game.myCountry.baseStats.stability > 66 ? 'text-success' : game.myCountry.baseStats.stability > 33 ? 'text-warning' : 'text-danger'">
-                        {{game.myCountry.baseStats.stability}}
+                          ng-class="player.baseStats.stability > 66 ? 'text-success' : player.baseStats.stability > 33 ? 'text-warning' : 'text-danger'">
+                        {{player.baseStats.stability}}
                     </span>
                     <span class="bold" tooltip-placement="auto bottom-right"
-                          ng-class="game.myCountry.getCurrentStabilityIndex() > 0 ? 'text-success': 'text-danger'"
+                          ng-class="player.getCurrentStabilityIndex() > 0 ? 'text-success': 'text-danger'"
                           uib-tooltip="Stability Index">
-                        ({{game.myCountry.getCurrentStabilityIndex()}})
+                        ({{player.getCurrentStabilityIndex()}})
                     </span>
                 </div>
             </div>
@@ -82,12 +82,12 @@
                         <i class="fas fa-home" tooltip-placement="auto bottom-right" uib-tooltip="Housing"></i>
                     </span>
                     <span>
-                        {{game.myCountry.baseStats.housingCapacity | niceNumber}}
+                        {{player.baseStats.housingCapacity | niceNumber}}
                     </span>
                     <span class="bold hidden-xs" tooltip-placement="auto bottom-right"
                           uib-tooltip="Homeless"
-                          ng-class="game.myCountry.homelessness() === 0 ? 'text-success' : 'text-danger'">
-                        ({{game.myCountry.homelessness()}}%)
+                          ng-class="player.homelessness() === 0 ? 'text-success' : 'text-danger'">
+                        ({{player.homelessness()}}%)
                     </span>
 
                 </div>
@@ -96,12 +96,12 @@
                         <i class="fas fa-briefcase" tooltip-placement="auto bottom-right" uib-tooltip="Jobs"></i>
                     </span>
                     <span>
-                        {{game.myCountry.baseStats.totalJobs | niceNumber}}
+                        {{player.baseStats.totalJobs | niceNumber}}
                     </span>
                     <span class="bold hidden-xs" tooltip-placement="auto bottom-right"
                           uib-tooltip="Unemployment"
-                          ng-class="game.myCountry.unemployment() === 0 ? 'text-success' : 'text-danger'">
-                        ({{game.myCountry.unemployment()}}%)
+                          ng-class="player.unemployment() === 0 ? 'text-success' : 'text-danger'">
+                        ({{player.unemployment()}}%)
                     </span>
                 </div>
                 <div class="col-2">
@@ -109,8 +109,8 @@
                         <i class="glyphicon glyphicon-cutlery" tooltip-placement="auto bottom-right" uib-tooltip="Food"></i>
                     </span>
                     <span class="bold hidden-xs" tooltip-placement="auto bottom-right" uib-tooltip="Hunger"
-                          ng-class="game.myCountry.baseStats.hunger === 0 ? 'text-success' : 'text-danger'">
-                        ({{game.myCountry.baseStats.hunger}}%)
+                          ng-class="player.baseStats.hunger === 0 ? 'text-success' : 'text-danger'">
+                        ({{player.baseStats.hunger}}%)
                     </span>
                 </div>
 
@@ -118,7 +118,7 @@
             <!--RJ: 3/25/2018, just commenting this out to see how the buildings UI will look. -->
             <!--<div class="row">
                 <div class="col-xs-12">
-                    <i class="fas fa-lightbulb-o"></i> {{game.myCountry.baseStats.baseResearchPoints}}/turn
+                    <i class="fas fa-lightbulb-o"></i> {{player.baseStats.baseResearchPoints}}/turn
                 </div>
             </div>-->
         </div>
