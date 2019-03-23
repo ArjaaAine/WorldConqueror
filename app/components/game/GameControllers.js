@@ -27,6 +27,14 @@ wciApp.controller('GameController', function (
 ) {
 	let saveTimer;
 
+	$scope.player = playerService;
+	$scope.worldCountries = worldCountryService;
+	$scope.bonuses = bonusesService;
+	$scope.advisors = advisorsService;
+	$scope.ministers = ministerService;
+	$scope.helperModals = helperModalsService;
+	$scope.notification = notificationService;
+	$scope.debug = debugService;
 	$scope.saveService = saveService;
 	$scope.startScreen = true;
 	$scope.gameLoading = true;
@@ -138,15 +146,6 @@ wciApp.controller('GameController', function (
 		$scope.viewActive = true;
 	};
 	const initGame = function () {
-
-		$scope.player = playerService;
-		$scope.worldCountries = worldCountryService;
-		$scope.bonuses = bonusesService;
-		$scope.advisors = advisorsService;
-		$scope.ministers = ministerService;
-		$scope.helperModals = helperModalsService;
-		$scope.notification = notificationService;
-		$scope.debug = debugService;
 		$scope.initGameModals();
 	};
 	const saveGame = function () {

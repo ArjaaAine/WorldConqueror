@@ -80,7 +80,7 @@ wciApp.factory(
         };
         const militaryInit = function () {
             playerService.military = militaryService.playerMilitary;//TODO remove this...
-            playerService.military.playerMilitary.init();//TODO: remove this one too later
+            playerService.military.init();//TODO: remove this one too later
             militaryService.playerMilitary.init();
         };
         const researchInit = function () {
