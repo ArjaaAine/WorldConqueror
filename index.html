@@ -7,32 +7,8 @@
     <meta HTTP-EQUIV="Expires" CONTENT="-1">
     <meta http-equiv="cache-control" content="no-cache" />
     <title>World Conqueror</title>
-    <!--Javascript-->
-    <script src="assets/libs/js/jquery.min.js"></script>
-    <!--bootstrap-->
-    <script src="assets/libs/js/bootstrap.bundle.min.js"></script>
-    <!--angular-->
-    <script src="assets/libs/js/angular.min.js"></script>
-    <script src="assets/libs/js/angular-animate.min.js"></script>
-    <!--charts-->
-    <script src="assets/libs/js/chart.js"></script>
-    <script src="assets/libs/js/angular-chart.min.js"></script>
-    <!--angular stuff-->
-    <script src="assets/libs/js/angular-sanitize.js"></script>
-    <script src="assets/libs/js/angular-route.js"></script>
-    <!--?????-->
-    <script src="assets/libs/js/select.js"></script>
-    <!--excel converter-->
-    <script src="assets/libs/js/xlsx.full.min.js"></script>
-    <!--UI bootstrap for angular ui-->
-    <script src="assets/libs/js/ui-bootstrap-tpls-2.5.0.min.js"></script>
-    <!--world map library-->
-    <script src="assets/libs/js/jquery-jvectormap-2.0.3.min.js"></script>
-    <script src="assets/libs/js/jquery-jvectormap-world-mill-en.js"></script>
-    <!--slider-->
-    <script src="assets/libs/js/angular-slider.js"></script>
-    <!--css-->
 
+    <!--css-->
     <!--bootstrap-->
     <link rel="stylesheet" href="assets/libs/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/libs/css/bootstrap-theme.min.css">
@@ -44,19 +20,24 @@
     <link rel="stylesheet" href="assets/libs/css/jquery-jvectormap-2.0.3.css">
     <!--angular slider-->
     <link rel="stylesheet" href="assets/libs/css/angular-slider.css">
+    <!-- Animation -->
+    <link rel="stylesheet" href="assets/libs/css/animation.css">
+
 </head>
 <body ng-controller="GameController as game">
 <div class="main_overlay backgroundImage">
+
     <div class="container-fluid" ng-show="!gameLoading">
         <div class="row">
-            <div class="col">
-                <div class="row"style="height: 5vh;">
+                <!--Stat Header-->
+                <!--<div class="row"style="height: 5vh;">
                     <div class="col dark-background text-center">
                         <div ng-include="'app/shared/statHeader/statHeaderView.html'"></div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="debug-buttons">
+                </div>-->
+
+                    <!--Debugger-->
+                    <!--<div class="debug-buttons" ng-show="isTesting">
                         <button ng-click="hideDebug=true" ng-show="!hideDebug">Hide</button>
                         <button ng-click="hideDebug=false" ng-show="hideDebug">Show</button>
                         <div ng-hide="hideDebug">
@@ -75,17 +56,19 @@
                             <button ng-click="game.debug.stabilityIndexChange(1)">StabilityIndex +1</button><br>
                             <button ng-click="game.debug.stabilityIndexChange(-1)">StabilityIndex -1</button><br>
                         </div>
-                    </div>
+                    </div>-->
 
-                    <div class="w-100"></div>
+                    <!--Reset-->
+                    <!--<div class="w-100"></div>
                     <div class="col-2 offset-9 game-time">
                         <span class="label label-info">Year: {{1900 + game.myCountry.baseStats.currentTurn}}</span>
                         <button class="btn-danger btn-xs" ng-click="game.resetGame()">
                                 Reset
                         </button>
-                    </div>
+                    </div>-->
 
-                    <div class="col-1 offset-11 worldMap-hiringQueue modalOverflow">
+                    <!--Queue-->
+                    <!--<div class="col-1 offset-11 worldMap-hiringQueue modalOverflow">
                         <h4 class="text-center"><small>Queue:</small></h4>
                         <div class="row d-flex">
                             <div class="col-12 text-center" ng-repeat="(type, amount) in game.myCountry.military.currentQueuedUnits track by $index">
@@ -97,24 +80,53 @@
 
                         </div>
 
-                    </div>
-                    <div class="map-overlay-next-turn">
+                    </div>-->
+
+                    <!--Next Turn-->
+                    <!--<div class="map-overlay-next-turn">
                         <button class="btn-success btn-lg" ng-click="game.nextTurn()">Next Turn</button>
-                    </div>
-                    <div class="col pl-1 pr-1">
-                        <div id="world-map" style="height: 65vh;"></div>
+                    </div>-->
+
+                    <!--Map-->
+                    <div class="col-12">
+                        <div class="row" id="world-map" style="height: 100vh;"></div>
+                        <div class="row" style="position: absolute; bottom:1%; left: 50%; transform: translate(-50%, 0); z-index:1050;">
+                            <div class="justify-content-md-center" id="menu">
+                                <button class="btn btn-secondary mr-1 rounded-circle"
+                                        type="button"
+                                        ng-repeat="item in modalButtons"
+                                        ng-click="item.clickCallback($index)"
+                                        ng-disabled="!item.isActive"
+                                        tooltip-placement="top"
+                                        uib-tooltip="{{item.name}}"
+                                        style="height: 5vh;">
+                                    <i ng-class="item.icon"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row" style="position: absolute; top:2%; left: 50%; transform: translate(-50%, 0); z-index:1049; width:80%" ng-show="viewActive">
+                            <div class="col-12 animated slideInUp">
+                                <ng-include src="currentView"></ng-include>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-                <div class="row border rounded border-5 border-success bg-dark font-color-white d-flex align-items-center justify-content-center" style="height: 30vh;">
-                    <div class="col-2 text-center">
+
+                <!--<div class="row border rounded border-5 border-success bg-dark font-color-white d-flex align-items-center justify-content-center" style="height: 30vh;">-->
+                    <!--Leader Info-->
+                    <!--<div class="col-2 text-center">
                         <div>
                             <p class="lead border-bottom border-5 border-success rounded-circle">{{game.myCountry.baseStats.leaderName}}</p>
                             <img class="w-50 border border-5 border-success rounded-circle" ng-click="openModal(6)" ng-src="./assets/img/leaderImages/{{leaders.currentLeader.image}}.jpg" alt=""/>
                         </div>
-                    </div>
-                    <div class="col-1">
+                    </div>-->
+
+                    <!--Menu-->
+                    <!--TODO: Tooltip doesn't work on disabled button.-->
+                    <!--<div class="col-1">
                         <div class="btn-group-vertical border-left border-right border-success border-5 border-rounded" role="group" aria-label="Vertical button group">
-                            <!--TODO: Tooltip doesn't work on disabled button.-->
                             <button class="btn btn-secondary border border-bottom border-dark" type="button"
                                     ng-repeat="item in modalButtons"
                                     ng-click="item.clickCallback($index)"
@@ -125,15 +137,16 @@
                                 <i ng-class="item.icon"></i>
                             </button>
                         </div>
-                    </div>
-                    <div class="col-6 align-self-start">
+                    </div>-->
+
+                    <!--View-->
+                    <!--<div class="col-6 align-self-start">
                         <ng-include src="currentView"></ng-include>
                     </div>
-                    <div class="col-3"></div>
-                </div>
-            </div>
-        </div>
+                    <div class="col-3"></div>-->
+                <!--</div>-->
     </div>
+
     <ng-include src="'app/components/introScreen/introscreenView.html'"></ng-include>
     <div ng-include="'app/shared/notifications/notificationsView.html'"></div>
     <ng-include src="'app/shared/charts/chartsView.html'"></ng-include>
@@ -160,6 +173,34 @@
     </script>
 
     <footer>
+        <!--RJ: 2/6/2019: TODO: Only load relevant files on page load.-->
+        <!-- JQuery -->
+        <script src="assets/libs/js/jquery-3.3.1.min.js"></script>
+        <!-- Bootstrap tooltips -->bb  b 
+        <script src="assets/libs/js/popper.min.js"></script>
+        <!--bootstrap-->
+        <script src="assets/libs/js/bootstrap.bundle.min.js"></script>
+        <!--angular-->
+        <script src="assets/libs/js/angular.min.js"></script>
+        <script src="assets/libs/js/angular-animate.min.js"></script>
+        <!--charts-->
+        <script src="assets/libs/js/chart.js"></script>
+        <script src="assets/libs/js/angular-chart.min.js"></script>
+        <!--angular stuff-->
+        <script src="assets/libs/js/angular-sanitize.js"></script>
+        <script src="assets/libs/js/angular-route.js"></script>
+        <!--?????-->
+        <script src="assets/libs/js/select.js"></script>
+        <!--excel converter-->
+        <script src="assets/libs/js/xlsx.full.min.js"></script>
+        <!--world map library-->
+        <script src="assets/libs/js/jquery-jvectormap-2.0.3.min.js"></script>
+        <script src="assets/libs/js/jquery-jvectormap-world-mill-en.js"></script>
+        <!--slider-->
+        <script src="assets/libs/js/angular-slider.js"></script>
+        <!--UI bootstrap for angular ui-->
+        <script src="assets/libs/js/ui-bootstrap-tpls-2.5.0.min.js"></script>
+
 
         <!-- App and Routing -->
         <script src="app/app.module.js"></script>
@@ -213,8 +254,8 @@
         <!-- Functions -->
         <script src="app/shared/excelLoader.js"></script>
 
-        <link rel="stylesheet" href="assets/css/main.css"/>
-        <link rel="stylesheet" href="assets/css/common.css"/>
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <link rel="stylesheet" href="assets/css/common.css" />
 
         <!-- Debug service -->
         <script src="app/shared/debugService.js"></script>

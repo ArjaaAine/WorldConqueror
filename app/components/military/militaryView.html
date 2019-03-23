@@ -1,32 +1,37 @@
-﻿<div ng-controller="MilitaryController" class="row">
-    <div class="col text-center">
-        <div class="row">
-            <div class="col">
-                <h3>Hiring Units</h3>
-            </div>
-        </div>
-
-        <div class="row justify-content-around">
-            <div class="col-3" ng-repeat="unitType in military.unitTypes">
-                <div class="row">
-                    <div class="col border border-info p-0">
-                        <a ng-click="military.addToQueue(unitType, 100)">
-                            <div class="bg-primary">
-                                {{unitType | upperCase}}
-                            </div>
-                        </a>
-                    </div>
+﻿<div ng-controller="MilitaryController">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header text-white bg-primary">
+                    Hiring Units
                 </div>
-                <div class="row">
-                    <div class="col">
-                        <a class=href="#" uib-tooltip-template="'app/components/military/templates/unitsTooltip.html'">
-                            <img src="img/military-default.png" alt="unit name"/>
-                        </a>
-                        <p class="mb-1">Units at home: [{{military.unitsAtHome[unitType]}}]</p>
-                        <p>Units at war: [{{military.unitsAtWar[unitType]}}]</p>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3" ng-repeat="unitType in military.unitTypes">
+                            <div class="row">
+                                <div class="col border border-info p-0">
+                                    <a ng-click="military.addToQueue(unitType, 100)">
+                                        <div class="bg-primary">
+                                            {{unitType | upperCase}}
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <a href="#" uib-tooltip-template="'app/components/military/templates/unitsTooltip.html'">
+                                        <img src="img/military-default.png" alt="unit name" />
+                                    </a>
+                                    <p class="mb-1">Units at home: [{{military.unitsAtHome[unitType]}}]</p>
+                                    <p>Units at war: [{{military.unitsAtWar[unitType]}}]</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-1"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+

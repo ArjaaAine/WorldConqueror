@@ -19,7 +19,7 @@ wciApp.controller("CountryController", (
 
     //#region Click Events
     //Minister
-    $scope.openMinisterHire() = function () {
+    $scope.openMinisterHire = function () {
         let ministerCost = 1;
         let count = 0;
 
@@ -78,7 +78,7 @@ wciApp.controller("CountryController", (
         }
 
     }
-    $scope.fireMinister(minister) = function () {
+    $scope.fireMinister = function (minister) {
         // Confirmation Dialogue
         const c = confirm("Are you sure you want to fire minister?");
 

@@ -1,45 +1,94 @@
 ﻿<div ng-controller="StructureController">
     <div class="row">
         <div class="col-12">
-            <div class="card bg-primary">
-                <div class="card-header">
-                        <span class="fas fa-home h5 pr-5">Buildings</span>
-                        <i class="fas fa-flag"></i> {{countryStats.land}}
-                        <i class="fas fa-money-bill-alt"></i> {{countryStats.money | niceNumber}}
-                        <i class="fas fa-percent"></i>: {{buildings.getTotalMultiplier()}}
-                        Upkeep: {{buildings.getTotalUpkeep()}}
-                        <i class="fas fa-briefcase"></i> {{countryStats.totalJobs}}
+            <div class="card">
+                <div class="card-header text-white bg-primary">
+                    Buildings
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="bg-secondary col-2" ng-repeat="structure in buildings.structures track by $index" ng-class="structure.isUnlocked ? '' : 'structureNotVisible'">
-            <div class="row">
-                <div class="col-7">
+                <div class="card-body">
                     <div class="row">
-                        <div class="col-12">
-                            <a class=href="#" uib-tooltip-template="'app/components/structure/templates/structuresTooltip.html'">
-                                <span>{{structure.name}} ({{structure.count}})</span>
-                            </a>
+                        <div class="col-4">
+                            <ul class="list-group">
+                                <li ng-repeat="structure in buildings.structures track by $index" ng-if="$index%3 == 0"
+                                    class="list-group-item list-group-item-action align-items-center"
+                                    ng-class="structure.isUnlocked ? '' : 'disabled'">
+                                    <div class="w-100">
+                                        <span uib-tooltip-template="'app/components/structure/templates/structuresTooltip.html'">
+                                            {{structure.name}}
+                                        </span>
+                                        <span class="badge badge-primary badge-pill">
+                                            {{structure.count}}
+                                        </span>
+
+                                        <button class="btn btn-sm btn-success float-right"
+                                                ng-disabled="!structure.isUnlocked || structure.cantAfford(buildings.countToBuy)"
+                                                ng-class="{'btn-danger': structure.cantAfford(buildings.countToBuy)}"
+                                                ng-click="structure.build(buildings.countToBuy)">
+                                            <span class="text-center">Buy x{{buildings.countToBuy}}</span>
+                                        </button>
+                                    </div>
+                                    <i class="fas fa-money-bill-alt"></i>
+                                    {{structure.getCost() * buildings.countToBuy | niceNumber}}
+                                    <i class="fas fa-flag"></i>
+                                    {{structure.getLandCost() * buildings.countToBuy}}
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-4">
+                            <ul class="list-group">
+                                <li ng-repeat="structure in buildings.structures track by $index" ng-if="$index%3 == 1"
+                                    class="list-group-item list-group-item-action align-items-center"
+                                    ng-class="structure.isUnlocked ? '' : 'disabled'">
+                                    <div class="w-100">
+                                        <span uib-tooltip-template="'app/components/structure/templates/structuresTooltip.html'">
+                                            {{structure.name}}
+                                        </span>
+                                        <span class="badge badge-primary badge-pill">
+                                            {{structure.count}}
+                                        </span>
+
+                                        <button class="btn btn-sm btn-success float-right"
+                                                ng-disabled="!structure.isUnlocked || structure.cantAfford(buildings.countToBuy)"
+                                                ng-class="{'btn-danger': structure.cantAfford(buildings.countToBuy)}"
+                                                ng-click="structure.build(buildings.countToBuy)">
+                                            <span class="text-center">Buy x{{buildings.countToBuy}}</span>
+                                        </button>
+                                    </div>
+                                    <i class="fas fa-money-bill-alt"></i>
+                                    {{structure.getCost() * buildings.countToBuy | niceNumber}}
+                                    <i class="fas fa-flag"></i>
+                                    {{structure.getLandCost() * buildings.countToBuy}}
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-4">
+                            <ul class="list-group">
+                                <li ng-repeat="structure in buildings.structures track by $index" ng-if="$index%3 == 2"
+                                    class="list-group-item list-group-item-action align-items-center"
+                                    ng-class="structure.isUnlocked ? '' : 'disabled'">
+                                    <div class="w-100">
+                                        <span uib-tooltip-template="'app/components/structure/templates/structuresTooltip.html'">
+                                            {{structure.name}}
+                                        </span>
+                                        <span class="badge badge-primary badge-pill">
+                                            {{structure.count}}
+                                        </span>
+
+                                        <button class="btn btn-sm btn-success float-right"
+                                                ng-disabled="!structure.isUnlocked || structure.cantAfford(buildings.countToBuy)"
+                                                ng-class="{'btn-danger': structure.cantAfford(buildings.countToBuy)}"
+                                                ng-click="structure.build(buildings.countToBuy)">
+                                            <span class="text-center">Buy x{{buildings.countToBuy}}</span>
+                                        </button>
+                                    </div>
+                                    <i class="fas fa-money-bill-alt"></i>
+                                    {{structure.getCost() * buildings.countToBuy | niceNumber}}
+                                    <i class="fas fa-flag"></i>
+                                    {{structure.getLandCost() * buildings.countToBuy}}
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <i class="fas fa-money-bill-alt"></i>
-                            {{structure.getCost() * buildings.countToBuy | niceNumber}}
-                            <i class="fas fa-flag"></i>
-                            {{structure.getLandCost() * buildings.countToBuy}}
-                        </div>
-                    </div>
-                </div>
-                <div class="col-5">
-                    <button class="btn btn-sm btn-success"
-                            ng-disabled="!structure.isUnlocked || structure.cantAfford(buildings.countToBuy)"
-                            ng-class="{'btn-danger': structure.cantAfford(buildings.countToBuy)}"
-                            ng-click="structure.build(buildings.countToBuy)">
-                        <span class="text-center">Buy x{{buildings.countToBuy}}</span>
-                    </button>
                 </div>
             </div>
         </div>

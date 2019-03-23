@@ -65,7 +65,7 @@ wciApp.controller('GameController', function (
     };
     $scope.leaders = leaderService;
     $scope.modalButtons = [];
-    $scope.currentView = "app/components/structure/buildingsView.html";
+    $scope.currentView = "app/components/military/militaryView.html";
     $scope.initGameModals = function () {
         $scope.modalButtons = [
             {
