@@ -79,8 +79,9 @@ wciApp.factory(
             buildingsService.init();
         };
         const militaryInit = function () {
-            playerService.military = new militaryService.PlayerMilitary();
-            playerService.military.init();
+            playerService.military = militaryService.playerMilitary;//TODO remove this...
+            playerService.military.playerMilitary.init();//TODO: remove this one too later
+            militaryService.playerMilitary.init();
         };
         const researchInit = function () {
             researchService.init();

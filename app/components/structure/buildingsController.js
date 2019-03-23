@@ -15,7 +15,7 @@ wciApp.controller(
 		$scope.helperModals = helperModalsService;
 
 		$scope.cantAfford = function (count, buildingIndex) {
-			if (playerService.baseStats.money >= this.getCost() * count && playerService.baseStats.land >= buildingsService.structures[buildingIndex].getLandCost() * count) return false;
+			if (playerService.baseStats.money >= $scope.getCost(buildingIndex) * count && playerService.baseStats.land >= buildingsService.structures[buildingIndex].getLandCost() * count) return false;
 
 			return true;
 		};
@@ -33,9 +33,9 @@ wciApp.controller(
 			if (building.statAffected === "unitCap") multiplier = leaderUnitCapMultiplier;
 			if (playerService.baseStats.money >= cost && building.isUnlocked &&
                 playerService.baseStats.land >= landCost) {
-				playerService.baseStats[this.statAffected] *= Math.pow(this.statMultiplier * this.countMultiplier, count);
-				playerService.baseStats[this.statAffected] += this.statAdder * count;
-				playerService.baseStats[this.statAffected] *= multiplier;// Add unitCap bonus above
+				playerService.baseStats[building.statAffected] *= Math.pow(building.statMultiplier * building.countMultiplier, count);
+				playerService.baseStats[building.statAffected] += building.statAdder * count;
+				playerService.baseStats[building.statAffected] *= multiplier;// Add unitCap bonus above
 				playerService.baseStats.totalJobs += building.getJobsIncreased() * count;
 				playerService.baseStats.money -= cost;
 				playerService.baseStats.land -= landCost;

@@ -185,6 +185,8 @@ wciApp.factory("militaryService", function
         }
     }
 
-    return { PlayerMilitary,
+    let playerMilitary = new PlayerMilitary();
+    playerMilitary.init();
+        return { playerMilitary,
         AiMilitary };
 });

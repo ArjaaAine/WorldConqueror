@@ -163,7 +163,7 @@ wciApp.controller('GameController', function (
 	// #region Private Methods
 	$scope.totalUpkeep = function () {
 		// Calculate upkeep
-		const total = militaryService.getTotalUpkeep() + advisorsService.getTotalUpkeep() + buildingsService.getTotalUpkeep();
+		const total = militaryService.playerMilitary.getTotalUpkeep() + advisorsService.getTotalUpkeep() + buildingsService.getTotalUpkeep();
 
 		playerService.baseStats.totalUpkeep = total;
 
