@@ -151,7 +151,7 @@ wciApp.controller('GameController', function (
 	const saveGame = function () {
 		saveService.save($scope.gameSlot);
 	};
-	const resetGame = function () {
+	$scope.resetGame = function () {
 		$interval.cancel(saveTimer);
 		saveService.reset($scope.gameSlot);
 		$scope.gameLoading = true;

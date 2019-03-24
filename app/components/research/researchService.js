@@ -2,7 +2,37 @@
 
 wciApp.factory("researchService", (gameDataService, $filter) => {
 
-	function initBonusProps (type, researchBonuses) {
+
+	function bonusFilter (bonus) {
+		return this === bonus.ID;
+	}
+
+	const research = {
+		scientists     : 1, // Total scientists we have unlocked/bought
+		maxScientists  : 5, // Max scientists we can hire, scientist can't go higher than maxScientists.
+		scientistPrice : 100,
+		baseScienceGain: 1, // This is how much science points is gained per turn for each research type
+		sciencePoints  : 0, // Store leftover science points after research is finished.(like in civ)
+		researchType   : [], // Array to store various research types such as War/Economy
+		isUnlocked     : {}, // Object key == research name/id, each store a boolean which we save only.
+		researchBonuses: [],
+		totalBonus     : {},
+		isVisible      : {},
+	};
+
+	/* PUBLIC METHODS */
+	research.init = function () {
+		const researchBonuses = gameDataService.ResearchBonuses;
+
+		for (const { type } of gameDataService.ResearchData) {
+			const researchType = gameDataService[`${type}Research`];
+
+			this.researchType.push(type);
+			this.initBonusProps(researchType, researchBonuses);
+			this._checkUnlockedResearch(researchType);
+		}
+	};
+	research.initBonusProps = function(type, researchBonuses) {
 		const arr = type;
 		const len = arr.length;
 
@@ -30,35 +60,6 @@ wciApp.factory("researchService", (gameDataService, $filter) => {
 			if (value.isUnlocked) this.unlockResearch(type, i, true);
 		}
 	}
-	function bonusFilter (bonus) {
-		return this === bonus.ID;
-	}
-
-	const research = {
-		scientists     : 1, // Total scientists we have unlocked/bought
-		maxScientists  : 5, // Max scientists we can hire, scientist can't go higher than maxScientists.
-		scientistPrice : 100,
-		baseScienceGain: 1, // This is how much science points is gained per turn for each research type
-		sciencePoints  : 0, // Store leftover science points after research is finished.(like in civ)
-		researchType   : [], // Array to store various research types such as War/Economy
-		isUnlocked     : {}, // Object key == research name/id, each store a boolean which we save only.
-		researchBonuses: [],
-		totalBonus     : {},
-		isVisible      : {},
-	};
-
-	/* PUBLIC METHODS */
-	research.init = function () {
-		const researchBonuses = gameDataService.ResearchBonuses;
-
-		for (const { type } of gameDataService.ResearchData) {
-			const researchType = gameDataService[`${type}Research`];
-
-			this.researchType.push(type);
-			initBonusProps(researchType, researchBonuses);
-			this._checkUnlockedResearch(researchType);
-		}
-	};
 	research.scienceGain = function () {
 		return this.baseScienceGain + this.scientists * 3;// In the future each scientist will have it's own stats, for now it's simple
 	};

@@ -82,8 +82,8 @@ wciApp.factory("chartsService", function
 
         const money = playerService.baseStats.money;
         const moneyIncome = playerService.income();
-        const moneyUpkeep = playerService.totalUpkeep();
-        const moneyGrowth = playerService.moneyGrowth();
+        const moneyUpkeep = playerService.baseStats.totalUpkeep;
+        const moneyGrowth = playerService.income() - playerService.baseStats.totalUpkeep;
 
         const food = playerService.baseStats.totalFood;
         const foodIncome = playerService.foodFlow();
