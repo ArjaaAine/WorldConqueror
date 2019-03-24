@@ -30,13 +30,13 @@ wciApp.controller(
 				const bonuses = research.bonus;
 
 				if (!unlockFree) this.sciencePoints -= price;
-				this.isUnlocked[name] = true;
-				this.isVisible[name] = false;
+				researchService.isUnlocked[name] = true;
+				researchService.isVisible[name] = false;
 
 				// Unlock bonuses
 				if (bonuses) {
 					// Bonuses = $filter("split")(bonuses);
-					for (const bonusData of bonuses) this._unlockBonus(bonusData);
+					for (const bonusData of bonuses) researchService._unlockBonus(bonusData);
 				}
 
 				// Unlock buildings

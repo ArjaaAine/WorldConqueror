@@ -70,7 +70,7 @@ wciApp.factory("bonusesService", function (
 			const totalBonus = {};
 
 			// Commented out because activeMinisters need to be initialized somewhere so we dont ge an error here. 22-09-2018
-			ministersService.activeMinisters.forEach((minister) => {
+			ministerService.activeMinisters.forEach((minister) => {
 				totalBonus[minister.statAffected] = totalBonus[minister.statAffected] || 0;
 				totalBonus[minister.statAffected] += minister.statAdder;
 			});
