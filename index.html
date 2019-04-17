@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="en" ng-app="WCI" ng-cloak>
 <head>
     <meta charset="utf-8">
@@ -56,6 +56,9 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div class="milestones-button">
+                        <button ng-click="openMilestonesModal()">Open Milestones</button>
+                    </div>
                     <div class="debug-buttons">
                         <button ng-click="hideDebug=true" ng-show="!hideDebug">Hide</button>
                         <button ng-click="hideDebug=false" ng-show="hideDebug">Show</button>
@@ -79,7 +82,7 @@
 
                     <div class="w-100"></div>
                     <div class="col-2 offset-9 game-time">
-                        <span class="label label-info">Year: {{1900 + player.baseStats.currentTurn}}</span>
+                        <span class="label label-info">Year: {{1900 + player.baseStats.year}}</span>
                         <button class="btn-danger btn-xs" ng-click="resetGame()">
                                 Reset
                         </button>
@@ -134,11 +137,13 @@
             </div>
         </div>
     </div>
-    <ng-include src="'app/components/introScreen/introscreenView.html'"></ng-include>
+    <ng-include src="'app/components/Views/introscreenView.html'"></ng-include>
     <div ng-include="'app/shared/notifications/notificationsView.html'"></div>
     <ng-include src="'app/shared/charts/chartsView.html'"></ng-include>
 
-    <ng-include src="'app/components/war/warConfirmation/war_confirmationView.html'"></ng-include>
+    <ng-include src="'app/components/Views/war_confirmationView.html'"></ng-include>
+    <ng-include src="'app/components/Views/eventsView.html'"></ng-include>
+    <ng-include src="'app/components/Views/milestonesView.html'"></ng-include>
 </div>
     <!--Google Analytics-->
     <script>
@@ -166,33 +171,36 @@
         <script src="app/app.routes.js"></script>
 
         <!-- Controllers -->
-        <script src="app/components/changelog/changelogController.js"></script>
-        <script src="app/components/country/countryController.js"></script>
-        <script src="app/components/game/GameControllers.js"></script>
-        <script src="app/components/military/militaryController.js"></script>
-        <script src="app/components/research/researchController.js"></script>
-        <script src="app/components/structure/buildingsController.js"></script>
-        <script src="app/components/ministers/ministersHiringController.js"></script>
-        <script src="app/components/war/warController.js"></script>
-        <script src="app/components/war/warConfirmation/warConfirmationController.js"></script>
+        <script src="app/components/Controllers/countryController.js"></script>
+        <script src="app/components/Controllers/GameControllers.js"></script>
+        <script src="app/components/Controllers/militaryController.js"></script>
+        <script src="app/components/Controllers/researchController.js"></script>
+        <script src="app/components/Controllers/buildingsController.js"></script>
+        <script src="app/components/Controllers/ministersHiringController.js"></script>
+        <script src="app/components/Controllers/warController.js"></script>
+        <script src="app/components/Controllers/warConfirmationController.js"></script>
+        <script src="app/components/Controllers/eventsController.js"></script>
+        <script src="app/components/Controllers/milestonesController.js"></script>
 
         <!-- Services -->
-        <script src="app/components/advisors/advisorsService.js"></script>
-        <script src="app/components/country/playerService.js"></script>
-        <script src="app/components/country/leaderService.js"></script>
-        <script src="app/components/government/lawsService.js"></script>
-        <script src="app/components/military/militaryService.js"></script>
-        <script src="app/components/research/researchService.js"></script>
-        <script src="app/components/worldCountry/worldCountryService.js"></script>
-        <script src="app/components/game/saveService.js"></script>
-        <script src="app/components/game/initService.js"></script>
-        <script src="app/components/ministers/ministerService.js"></script>
-        <script src="app/components/structure/buildingsService.js"></script>
-        <script src="app/components/bonuses/bonusesService.js"></script>
-        <script src="app/components/game/gameDataService.js"></script>
-        <script src="app/components/worldCountry/aiPlayerService.js"></script>
-        <script src="app/components/war/warService.js"></script>
-        <script src="app/components/war/warEvent.js"></script>
+        <script src="app/components/Services/advisorsService.js"></script>
+        <script src="app/components/Services/playerService.js"></script>
+        <script src="app/components/Services/leaderService.js"></script>
+        <script src="app/components/Services/lawsService.js"></script>
+        <script src="app/components/Services/militaryService.js"></script>
+        <script src="app/components/Services/researchService.js"></script>
+        <script src="app/components/Services/worldCountryService.js"></script>
+        <script src="app/components/Services/saveService.js"></script>
+        <script src="app/components/Services/initService.js"></script>
+        <script src="app/components/Services/ministerService.js"></script>
+        <script src="app/components/Services/buildingsService.js"></script>
+        <script src="app/components/Services/bonusesService.js"></script>
+        <script src="app/components/Services/gameDataService.js"></script>
+        <script src="app/components/Services/aiPlayerService.js"></script>
+        <script src="app/components/Services/warService.js"></script>
+        <script src="app/components/Services/warEventService.js"></script>
+        <script src="app/components/Services/eventsService.js"></script>
+        <script src="app/components/Services/milestonesService.js"></script>
 
         <!-- Shared Controllers -->
         <script src="app/shared/advisorHelp/advisorHelperController.js"></script>

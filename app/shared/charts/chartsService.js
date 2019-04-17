@@ -73,7 +73,7 @@ wciApp.factory("chartsService", function
     };
 
     charts.update = function () {
-        charts.history.timeLine.push(`Turn: ${playerService.baseStats.currentTurn}`);// Store timeLine so we can use it in chart
+        charts.history.timeLine.push(`Turn: ${playerService.baseStats.year}`);// Store timeLine so we can use it in chart
         // Store up to 7 days of data(or more, just make sure to add another object to store older data)
         const population = playerService.baseStats.population;
         const populationIncome = playerService.actualGrowthRate();
@@ -85,7 +85,7 @@ wciApp.factory("chartsService", function
         const moneyUpkeep = playerService.baseStats.totalUpkeep;
         const moneyGrowth = playerService.income() - playerService.baseStats.totalUpkeep;
 
-        const food = playerService.baseStats.totalFood;
+        const food = playerService.baseStats.food;
         const foodIncome = playerService.foodFlow();
         const foodUpkeep = playerService.foodDemand();
         const foodGrowth = playerService.foodGrowth();

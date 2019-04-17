@@ -24,6 +24,7 @@ wciApp.factory("bonusesService", function (
 			this.researchBonuses = {};
 			this.lawsBonuses = {};
 			this.ministersBonuses = {};
+			this.eventBonuses = {};
 		}
 
 		updateResearch () {

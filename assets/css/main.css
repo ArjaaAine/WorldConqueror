@@ -261,7 +261,12 @@ a {
     left: 1%;
     top: 28%;
 }
-
+.milestones-button{
+    position:absolute;
+    z-index: 2;
+    left: 1%;
+    top: 15%
+}
 .leader-icon{
     position:absolute;
     z-index: 1;

@@ -31,6 +31,7 @@ wciApp.factory(
 				this.conqueredCountries = [];
 				this.startingCountries = ["US"];// We can have more than 1...
 				this.leaderName = "Rohan";
+				this.paidCurrency = 0;//In game paid currency...for now - Mariusz - 13 April 2019
 				this.baseStats = {
 					// One Month is signfied as one second
 					countryName    : "Wadiya",
@@ -42,7 +43,6 @@ wciApp.factory(
 					//  Desc : "I am a noob, have mercy!",
 					//  Value: 1,
 					// },
-					time                  : 0, // In hours
 					currentStabilityIndex : 1, // This is used to determine whether stability will grow or decrease this turn. +ve means growth in stability, -ve means decrease. This is set by various policies etc.
 					previousStabilityIndex: 1, // Storing previous stability index to determine if stability has gone down or not.
 					turnsAtCurrentState   : 1, // This is the number of months current state has been present (stable or unstable), which determines the exponential factor for the stability
@@ -59,7 +59,7 @@ wciApp.factory(
 
 					// Consumption
 					perCapitaConsumption: 5, // 1 person's monthly consumption = 3 Mcal * 30 ~ 100 Mcal. (3Mcal is based on the nation's development level. http://www.who.int/nutrition/topics/3_foodconsumption/en/)
-					totalFood           : 100000, // In megaCalorie = 1000*kcal...
+					food           : 100000, // In megaCalorie = 1000*kcal...
 					baseFoodGrowth      : 550000,
 					hunger              : 0,
 
@@ -74,7 +74,7 @@ wciApp.factory(
 					siege             : 0,
 					unitCap           : 0,
 					baseResearchPoints: 0,
-					currentTurn       : 0,
+					year              : 0,
 					land              : 100,
 
 					// Laws
@@ -182,9 +182,6 @@ wciApp.factory(
 				const currentStabilityIndex = this.getCurrentStabilityIndex();
 				const previousStabilityIndex = this.baseStats.previousStabilityIndex;
 
-				// Hour
-				this.baseStats.time++;
-
 				// This checks and see if current and previous were either both +ve or both -ve.
 				if (currentStabilityIndex > 0 && previousStabilityIndex > 0 ||
           currentStabilityIndex < 0 && previousStabilityIndex < 0) {
@@ -217,9 +214,9 @@ wciApp.factory(
 			}
 
 			getNewConsumption () {
-				this.baseStats.totalFood += this.foodFlow();
-				if (this.baseStats.totalFood < 0) {
-					this.baseStats.totalFood = 0;
+				this.baseStats.food += this.foodFlow();
+				if (this.baseStats.food < 0) {
+					this.baseStats.food = 0;
 					this.baseStats.hunger = Math.round(Math.abs(this.foodFlow() / this.foodDemand()) * 100);
 				} else {
 					this.baseStats.hunger = 0;

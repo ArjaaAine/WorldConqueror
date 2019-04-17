@@ -5,7 +5,7 @@
         </a>
         <h4 class="mt-0 ml-auto clickable d-inline border-bottom" ng-click="startGame(true, $index)">
             {{data.leaders.currentLeader.name}} -
-            <span class="small">Year: {{1900 + data.baseStats.currentTurn}}</span>
+            <span class="small">Year: {{1900 + data.baseStats.year}}</span>
         </h4>
         <button class="btn-danger btn-sm ml-auto" ng-show="data.baseStats !== undefined" ng-click="saveService.reset($index); getLocalStorageData();">Delete</button>
     </div>

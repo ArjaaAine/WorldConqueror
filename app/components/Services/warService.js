@@ -40,7 +40,7 @@ wciApp.service("warService", function
 				playerService.countriesAtWar.push(countryData.countryCode);
 			});
 			warEventService.addEvent({ name       : "Declared War",
-				year       : playerService.baseStats.currentTurn,
+				year       : playerService.baseStats.year,
 				description: `Player declared war on ${countryCode} lead by ${defenderAi.leaderName}` });
 		}
 
@@ -89,7 +89,7 @@ wciApp.service("warService", function
 			for (let i = 0; i < battles.length; i++) if (attacker === battles.attacker) this.returnUnits(countryCode, i);
 			warEventService.addEvent({
 				name       : "Peace Treaty",
-				year       : playerService.baseStats.currentTurn,
+				year       : playerService.baseStats.year,
 				description: `${attacker.leaderName} made peace with ${countryCode}`,
 			});
 		}
@@ -109,7 +109,7 @@ wciApp.service("warService", function
 			for (const battlefieldObject of this.battlefields[countryCode].battles) if (battlefieldObject.attacker === attacker) War.mergeUnits(battlefieldObject, units, attacker);
 			warEventService.addEvent({
 				name       : "Sending Units",
-				year       : playerService.baseStats.currentTurn,
+				year       : playerService.baseStats.year,
 				description: `${attacker.leaderName} sent units to ${countryCode}`,
 			});
 		}
@@ -140,7 +140,7 @@ wciApp.service("warService", function
 			}
 			warEventService.addEvent({
 				name       : "Returning Troops",
-				year       : playerService.baseStats.currentTurn,
+				year       : playerService.baseStats.year,
 				description: `Player returned units from ${countryCode}`,
 			});
 		}
@@ -194,7 +194,7 @@ wciApp.service("warService", function
 					battlefield.battlePhase++;
 					warEventService.addEvent({
 						name       : "Battle Phase over",
-						year       : playerService.baseStats.currentTurn,
+						year       : playerService.baseStats.year,
 						description: `Naval battle phase is finished, units can fight on land in a country of ${battlefield.countryAtStake}`,
 					});
 				}
@@ -209,7 +209,7 @@ wciApp.service("warService", function
 					battlefield.battlePhase++;
 					warEventService.addEvent({
 						name       : "Battle Phase over",
-						year       : playerService.baseStats.currentTurn,
+						year       : playerService.baseStats.year,
 						description: `Land battle phase is finished in a country of ${battlefield.countryAtStake}, might want to add third phase`,
 					});
 				}
@@ -251,14 +251,14 @@ wciApp.service("warService", function
 
 			warEventService.addEvent({
 				name       : `Units Died by the hand of ${battlefield.defender.leaderName}`,
-				year       : playerService.baseStats.currentTurn,
+				year       : playerService.baseStats.year,
 				description: `Units died total:\n ${
 					(unitLostToText(attackerKilledUnits))
 				}`,
 			});
 			warEventService.addEvent({
 				name       : `Units Killed in a country of ${battlefield.countryAtStake}`,
-				year       : playerService.baseStats.currentTurn,
+				year       : playerService.baseStats.year,
 				description: `Units killed total:\n ${
 					(unitLostToText(defenderKilledUnits))
 				}`,
@@ -323,7 +323,7 @@ wciApp.service("warService", function
 			}
 			warEventService.addEvent({
 				name       : "Country taken over",
-				year       : playerService.baseStats.currentTurn,
+				year       : playerService.baseStats.year,
 				description: `${attacker.leaderName} obtained a country ${countryAtStake} after beating the ${defender.leaderName}`,
 			});
 		}

@@ -1,6 +1,6 @@
 wciApp.controller(
 	"ResearchController",
-	($scope, playerService, gameDataService, researchService, buildingsService, lawsService) => {
+	($scope, playerService, gameDataService, researchService, buildingsService, lawsService, $filter) => {
 		$scope.research = researchService;
 		$scope.gameData = gameDataService;
 
@@ -29,7 +29,7 @@ wciApp.controller(
 				let lawToUnlock = research.lawUnlock;
 				const bonuses = research.bonus;
 
-				if (!unlockFree) this.sciencePoints -= price;
+				if (!unlockFree) $scope.research.sciencePoints -= price;
 				researchService.isUnlocked[name] = true;
 				researchService.isVisible[name] = false;
 

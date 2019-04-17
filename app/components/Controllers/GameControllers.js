@@ -23,6 +23,8 @@ wciApp.controller('GameController', function (
 	modalService,
 	chartsService,
 	leaderService,
+	eventService,
+	milestonesService,
 	$log,
 ) {
 	let saveTimer;
@@ -72,13 +74,13 @@ wciApp.controller('GameController', function (
 	};
 	$scope.leaders = leaderService;
 	$scope.modalButtons = [];
-	$scope.currentView = "app/components/structure/buildingsView.html";
+	$scope.currentView = "app/components/Views/buildingsView.html";
 	$scope.initGameModals = function () {
 		$scope.modalButtons = [
 			{
 				name          : "Governance",
 				icon          : "fas fa-gavel",
-				templateUrl   : "app/components/government/internalAffairsView.html",
+				templateUrl   : "app/components/Views/internalAffairsView.html",
 				controller    : "CountryController",
 				isActive      : true,
 				disabledReason: "",
@@ -88,7 +90,7 @@ wciApp.controller('GameController', function (
 			{
 				name          : "Structures",
 				icon          : "fas fa-university",
-				templateUrl   : "app/components/structure/buildingsView.html",
+				templateUrl   : "app/components/Views/buildingsView.html",
 				controller    : "StructureController",
 				isActive      : true,
 				clickCallback : $scope.changeView,
@@ -97,7 +99,7 @@ wciApp.controller('GameController', function (
 			{
 				name          : "Military",
 				icon          : "fas fa-warehouse",
-				templateUrl   : "app/components/military/militaryView.html",
+				templateUrl   : "app/components/Views/militaryView.html",
 				controller    : "MilitaryController",
 				isActive      : true,
 				clickCallback : $scope.changeView,
@@ -106,7 +108,7 @@ wciApp.controller('GameController', function (
 			{
 				name          : "Research",
 				icon          : "fas fa-university",
-				templateUrl   : "app/components/research/researchView.html",
+				templateUrl   : "app/components/Views/researchView.html",
 				controller    : "ResearchController",
 				isActive      : true,
 				clickCallback : $scope.changeView,
@@ -115,7 +117,7 @@ wciApp.controller('GameController', function (
 			{
 				name          : "War",
 				icon          : "fas fa-fire",
-				templateUrl   : "app/components/war/warView.html",
+				templateUrl   : "app/components/Views/warView.html",
 				controller    : "WarController",
 				isActive      : true,
 				clickCallback : $scope.changeView,
@@ -130,15 +132,6 @@ wciApp.controller('GameController', function (
 				clickCallback : $scope.openModal,
 				disabledReason: "",
 			},
-			{
-				name          : "Changelog",
-				icon          : "fas fa-globe",
-				templateUrl   : "app/components/changelog/changelogView.html",
-				controller    : "ChangelogController",
-				isActive      : true,
-				clickCallback : $scope.changeView,
-				disabledReason: "",
-			},
 		];
 	};
 	$scope.changeView = function (index) {
@@ -151,6 +144,7 @@ wciApp.controller('GameController', function (
 	const saveGame = function () {
 		saveService.save($scope.gameSlot);
 	};
+
 	$scope.resetGame = function () {
 		$interval.cancel(saveTimer);
 		saveService.reset($scope.gameSlot);
@@ -193,8 +187,35 @@ wciApp.controller('GameController', function (
 		worldCountryService.updateLogic();
 		warService.update();
 		chartsService.update();
-
+		milestonesService.update();
+		eventService.immediateEvent.getRandomEvent();
+		eventService.choiceEvent.getRandomEvent();
+		openEventsModal();
 	};
+
+	$scope.openMilestonesModal = function () {
+		const modalInstance = modalService.open({
+			templateUrl: "milestonesModal.html",
+			controller : "MilestonesController",
+			size       : "lg",
+		});
+
+		modalInstance.result.then(() => {
+			$log.info(`Modal dismissed at: ${new Date()}`);
+		});
+	};
+
+	function openEventsModal () {
+		const modalInstance = modalService.open({
+			templateUrl: "eventsModal.html",
+			controller : "EventsController",
+			size       : "md",
+		});
+
+		modalInstance.result.then(() => {
+			$log.info(`Modal dismissed at: ${new Date()}`);
+		});
+	}
 
 	// #endregion
 
@@ -246,7 +267,7 @@ wciApp.controller('GameController', function (
 		// const startTime = performance.now();
 
 		timerfunction();
-		playerService.baseStats.currentTurn += 1;
+		playerService.baseStats.year += 1;
 
 		/* TODO:  $$$$ PERFORMANCE CHECK END $$$$ */
 		// const duration = performance.now() - startTime;

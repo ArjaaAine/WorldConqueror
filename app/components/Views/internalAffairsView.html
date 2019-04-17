@@ -8,8 +8,8 @@
                 <div class="card-body">
                     <div class="card bg-dark mb-3">
                         <div class="col-12">
-                            <div class="row" ng-include="'app/components/ministers/ministersView.html'"></div>
-                            <!--<div class="row" ng-include="'app/components/ministers/ministersHireModal.html'"></div>-->
+                            <div class="row" ng-include="'app/components/Views/ministersView.html'"></div>
+                            <div class="row" ng-include="'app/components/Views/ministersHireModal.html'"></div>
                         </div>
                     </div>
                     <div class="card bg-white mb-3">
@@ -41,16 +41,16 @@
                                             <p>{{selectedLaw.influenceCost}} influence</p>
                                             <div class="mt-auto">
                                                 <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" ng-class="getProgressBarClass()" 
+                                                    <div class="progress-bar" role="progressbar" ng-class="getProgressBarClass()"
                                                          aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" ng-style="{width : ( getProgressBarWidth() + '%' ) }">
                                                         <span class="sr-only">40% Complete (success)</span>
                                                     </div>
                                                 </div>
-                                                <button ng-click="enactLaw(selectedLawIndex)" ng-class="!selectedLaw.isActive ? 'btn-success': 'hidden'" 
+                                                <button ng-click="enactLaw(selectedLawIndex)" ng-class="!selectedLaw.isActive ? 'btn-success': 'hidden'"
                                                         ng-disabled="selectedLaw.isActive">
                                                     Enact
                                                 </button>
-                                                <button ng-click="laws.repealLaw(selectedLawIndex)" ng-class="selectedLaw.isActive ? 'btn-danger': 'hidden'" 
+                                                <button ng-click="laws.repealLaw(selectedLawIndex)" ng-class="selectedLaw.isActive ? 'btn-danger': 'hidden'"
                                                         ng-disabled="!selectedLaw.isActive">
                                                     Repeal
                                                 </button>

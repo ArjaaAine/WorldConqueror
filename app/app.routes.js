@@ -8,12 +8,6 @@ wciApp.config(function ($routeProvider) {
     //             controller: 'CountryController',
     //             controllerAs: 'countryCtrl'
     //         })
-    //     .when('/changelog',
-    //         {
-    //             templateUrl: 'app/components/changelog/changelogView.html',
-    //             controller: 'ChangelogController',
-    //             controllerAs: 'cl'
-    //         })
     //     .when('/structure',
     //         {
     //             templateUrl: 'app/components/structure/buildingsView.html',

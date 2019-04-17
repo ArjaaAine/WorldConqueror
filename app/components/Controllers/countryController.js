@@ -132,8 +132,8 @@ wciApp.controller("CountryController", (
 	// #endregion
 
 	// #region Private Methods
-	var filterMinister = function (ministerType) {
-		return this.allMinisters.filter(ministerObject => ministerObject.ministerType.includes(ministerType))[0];
+	let filterMinister = function (ministerType) {
+		return $scope.ministers.allMinisters.filter(ministerObject => ministerObject.ministerType.includes(ministerType))[0];
 	};
 
 	// #endregion

@@ -1,0 +1,40 @@
+<div>
+    <script type="text/ng-template" id="milestonesModal.html">
+        <div class="container">
+            <div class="row">
+                <div class="col text-center border-bottom">
+                    <h4>Milestones</h4>
+                </div>
+            </div>
+            <!-- Add a divider of some sorts, padding/margin/border-->
+            <div class="row" ng-repeat="( milestoneDifficulty, milestoneData ) in milestones">
+                <div class="col">
+                    <div class="row">
+                        <h4>{{milestoneDifficulty | upperCase}}: <small>{{milestonesFinished[milestoneDifficulty]}}/{{milestoneData.length}}</small></h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto mb-1" ng-repeat="milestone in milestoneData track by $index">
+                            <!--Milestone cards separated by margin 1px and border 1px around each card.-->
+                            <!--{{milestone.name}}-->
+                        <a uib-popover-template="milestonePopoverTemplate"
+                            popover-append-to-body="true"
+                            popover-trigger="'mouseenter'"
+                            popover-placement="auto top"
+                            popover-title="{{milestone.name | upperCase}}"
+                            popover-enable="!milestone.isHidden">
+                            <img class="img-fluid" ng-src="assets/img/milestones/{{milestone.name}}.png" onError="this.src='assets/img/milestones/default.png'" ng-hide="milestone.isHidden" />
+                            <img class="img-fluid" ng-src="assets/img/milestones/secret.png" ng-show="milestone.isHidden" />
+                            <div class="border border-primary text-center font-9pt progress position-relative mt-0 mb-0" ng-hide="milestone.isHidden">
+                                <div class="progress-bar" role="progressbar" style="width: {{milestone.percentageProgress}}%;"></div>
+                                <small class="justify-content-center d-flex position-absolute w-100 text-black-50 bold" ng-hide="milestone.isComplete">{{milestone.currentTier}}/{{milestone.requirements.length}}</small>
+                                <small class="justify-content-center d-flex position-absolute w-100 bold" ng-show="milestone.isComplete">DONE!</small>
+                            </div>
+                        </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+</div>
+<ng-include src="'app/components/Views/milestoneTemplate.html'"></ng-include>

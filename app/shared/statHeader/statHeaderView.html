@@ -41,7 +41,7 @@
                         <i class="glyphicon glyphicon-cutlery" tooltip-placement="auto bottom-right" uib-tooltip="Food"></i>
                     </span>
                     <span ng-mouseenter="updateTooltip()">
-                        {{player.baseStats.totalFood | number: 0 | niceNumber}}
+                        {{player.baseStats.food | number: 0 | niceNumber}}
                     </span>
                     <span class="bold hidden-xs" tooltip-placement="auto bottom-right"
                           ng-class="player.foodFlow() > 0 ? 'text-success' : 'text-danger'"

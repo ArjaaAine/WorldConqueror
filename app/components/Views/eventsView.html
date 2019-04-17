@@ -1,0 +1,48 @@
+<div>
+    <script type="text/ng-template" id="eventsModal.html">
+        <div class="container">
+            <!-- close modal button -->
+            <div class="float-right">
+                <button class="btn-danger" ng-click="close()">x</button>
+            </div>
+            <!-- Choice Events -->
+            <div class="row">
+                <div class="col">
+                    <h3 class="text-primary">{{choiceEvent.currentEvent.name}}</h3>
+                    <p>{{choiceEvent.currentEvent.description}}</p>
+                    <button class="btn-primary btn-sm" ng-hide="choiceEventisDone" ng-repeat="answer in choiceEvent.currentEvent.choices track by $index" ng-click="chooseAnswer($index)"> {{answer}}</button>
+                    <div ng-show="choiceEventisDone">
+                        <p class="bold">{{choiceEventAnswer}}</p>
+                        {{choiceEventResult.type}}:
+                        <span class="bold" ng-class="choiceEventResult.statAdder > 0 ? 'text-success' : 'text-danger'">{{choiceEventResult.statAdder}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Immediate Events -->
+            <div class="row border">
+                <div class="col">
+                    <div class="row" ng-repeat="event in events.immediateEvent.currentEvents track by $index">
+                        <div class="col-10">
+                            <div class="row">
+                                <div class="col-6">
+                                    <h3 class="bold">{{event.name}}</h3>
+                                </div>
+                                <div class="col-2 offset-4">
+                                    <button class="btn-default" ng-click="removeEvent($index)">x</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <p>{{event.description}}</p>
+                                    <span class="bold">{{event.type}}: </span>
+                                    <span class="bold" ng-class="event.amount > 0 ? 'text-success' : 'text-danger'">{{event.amount}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+</div>
