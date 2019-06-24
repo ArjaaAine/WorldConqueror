@@ -1,7 +1,6 @@
 "use strict";
 
-wciApp.factory("researchService", (gameDataService, $filter) => {
-
+wciApp.factory("researchService", function (gameDataService, $filter) {
 
 	function bonusFilter (bonus) {
 		return this === bonus.ID;
@@ -32,7 +31,7 @@ wciApp.factory("researchService", (gameDataService, $filter) => {
 			this._checkUnlockedResearch(researchType);
 		}
 	};
-	research.initBonusProps = function(type, researchBonuses) {
+	research.initBonusProps = function (type, researchBonuses) {
 		const arr = type;
 		const len = arr.length;
 
@@ -59,7 +58,7 @@ wciApp.factory("researchService", (gameDataService, $filter) => {
 			}
 			if (value.isUnlocked) this.unlockResearch(type, i, true);
 		}
-	}
+	};
 	research.scienceGain = function () {
 		return this.baseScienceGain + this.scientists * 3;// In the future each scientist will have it's own stats, for now it's simple
 	};

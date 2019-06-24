@@ -1,45 +1,45 @@
 wciApp.config(function ($routeProvider) {
 
-    /* No longer in use, since we have modals */
-    // $routeProvider
-    //     .when('/',
-    //         {
-    //             templateUrl: 'app/components/government/internalAffairsView.html',
-    //             controller: 'CountryController',
-    //             controllerAs: 'countryCtrl'
-    //         })
-    //     .when('/structure',
-    //         {
-    //             templateUrl: 'app/components/structure/buildingsView.html',
-    //             controller: 'StructureController',
-    //             controllerAs: 'structureCtrl'
-    //         })
-    //     .when('/military',
-    //         {
-    //             templateUrl: 'app/components/military/militaryView.html',
-    //             controller: 'MilitaryController',
-    //             controllerAs: 'militaryCtrl'
-    //         })
-    //     .when('/research',
-    //         {
-    //             templateUrl: 'app/components/research/researchView.html',
-    //             controller: 'ResearchController',
-    //             controllerAs: 're'
-    //         })
-    //     .when('/war',
-    //         {
-    //             templateUrl: 'app/components/war/warView.html',
-    //             controller: 'WarController',
-    //             controllerAs: 'war'
-    //         })
-    //     .when('/charts',
-    //         {
-    //             templateUrl: 'app/shared/charts/chartsView.html',
-    //             controller: 'ChartsController',
-    //             controllerAs: 'charts'
-    //         })
-    //     .otherwise({
-    //         redirectTo: '/'
-    //     });
+	/* No longer in use, since we have modals */
+	// $routeProvider
+	//     .when('/',
+	//         {
+	//             templateUrl: 'app/components/government/internalAffairsView.html',
+	//             controller: 'CountryController',
+	//             controllerAs: 'countryCtrl'
+	//         })
+	//     .when('/structure',
+	//         {
+	//             templateUrl: 'app/components/structure/buildingsView.html',
+	//             controller: 'StructureController',
+	//             controllerAs: 'structureCtrl'
+	//         })
+	//     .when('/military',
+	//         {
+	//             templateUrl: 'app/components/military/militaryView.html',
+	//             controller: 'MilitaryController',
+	//             controllerAs: 'militaryCtrl'
+	//         })
+	//     .when('/research',
+	//         {
+	//             templateUrl: 'app/components/research/researchView.html',
+	//             controller: 'ResearchController',
+	//             controllerAs: 're'
+	//         })
+	//     .when('/war',
+	//         {
+	//             templateUrl: 'app/components/war/warView.html',
+	//             controller: 'WarController',
+	//             controllerAs: 'war'
+	//         })
+	//     .when('/charts',
+	//         {
+	//             templateUrl: 'app/shared/charts/chartsView.html',
+	//             controller: 'ChartsController',
+	//             controllerAs: 'charts'
+	//         })
+	//     .otherwise({
+	//         redirectTo: '/'
+	//     });
 });
 

@@ -1,13 +1,12 @@
-﻿'use strict';
+"use strict";
 
-wciApp.factory('notificationService', function (playerService) {
+wciApp.factory("notificationService", function (playerService) {
 
-    var notification = {
-        show: false,
-        title: '',
-        description: ''
-    };
+	const notification = {
+		show       : false,
+		title      : "",
+		description: "",
+	};
 
-    
-    return notification;
+	return notification;
 });

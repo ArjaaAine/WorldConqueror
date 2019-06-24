@@ -1,9 +1,10 @@
-wciApp.service('modalService', function($uibModal) {
-    let methods =
+wciApp.service("modalService", function ($uibModal) {
+	const methods =
         {
-            open: function(options) {
-                return $uibModal.open(options);
-            }
+        	open (options) {
+        		return $uibModal.open(options);
+        	},
         };
-    return methods;
+
+	return methods;
 });

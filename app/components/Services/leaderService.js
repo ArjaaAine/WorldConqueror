@@ -1,85 +1,85 @@
 "use strict";
 // eslint-disable-next-line
 wciApp.factory("leaderService", function (gameDataService, $filter) {
-  const leaders = {};
+	const leaders = {};
 
-  leaders.currentLeader = {
-    bonuses  : {},
-    negatives: {},
-  };
-  leaders.list = [];
-  leaders.selectedIndex = 0;
+	leaders.currentLeader = {
+		bonuses  : {},
+		negatives: {},
+	};
+	leaders.list = [];
+	leaders.selectedIndex = 0;
 
-  leaders.init = function () {
-    leaders.list = [];
-    const leadersData = gameDataService.Leaders;
+	leaders.init = function () {
+		leaders.list = [];
+		const leadersData = gameDataService.Leaders;
 
-    for (const leader of leadersData.values()) {
-      const bonus = $filter("split")(leader.bonus);
-      const bonusName = this.getDescription(bonus);
-      const bonusValue = $filter("split")(leader.bonusValue).map(string => parseFloat(string));
-      const description = leader.description;
-      const name = leader.name;
-      const image = leader.image;
-      const negative = $filter("split")(leader.negative);
-      const negativeName = this.getDescription(negative);
-      const negativeValue = $filter("split")(leader.negativeValue).map(string => parseFloat(string));
-      const bonuses = this.makeObject(bonus, bonusValue, bonusName);
-      const negatives = this.makeObject(negative, negativeValue, negativeName);
+		for (const leader of leadersData.values()) {
+			const bonus = $filter("split")(leader.bonus);
+			const bonusName = this.getDescription(bonus);
+			const bonusValue = $filter("split")(leader.bonusValue).map(string => parseFloat(string));
+			const description = leader.description;
+			const name = leader.name;
+			const image = leader.image;
+			const negative = $filter("split")(leader.negative);
+			const negativeName = this.getDescription(negative);
+			const negativeValue = $filter("split")(leader.negativeValue).map(string => parseFloat(string));
+			const bonuses = this.makeObject(bonus, bonusValue, bonusName);
+			const negatives = this.makeObject(negative, negativeValue, negativeName);
 
-      const leaderObject = {};
+			const leaderObject = {};
 
-      Object.assign(leaderObject, { bonuses,
-        negatives,
-        description,
-        name,
-        image });
-      leaders.list.push(leaderObject);
-    }
-  };
+			Object.assign(leaderObject, { bonuses,
+				negatives,
+				description,
+				name,
+				image });
+			leaders.list.push(leaderObject);
+		}
+	};
 
-  leaders.bonusCalculator = function (name, defaultValue) {
-    const leader = this.currentLeader;
+	leaders.bonusCalculator = function (name, defaultValue) {
+		const leader = this.currentLeader;
 
-    if (leader.bonuses[name]) return leader.bonuses[name].value;
+		if (leader.bonuses[name]) return leader.bonuses[name].value;
 
-    if (leader.negatives[name]) return leader.negatives[name].value;
+		if (leader.negatives[name]) return leader.negatives[name].value;
 
-    return defaultValue;
-  };
+		return defaultValue;
+	};
 
-  leaders.makeObject = function (arr, values, name) {
-    const obj = {};
+	leaders.makeObject = function (arr, values, name) {
+		const obj = {};
 
-    for (const [ index, value ] of arr.entries()) {
-      obj[value] = {};
-      obj[value].name = name[index];
-      obj[value].value = values[index];
-    }
+		for (const [ index, value ] of arr.entries()) {
+			obj[value] = {};
+			obj[value].name = name[index];
+			obj[value].value = values[index];
+		}
 
-    return obj;
-  };
+		return obj;
+	};
 
-  leaders.getDescription = function (data) {
-    const descriptionsData = gameDataService.LeadersStatDescription;
-    const description = [];
+	leaders.getDescription = function (data) {
+		const descriptionsData = gameDataService.LeadersStatDescription;
+		const description = [];
 
-    for (const item of data.values()) {
-      const desc = descriptionsData[item];
+		for (const item of data.values()) {
+			const desc = descriptionsData[item];
 
-      description.push(desc);
-    }
+			description.push(desc);
+		}
 
-    return description;
-  };
+		return description;
+	};
 
-  leaders.select = function (index) {
-    leaders.selectedIndex = index;
-  };
+	leaders.select = function (index) {
+		leaders.selectedIndex = index;
+	};
 
-  leaders.choose = function () {
-    leaders.currentLeader = leaders.list[this.selectedIndex];
-  };
+	leaders.choose = function () {
+		leaders.currentLeader = leaders.list[this.selectedIndex];
+	};
 
-  return leaders;
+	return leaders;
 });

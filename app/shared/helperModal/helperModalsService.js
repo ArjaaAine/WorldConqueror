@@ -1,23 +1,23 @@
-﻿'use strict';
+"use strict";
 
 wciApp.factory(
-    'helperModalsService',
-    function (
-        $uibModal) {
+	"helperModalsService",
+	function ($uibModal) {
 
-        var helperModal = {};
+		const helperModal = {};
 
-        helperModal.openAdvisorHelp = function () {
+		helperModal.openAdvisorHelp = function () {
 
-            var modalInstance = $uibModal.open({
-                templateUrl: 'advisorsHelpModal.html',
-                controller: 'advisorsHelpModalController',
-                size: 'md'
-            });
+			const modalInstance = $uibModal.open({
+				templateUrl: "advisorsHelpModal.html",
+				controller : "advisorsHelpModalController",
+				size       : "md",
+			});
 
-            modalInstance.result.then(function () {
-            });
-        }
+			modalInstance.result.then(() => {
+			});
+		};
 
-        return helperModal;
-    });
+		return helperModal;
+	},
+);

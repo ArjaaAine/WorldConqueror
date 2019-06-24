@@ -66,7 +66,7 @@ wciApp.factory("lawsService", function (gameDataService) {
 		law.isActive = false;
 	};
 
-	//Private methods
+	// Private methods
 	laws._filterLawByType = function (lawType) {
 		return this.activeLaws.filter(lawObject => lawObject.type === lawType)[0];
 	};

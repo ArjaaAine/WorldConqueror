@@ -33,6 +33,7 @@ wciApp.factory("ministerService", function (
 		let influenceGain = 0;
 
 		for (const minister of this.activeMinisters.values()) influenceGain += minister.influencePT;
+
 		return influenceGain;
 	};
 

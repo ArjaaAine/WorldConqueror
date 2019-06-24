@@ -15,7 +15,6 @@ wciApp.factory("saveService", function
 	warService,
 	leaderService,
 	milestonesService,
-	$location,
 ) {
 
 	const data = {};
@@ -23,7 +22,6 @@ wciApp.factory("saveService", function
 	data.save = function (saveSlot) {
 		console.log("SAVE");
 
-		// TODO: Broken, cyclic object value error.
 		// TODO: Redesign save/load to only save necessary data as a string, instead of full objects...Ex. Unit.ID = 10 -> 10 units of this type.
 		const saveData = {};// All data to save.
 		const military = playerService.military;
@@ -107,17 +105,6 @@ wciApp.factory("saveService", function
 	// Separated from "newGame" in order to give us an ability to do other stuff which applies only when resetting
 	data.reset = function (saveSlot) {
 		if (confirm("Are you sure?")) localStorage.removeItem(`gameData_${saveSlot}`);
-
-		/*
-          When player resets a game, it will change current view to the main one("/")
-          Main reason for that is to fix a bug with active tab on buildings
-          When resetting a game, for some reason active tab is not set until you change route(?)
-          So your building list is not displayed.
-          Basically we force first screen to appear when using routing/nav bar.
-          Currently not needed <-- 2018-30-August --> Mariusz
-      */
-		// $location.path("/");
-
 	};
 
 	return data;

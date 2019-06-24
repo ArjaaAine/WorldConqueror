@@ -20,7 +20,7 @@ wciApp.controller("EventsController", (
 		playerService.baseStats[$scope.choiceEventResult.type] += $scope.choiceEventResult.statAdder;
 	};
 
-	$scope.removeEvent = function(index) {
+	$scope.removeEvent = function (index) {
 		eventService.immediateEvent.currentEvents.splice(index, 1);
 	};
 
@@ -54,9 +54,7 @@ wciApp.controller("EventsController", (
 		const eventBonus = this.eventBonuses.id;
 		const totalEventBonus = 0;
 
-		for (const eventBonusAmount of eventBonus.value()) {
-			totalEventBonus += eventBonusAmount;
-		};
+		for (const eventBonusAmount of eventBonus.value()) totalEventBonus += eventBonusAmount;
 
 		// Fix it including multipliers...Formula:
 		/*
@@ -69,9 +67,9 @@ wciApp.controller("EventsController", (
 			(obj.val + statAdder) * (statMultiplier * statMultiplier_2)
 			*/
 
-	}
+	};
 
-	$scope.close = function() {
+	$scope.close = function () {
 		$uibModalInstance.close("ok");
 	};
 });

@@ -21,6 +21,7 @@ wciApp.controller(
 		};
 		$scope.getCost = function (buildingIndex) {
 			const leaderCostAdder = leaderService.bonusCalculator("buildingCost", 1);
+
 			return Math.floor(buildingsService.structures[buildingIndex].cost * leaderCostAdder);
 		};
 		$scope.build = function (count, buildingIndex) {

@@ -69,6 +69,7 @@ wciApp.service("milestonesService", function(playerService) {
 
 		get percentageProgress () {
 			return this.currentTier / this.requirements.length * 100;
+
 			return this.currentTier / this.requirements.length * 100;
 		}
 

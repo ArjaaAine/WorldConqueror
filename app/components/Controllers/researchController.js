@@ -10,9 +10,9 @@ wciApp.controller(
 		$scope.hireScientist = function () {
 			// TODO: Add different scientists with skill and level them up(might want to use a service for scientist exp/lvl/bonuses or at least a constructor here)
 			if ($scope.canAffordScientist()) {
-                researchService.scientists++;
+				researchService.scientists++;
 				playerService.baseStats.money -= researchService.scientistPrice;
-                researchService.scientistPrice = Math.floor(researchService.scientistPrice * 2.5);
+				researchService.scientistPrice = Math.floor(researchService.scientistPrice * 2.5);
 			} else {
 				console.log("Can't hire more scientists! No money or max scientists reached");
 			}

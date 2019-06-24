@@ -2,10 +2,10 @@
 
 wciApp.factory(
 	"playerService",
-	(
+	function (
 		bonusesService,
 		leaderService,
-	) => {
+	) {
 
 		class Player {
 			constructor () {
@@ -31,7 +31,7 @@ wciApp.factory(
 				this.conqueredCountries = [];
 				this.startingCountries = ["US"];// We can have more than 1...
 				this.leaderName = "Rohan";
-				this.paidCurrency = 0;//In game paid currency...for now - Mariusz - 13 April 2019
+				this.paidCurrency = 0;// In game paid currency...for now - Mariusz - 13 April 2019
 				this.baseStats = {
 					// One Month is signfied as one second
 					countryName    : "Wadiya",
@@ -59,7 +59,7 @@ wciApp.factory(
 
 					// Consumption
 					perCapitaConsumption: 5, // 1 person's monthly consumption = 3 Mcal * 30 ~ 100 Mcal. (3Mcal is based on the nation's development level. http://www.who.int/nutrition/topics/3_foodconsumption/en/)
-					food           : 100000, // In megaCalorie = 1000*kcal...
+					food                : 100000, // In megaCalorie = 1000*kcal...
 					baseFoodGrowth      : 550000,
 					hunger              : 0,
 
